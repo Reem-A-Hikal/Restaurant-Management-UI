@@ -1,0 +1,45 @@
+### ----- Angular Specific ----- ###
+## Build directories
+/dist
+/.angular/cache
+/out-tsc
+
+## Dependencies
+/node_modules
+/.npm
+/.yarn
+
+## Logs
+npm-debug.log
+yarn-error.log
+*.log
+
+## Environment files
+/.env
+/environments/environment.ts
+/environments/environment.*.ts
+
+### ----- API Specific (e.g., .NET) ----- ###
+## Compiled output
+/bin
+/obj
+*.user
+*.suo
+*.pyc
+
+## Config files
+/appsettings.json
+/appsettings.*.json
+
+### ----- IDE & Tools ----- ###
+## IDEs and editors
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## System files
+.DS_Store
+Thumbs.db
