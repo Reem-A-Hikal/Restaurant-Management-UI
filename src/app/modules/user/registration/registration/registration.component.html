@@ -1,0 +1,175 @@
+<div class="mb-4 h2 text-success">Sign Up</div>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+  <!-- Full Name -->
+  <div class="mb-3">
+    <input
+      class="form-control bg-body-secondary"
+      placeholder="Full Name"
+      formControlName="fullName"
+      [class.is-invalid]="fullName?.invalid && fullName?.touched"
+      [class.is-valid]="fullName?.valid"
+      type="text"
+      autocomplete="name"
+    />
+    @if (fullName?.invalid == true) {
+    <div class="invalid-feedback" *ngIf="hasDisplayableError('fullName')">
+      <div *ngIf="fullName?.hasError('required')">Full name is required</div>
+      <div *ngIf="fullName?.hasError('minlength')">
+        Minimum 3 characters required
+      </div>
+      <div *ngIf="fullName?.hasError('invalidFullName')">
+        Please enter a valid full name (first and last name)
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Email -->
+  <div class="mb-3">
+    <input
+      type="email"
+      class="form-control bg-body-secondary"
+      placeholder="E-mail"
+      formControlName="email"
+      [class.is-invalid]="email?.invalid && email?.touched"
+      [class.is-valid]="email?.valid"
+      autocomplete="email"
+    />
+    @if (email?.invalid) {
+    <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
+      <div *ngIf="email?.hasError('required')">Email is required</div>
+      <div *ngIf="email?.hasError('email')">
+        Please enter a valid email address
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Phone -->
+  <div class="mb-3">
+    <input
+      type="tel"
+      class="form-control bg-body-secondary"
+      placeholder="Phone Number"
+      formControlName="phone"
+      [class.is-invalid]="phone?.invalid && phone?.touched"
+      [class.is-valid]="phone?.valid"
+      autocomplete="tel"
+    />
+    @if (phone?.invalid) {
+    <div class="invalid-feedback" *ngIf="hasDisplayableError('phone')">
+      <div *ngIf="phone?.hasError('required')">Phone number is required</div>
+      <div *ngIf="phone?.hasError('pattern')">
+        Please enter a valid phone number (10-15 digits)
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Password -->
+  <div class="mb-3">
+    <div class="input-group">
+      <input
+        [type]="showPassword ? 'text' : 'password'"
+        class="form-control bg-body-secondary"
+        placeholder="Password"
+        formControlName="password"
+        [class.is-invalid]="password?.invalid && password?.touched"
+        [class.is-valid]="password?.valid"
+        autocomplete="new-password"
+      />
+      <button
+        class="btn btn-outline-secondary"
+        type="button"
+        (click)="togglePasswordVisibility()"
+      >
+        <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+      </button>
+    </div>
+
+    @if (password?.invalid) {
+    <div class="invalid-feedback" *ngIf="hasDisplayableError('password')">
+      <div *ngIf="password?.hasError('required')">Password is required</div>
+      <div *ngIf="password?.hasError('minlength')">
+        Password must be at least 8 characters
+      </div>
+      <div *ngIf="password?.hasError('pattern')">
+        Password must contain uppercase, lowercase, and number
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="mb-3">
+    <div class="input-group">
+      <input
+        [type]="showConfirmPassword ? 'text' : 'password'"
+        class="form-control bg-body-secondary"
+        placeholder="Confirm Password"
+        formControlName="confirmPassword"
+        [class.is-invalid]="
+          hasDisplayableError('confirmPassword') ||
+          registerForm.hasError('passwordMismatch')
+        "
+        [class.is-valid]="confirmPassword?.valid"
+        autocomplete="new-password"
+      />
+      <button
+        class="btn btn-outline-secondary"
+        type="button"
+        (click)="toggleConfirmPasswordVisibility()"
+      >
+        <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+      </button>
+    </div>
+    @if (confirmPassword?.invalid) {
+    <div
+      class="invalid-feedback"
+      *ngIf="
+        hasDisplayableError('confirmPassword') ||
+        registerForm.hasError('passwordMismatch')
+      "
+    >
+      <div *ngIf="confirmPassword?.hasError('required')">
+        Please confirm your password
+      </div>
+      <div
+        *ngIf="
+          registerForm.hasError('passwordMismatch') &&
+          !confirmPassword?.hasError('required')
+        "
+      >
+        Passwords do not match
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Submit Button -->
+  <div class="mb-3">
+    <button
+      type="submit"
+      class="btn btn-success w-100 rounded-3 py-2"
+      [disabled]="registerForm.invalid || isSubmitting"
+    >
+      <span *ngIf="!isSubmitting">Register</span>
+      <span *ngIf="isSubmitting">
+        <span
+          class="spinner-border spinner-border-sm me-2"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        Creating Account...
+      </span>
+    </button>
+  </div>
+
+  <!-- Login Link -->
+  <div class="text-center">
+    <p class="text-muted">
+      Already have an account?
+      <a href="/login" class="text-success text-decoration-none">Login here</a>
+    </p>
+  </div>
+</form>
