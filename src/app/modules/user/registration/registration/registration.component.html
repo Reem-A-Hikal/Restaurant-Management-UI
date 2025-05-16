@@ -11,17 +11,9 @@
       type="text"
       autocomplete="name"
     />
-    @if (fullName?.invalid == true) {
     <div class="invalid-feedback" *ngIf="hasDisplayableError('fullName')">
-      <div *ngIf="fullName?.hasError('required')">Full name is required</div>
-      <div *ngIf="fullName?.hasError('minlength')">
-        Minimum 3 characters required
-      </div>
-      <div *ngIf="fullName?.hasError('invalidFullName')">
-        Please enter a valid full name (first and last name)
-      </div>
+      {{getErrorMessage('fullName')}}
     </div>
-    }
   </div>
 
   <!-- Email -->
@@ -35,14 +27,9 @@
       [class.is-valid]="email?.valid"
       autocomplete="email"
     />
-    @if (email?.invalid) {
     <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
-      <div *ngIf="email?.hasError('required')">Email is required</div>
-      <div *ngIf="email?.hasError('email')">
-        Please enter a valid email address
-      </div>
+      {{getErrorMessage('email')}}
     </div>
-    }
   </div>
 
   <!-- Phone -->
@@ -56,14 +43,9 @@
       [class.is-valid]="phone?.valid"
       autocomplete="tel"
     />
-    @if (phone?.invalid) {
     <div class="invalid-feedback" *ngIf="hasDisplayableError('phone')">
-      <div *ngIf="phone?.hasError('required')">Phone number is required</div>
-      <div *ngIf="phone?.hasError('pattern')">
-        Please enter a valid phone number (10-15 digits)
-      </div>
+      {{getErrorMessage('phone')}}
     </div>
-    }
   </div>
 
   <!-- Password -->
@@ -87,17 +69,9 @@
       </button>
     </div>
 
-    @if (password?.invalid) {
     <div class="invalid-feedback" *ngIf="hasDisplayableError('password')">
-      <div *ngIf="password?.hasError('required')">Password is required</div>
-      <div *ngIf="password?.hasError('minlength')">
-        Password must be at least 8 characters
-      </div>
-      <div *ngIf="password?.hasError('pattern')">
-        Password must contain uppercase, lowercase, and number
-      </div>
+      {{getErrorMessage('password')}}
     </div>
-    }
   </div>
 
   <!-- Confirm Password -->

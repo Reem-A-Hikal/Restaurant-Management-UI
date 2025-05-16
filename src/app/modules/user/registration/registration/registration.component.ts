@@ -1,3 +1,4 @@
+import { Message } from './../../../../../../node_modules/@angular/build/node_modules/vite/node_modules/postcss/lib/result.d';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -29,7 +30,8 @@ export class RegistrationComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private service: AuthService,
-    private toastr :ToastrService) {}
+    private toastr: ToastrService
+  ) {}
 
   passwordMatchValidator: ValidatorFn = (
     control: AbstractControl
@@ -49,22 +51,27 @@ export class RegistrationComponent implements OnInit {
   fullNameValidator: ValidatorFn = (
     control: AbstractControl
   ): ValidationErrors | null => {
-    const fullNameControl = control.get('fullName');
+    const value = control.value?.trim();
 
-    if (!fullNameControl) {
-      return null;
+    if (!value) return null;
+
+    const words = value
+      .split(/\s+/)
+      .filter((word: string | any[]) => word.length > 0);
+
+    if (words.length < 2) {
+      return {
+        twoWordsRequired:
+          'Please enter a valid full name (first and last name)',
+      };
     }
 
-    const value = fullNameControl.value?.trim();
-    if (!value) {
-      return null;
-    }
-
-    const hasValidFormat = /^[a-zA-Z\u0600-\u06FF\s]{2,}$/.test(value);
-    const hasTwoWords = value.split(/\s+/).length >= 2;
-
-    if (!hasValidFormat || !hasTwoWords) {
-      return { invalidFullName: true };
+    if (!/^[\p{L}\s]+$/u.test(value)) {
+      return {
+        invalidFormat: {
+          message: 'Name should contain only letters',
+        },
+      };
     }
 
     return null;
@@ -73,12 +80,25 @@ export class RegistrationComponent implements OnInit {
   formValidation() {
     this.registerForm = this.formBuilder.group(
       {
-        fullName: ['', [Validators.required, Validators.minLength(3)]],
-        email: ['', [Validators.required, Validators.email]],
-        phone: [
+        fullName: [
           '',
-          [Validators.required, Validators.pattern(/^[0-9]{10,15}$/)],
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.pattern(/^[\p{L}\s]+$/u),
+            this.fullNameValidator,
+          ],
         ],
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(
+              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+            ),
+          ],
+        ],
+        phone: ['', [Validators.required, Validators.pattern(/^01[0-9]{10}$/)]],
         password: [
           '',
           [
@@ -90,17 +110,62 @@ export class RegistrationComponent implements OnInit {
         confirmPassword: ['', Validators.required],
       },
       {
-        validators: [this.passwordMatchValidator, this.fullNameValidator],
+        validators: [this.passwordMatchValidator],
       }
     );
   }
 
   hasDisplayableError(controlName: string): Boolean {
     const control = this.registerForm.get(controlName);
+    if (!control) return false;
+
     return (
-      Boolean(control?.invalid) &&
-      (this.isSubmitted || Boolean(control?.touched))
+      !!control?.invalid &&
+      (this.isSubmitted || control?.touched || control?.dirty)
     );
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.registerForm.get(controlName);
+    if (!control?.errors) return '';
+
+    const errorType = Object.keys(control.errors)[0];
+
+    switch (errorType) {
+      case 'required':
+        return 'This field is required';
+
+      case 'minlength':
+        return `Minimum length is ${control.errors['minlength'].requiredLength}  characters`;
+
+      case 'twoWordsRequired':
+        return 'Please enter a valid full name (first and last name)';
+
+      case 'invalidFormat':
+        return 'Name should contain only letters';
+
+      case 'pattern':
+        return this.getPatternMessage(controlName);
+
+      default:
+        return 'Invalid value';
+    }
+  }
+
+  private getPatternMessage(controlName: string): string {
+    switch (controlName) {
+      case 'phone':
+        return 'Please enter a valid phone number starting with 0 and 11 digits total';
+
+      case 'password':
+        return 'Password must contain uppercase, lowercase and numbers';
+
+      case 'email':
+        return 'Please enter a valid email address (e.g., user@example.com)';
+
+      default:
+        return 'Invalid pattern';
+    }
   }
 
   togglePasswordVisibility(): void {
@@ -115,16 +180,34 @@ export class RegistrationComponent implements OnInit {
     this.isSubmitted = true;
 
     if (this.registerForm.valid) {
+      console.log('Sending data:', this.registerForm.value);
       this.service.createUser(this.registerForm.value).subscribe({
-        next: (res :any) => {
-          if(res.succeeded) {
+        next: (res: any) => {
+          if (res.message && res.message.includes('success')) {
             this.registerForm.reset();
             this.isSubmitted = false;
-            this.toastr.success('User registered successfully', 'Registration Successful')
+            this.toastr.success(res.message, 'Registration Successful');
+          } else {
+            console.log('response: ', res);
           }
-          console.log('response: ',res);
         },
-        error: (err) => console.log('error' + err),
+        error: (err) => {
+          console.error('Error details:', err);
+          if (err.status === 400 && err.error?.Email) {
+            const emailError = err.error.Email[0];
+            this.toastr.warning('Email already in use', 'Warning', {
+              enableHtml: true,
+              timeOut: 5000,
+              closeButton: true,
+            });
+            this.email?.setErrors({ duplicate: true });
+          } else {
+            this.toastr.error(
+              err.error?.message || 'Registration failed',
+              'Error'
+            );
+          }
+        },
       });
     } else {
       console.log('Form Invalid', this.registerForm.errors);
