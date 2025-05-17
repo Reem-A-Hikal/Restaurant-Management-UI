@@ -1,7 +1,7 @@
 <div class="mb-4">
-  <h2 class="text-success">Sign in</h2>
+  <h2 class="mb-4 text-center text-success">Sign In</h2>
 </div>
-<form [formGroup]="loginForm">
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <div class="mb-3">
     <input
       type="email"
@@ -10,15 +10,30 @@
       formControlName="email"
       autocomplete="email"
     />
+
+    <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
+      Please enter your E-mail address.
+    </div>
   </div>
-  <div class="mb-3">
+  <div class="mb-3 input-group">
     <input
-      type="password"
+      [type]="showPassword ? 'text' : 'password'"
       class="form-control bg-body-secondary"
       placeholder="Password"
       formControlName="password"
-      autocomplete="password"
+      autocomplete="new-password"
     />
+    <button
+      class="btn btn-outline-secondary rounded-end-3 border"
+      type="button"
+      (click)="togglePasswordVisibility()"
+    >
+      <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+    </button>
+
+    <div class="invalid-feedback" *ngIf="hasDisplayableError('password')">
+      Please enter your Password.
+    </div>
   </div>
 
   <div class="mb-3">
@@ -29,5 +44,12 @@
     >
       Login
     </button>
+  </div>
+  <!-- Sign up Link -->
+  <div class="text-center text-muted">
+    Don't have an account?
+    <a routerLink="/signup" class="text-success text-decoration-none"
+      >Sign up</a
+    >
   </div>
 </form>

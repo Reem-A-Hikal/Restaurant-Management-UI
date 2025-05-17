@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -15,5 +16,9 @@ export class AuthService {
         'Content-Type': 'application/json',
       }),
     });
+  }
+
+  login(formatDate: any) {
+    return this.http.post(`${this.apiUrl}/login`, formatDate)
   }
 }

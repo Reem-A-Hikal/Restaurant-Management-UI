@@ -1,5 +1,5 @@
 <div class="mb-4">
-  <h2 class="text-success">Sign Up</h2>
+  <h2 class="mb-4 text-center text-success">Sign Up</h2>
 </div>
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
   <!-- Full Name -->
@@ -63,7 +63,7 @@
         autocomplete="new-password"
       />
       <button
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-secondary rounded-end-3 border"
         type="button"
         (click)="togglePasswordVisibility()"
       >
@@ -92,7 +92,7 @@
         autocomplete="new-password"
       />
       <button
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-secondary rounded-end-3 border"
         type="button"
         (click)="toggleConfirmPasswordVisibility()"
       >
