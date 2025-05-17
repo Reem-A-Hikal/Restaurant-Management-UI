@@ -1,4 +1,6 @@
-<div class="mb-4 h2 text-success">Sign Up</div>
+<div class="mb-4">
+  <h2 class="text-success">Sign Up</h2>
+</div>
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
   <!-- Full Name -->
   <div class="mb-3">
@@ -12,7 +14,7 @@
       autocomplete="name"
     />
     <div class="invalid-feedback" *ngIf="hasDisplayableError('fullName')">
-      {{getErrorMessage('fullName')}}
+      {{ getErrorMessage("fullName") }}
     </div>
   </div>
 
@@ -28,7 +30,7 @@
       autocomplete="email"
     />
     <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
-      {{getErrorMessage('email')}}
+      {{ getErrorMessage("email") }}
     </div>
   </div>
 
@@ -44,7 +46,7 @@
       autocomplete="tel"
     />
     <div class="invalid-feedback" *ngIf="hasDisplayableError('phone')">
-      {{getErrorMessage('phone')}}
+      {{ getErrorMessage("phone") }}
     </div>
   </div>
 
@@ -70,7 +72,7 @@
     </div>
 
     <div class="invalid-feedback" *ngIf="hasDisplayableError('password')">
-      {{getErrorMessage('password')}}
+      {{ getErrorMessage("password") }}
     </div>
   </div>
 
@@ -140,10 +142,10 @@
   </div>
 
   <!-- Login Link -->
-  <div class="text-center">
-    <p class="text-muted">
-      Already have an account?
-      <a href="/login" class="text-success text-decoration-none">Login here</a>
-    </p>
+  <div class="text-center text-muted">
+    Already have an account?
+    <a routerLink="/signin" class="text-success text-decoration-none"
+      >Sign in</a
+    >
   </div>
 </form>

@@ -12,11 +12,12 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../../../Core/Auth/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css'],
 })
@@ -32,6 +33,44 @@ export class RegistrationComponent implements OnInit {
     private service: AuthService,
     private toastr: ToastrService
   ) {}
+
+  formValidation() {
+    this.registerForm = this.formBuilder.group(
+      {
+        fullName: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.pattern(/^[\p{L}\s]+$/u),
+            this.fullNameValidator,
+          ],
+        ],
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(
+              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+            ),
+          ],
+        ],
+        phone: ['', [Validators.required, Validators.pattern(/^01[0-9]{10}$/)]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
+          ],
+        ],
+        confirmPassword: ['', Validators.required],
+      },
+      {
+        validators: [this.passwordMatchValidator],
+      }
+    );
+  }
 
   passwordMatchValidator: ValidatorFn = (
     control: AbstractControl
@@ -76,44 +115,6 @@ export class RegistrationComponent implements OnInit {
 
     return null;
   };
-
-  formValidation() {
-    this.registerForm = this.formBuilder.group(
-      {
-        fullName: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.pattern(/^[\p{L}\s]+$/u),
-            this.fullNameValidator,
-          ],
-        ],
-        email: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(
-              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-            ),
-          ],
-        ],
-        phone: ['', [Validators.required, Validators.pattern(/^01[0-9]{10}$/)]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(8),
-            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
-          ],
-        ],
-        confirmPassword: ['', Validators.required],
-      },
-      {
-        validators: [this.passwordMatchValidator],
-      }
-    );
-  }
 
   hasDisplayableError(controlName: string): Boolean {
     const control = this.registerForm.get(controlName);

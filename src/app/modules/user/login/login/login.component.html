@@ -1,0 +1,33 @@
+<div class="mb-4">
+  <h2 class="text-success">Sign in</h2>
+</div>
+<form [formGroup]="loginForm">
+  <div class="mb-3">
+    <input
+      type="email"
+      class="form-control bg-body-secondary"
+      placeholder="E-mail"
+      formControlName="email"
+      autocomplete="email"
+    />
+  </div>
+  <div class="mb-3">
+    <input
+      type="password"
+      class="form-control bg-body-secondary"
+      placeholder="Password"
+      formControlName="password"
+      autocomplete="password"
+    />
+  </div>
+
+  <div class="mb-3">
+    <button
+      type="submit"
+      class="btn btn-success w-100 rounded-3 py-2"
+      [disabled]="loginForm.invalid"
+    >
+      Login
+    </button>
+  </div>
+</form>

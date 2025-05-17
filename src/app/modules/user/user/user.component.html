@@ -1,14 +1,9 @@
-<div class="container">
-  <div class="row vh-100 align-items-center">
-    <div class="col-xxl-4 offset-xxl-4 col-lg-6 offset-lg-3 col-10 offset-1">
-      <div
-        class="rounded-4 border-0 shadow-lg bg-white"
-        style="min-height: 450px"
-      >
-        <div class="d-flex justify-content-start ahign-items-center">
-          <div class="p-5 w-100">
-            <app-registration></app-registration>
-          </div>
+<div class="container-fluid">
+  <div class="row min-vh-100 justify-content-center align-items-center p-3">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+      <div class="card rounded-4 shadow-lg border-0" style="min-height: 450px">
+        <div class="card-body p-4 p-md-5 w-100">
+          <router-outlet></router-outlet>
         </div>
       </div>
     </div>
