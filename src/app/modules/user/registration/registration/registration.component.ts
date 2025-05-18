@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../../../Core/Auth/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -31,8 +31,18 @@ export class RegistrationComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private service: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
+
+  ngOnInit(): void {
+    this.formValidation();
+    if (this.service.isAuthenticated() && this.service.isAdmin()) {
+      this.router.navigateByUrl('/dashboard');
+    } else {
+      this.router.navigateByUrl('/main');
+    }
+  }
 
   formValidation() {
     this.registerForm = this.formBuilder.group(
@@ -55,7 +65,7 @@ export class RegistrationComponent implements OnInit {
             ),
           ],
         ],
-        phone: ['', [Validators.required, Validators.pattern(/^01[0-9]{10}$/)]],
+        phone: ['', [Validators.required, Validators.pattern(/^01[0-9]{9}$/)]],
         password: [
           '',
           [
@@ -213,10 +223,6 @@ export class RegistrationComponent implements OnInit {
     } else {
       console.log('Form Invalid', this.registerForm.errors);
     }
-  }
-
-  ngOnInit(): void {
-    this.formValidation();
   }
 
   get fullName() {

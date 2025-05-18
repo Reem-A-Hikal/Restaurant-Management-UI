@@ -30,6 +30,15 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
+  ngOnInit() {
+    this.FormValidation();
+    if (this.service.isAdmin()) {
+      this.router.navigateByUrl('/dashboard');
+    } else {
+      this.router.navigateByUrl('/main');
+    }
+  }
+
   FormValidation() {
     this.loginForm = this.formBuilder.group({
       email: ['', Validators.required],
@@ -50,18 +59,17 @@ export class LoginComponent implements OnInit {
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
-  ngOnInit() {
-    this.FormValidation();
-  }
 
   onSubmit() {
     this.isSubmitted = true;
-    console.log(this.loginForm.value);
     if (this.loginForm.valid) {
       this.service.login(this.loginForm.value).subscribe({
-        next: (res: any) => {
-          localStorage.setItem('token', res.token);
-          this.router.navigateByUrl('/dashboard');
+        next: (res) => {
+          if (this.service.isAdmin()) {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.router.navigate(['/main']);
+          }
         },
         error: (err) => {
           if (err.status == 400) {
