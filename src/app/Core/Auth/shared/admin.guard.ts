@@ -12,7 +12,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
     });
     return false;
   }
-  if (!authService.isAdmin()) {
+  if (!authService.isAdmin() && authService.isAuthenticated()) {
     router.navigate(['/main'], {
       queryParams: { error: 'unauthorized' },
     });

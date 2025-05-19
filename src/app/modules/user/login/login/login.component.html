@@ -3,19 +3,24 @@
 </div>
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <div class="mb-3">
-    <input
-      type="email"
-      class="form-control bg-body-secondary"
-      placeholder="E-mail"
-      formControlName="email"
-      autocomplete="email"
-    />
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-person"></i></span>
+      <input
+        type="email"
+        class="form-control bg-body-secondary"
+        placeholder="E-mail"
+        formControlName="email"
+        autocomplete="email"
+      />
 
-    <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
-      Please enter your E-mail address.
+      <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
+        Please enter your E-mail address.
+      </div>
     </div>
   </div>
+
   <div class="mb-3 input-group">
+    <span class="input-group-text"><i class="bi bi-lock"></i></span>
     <input
       [type]="showPassword ? 'text' : 'password'"
       class="form-control bg-body-secondary"

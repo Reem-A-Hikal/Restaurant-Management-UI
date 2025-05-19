@@ -4,55 +4,65 @@
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
   <!-- Full Name -->
   <div class="mb-3">
-    <input
-      class="form-control bg-body-secondary"
-      placeholder="Full Name"
-      formControlName="fullName"
-      [class.is-invalid]="fullName?.invalid && fullName?.touched"
-      [class.is-valid]="fullName?.valid"
-      type="text"
-      autocomplete="name"
-    />
-    <div class="invalid-feedback" *ngIf="hasDisplayableError('fullName')">
-      {{ getErrorMessage("fullName") }}
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-person"></i></span>
+      <input
+        class="form-control bg-body-secondary"
+        placeholder="Full Name"
+        formControlName="fullName"
+        [class.is-invalid]="fullName?.invalid && fullName?.touched"
+        [class.is-valid]="fullName?.valid"
+        type="text"
+        autocomplete="name"
+      />
+      <div class="invalid-feedback" *ngIf="hasDisplayableError('fullName')">
+        {{ getErrorMessage("fullName") }}
+      </div>
     </div>
   </div>
 
   <!-- Email -->
   <div class="mb-3">
-    <input
-      type="email"
-      class="form-control bg-body-secondary"
-      placeholder="E-mail"
-      formControlName="email"
-      [class.is-invalid]="email?.invalid && email?.touched"
-      [class.is-valid]="email?.valid"
-      autocomplete="email"
-    />
-    <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
-      {{ getErrorMessage("email") }}
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
+      <input
+        type="email"
+        class="form-control bg-body-secondary"
+        placeholder="E-mail"
+        formControlName="email"
+        [class.is-invalid]="email?.invalid && email?.touched"
+        [class.is-valid]="email?.valid"
+        autocomplete="email"
+      />
+      <div class="invalid-feedback" *ngIf="hasDisplayableError('email')">
+        {{ getErrorMessage("email") }}
+      </div>
     </div>
   </div>
 
   <!-- Phone -->
   <div class="mb-3">
-    <input
-      type="tel"
-      class="form-control bg-body-secondary"
-      placeholder="Phone Number"
-      formControlName="phone"
-      [class.is-invalid]="phone?.invalid && phone?.touched"
-      [class.is-valid]="phone?.valid"
-      autocomplete="tel"
-    />
-    <div class="invalid-feedback" *ngIf="hasDisplayableError('phone')">
-      {{ getErrorMessage("phone") }}
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-phone"></i></span>
+      <input
+        type="tel"
+        class="form-control bg-body-secondary"
+        placeholder="Phone Number"
+        formControlName="phone"
+        [class.is-invalid]="phone?.invalid && phone?.touched"
+        [class.is-valid]="phone?.valid"
+        autocomplete="tel"
+      />
+      <div class="invalid-feedback" *ngIf="hasDisplayableError('phone')">
+        {{ getErrorMessage("phone") }}
+      </div>
     </div>
   </div>
 
   <!-- Password -->
   <div class="mb-3">
     <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-lock"></i></span>
       <input
         [type]="showPassword ? 'text' : 'password'"
         class="form-control bg-body-secondary"
@@ -79,6 +89,7 @@
   <!-- Confirm Password -->
   <div class="mb-3">
     <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-lock"></i></span>
       <input
         [type]="showConfirmPassword ? 'text' : 'password'"
         class="form-control bg-body-secondary"
@@ -129,7 +140,7 @@
       class="btn btn-success w-100 rounded-3 py-2"
       [disabled]="registerForm.invalid || isSubmitting"
     >
-      <span *ngIf="!isSubmitting">Register</span>
+      <span *ngIf="!isSubmitting">Create Account</span>
       <span *ngIf="isSubmitting">
         <span
           class="spinner-border spinner-border-sm me-2"

@@ -1,0 +1,7 @@
+<!-- <button class="btn btn-dark" (click)="onLogout()">LogOut</button>
+<p class="text-center">{{ fullname }}</p> -->
+<app-sidebar (onToggleSidenav)="onToggleSidenav($event)"></app-sidebar>
+<app-body
+  [isCollapsed]="isSideNavCollapsed"
+  [screenWidth]="screenWidth"
+></app-body>

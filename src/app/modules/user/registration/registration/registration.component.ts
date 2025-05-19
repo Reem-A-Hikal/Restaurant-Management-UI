@@ -37,11 +37,11 @@ export class RegistrationComponent implements OnInit {
 
   ngOnInit(): void {
     this.formValidation();
-    if (this.service.isAuthenticated() && this.service.isAdmin()) {
-      this.router.navigateByUrl('/dashboard');
-    } else {
-      this.router.navigateByUrl('/main');
-    }
+    // if (this.service.isAuthenticated() && this.service.isAdmin()) {
+    //   this.router.navigateByUrl('/Home');
+    // } else {
+    //   this.router.navigateByUrl('/main');
+    // }
   }
 
   formValidation() {

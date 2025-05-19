@@ -32,11 +32,11 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.FormValidation();
-    if (this.service.isAdmin()) {
-      this.router.navigateByUrl('/dashboard');
-    } else {
-      this.router.navigateByUrl('/main');
-    }
+    // if (this.service.isAdmin()) {
+    //   this.router.navigateByUrl('/dashboard');
+    // } else {
+    //   this.router.navigateByUrl('/main');
+    // }
   }
 
   FormValidation() {
@@ -66,10 +66,11 @@ export class LoginComponent implements OnInit {
       this.service.login(this.loginForm.value).subscribe({
         next: (res) => {
           if (this.service.isAdmin()) {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/Home']);
           } else {
             this.router.navigate(['/main']);
           }
+          console.log(res.message);
         },
         error: (err) => {
           if (err.status == 400) {

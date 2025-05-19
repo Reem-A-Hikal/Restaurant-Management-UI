@@ -1,5 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap");
+/* @import "~@angular/cdk/overlay-prebuilt.css"; */
+
 body {
-  font-family: "Inter", sans-serif;
+  position: relative;
+  font-family: "Roboto", sans-serif;
+  background: #f4f7fa;
 }
 .input-group .form-control:focus {
   z-index: 2;
@@ -31,4 +36,33 @@ body {
   display: block !important;
   font-size: 0.875em;
   margin-top: 0.25rem;
+}
+
+/* ======================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  margin: 1.25rem 0 1.25rem 0;
+  box-shadow: 0 0.25rem 0.5rem #e6edef;
+  color: #495057;
+
+  .card-head {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #edf1f7;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: 1rem 1.5rem;
+  }
 }
