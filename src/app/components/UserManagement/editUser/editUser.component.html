@@ -1,0 +1,148 @@
+<div class="container mt-5 d-flex" *ngIf="user">
+  <div class="row">
+    <div class="col-lg-4 pb-5">
+      <!-- Account Sidebar-->
+      <div class="author-card pb-3">
+        <div
+          class="author-card-cover"
+          style="background-image: url(/background.jpg)"
+        >
+          <a class="btn btn-style-1 btn-white btn-sm"
+            ><i class="fa fa-award text-md"></i>&nbsp;Profile</a
+          >
+        </div>
+        <div class="author-card-profile">
+          <div class="author-card-avatar">
+            <img [src]="user.profileImageUrl" [alt]="user.fullName" />
+          </div>
+          <div class="author-card-details">
+            <h5 class="author-card-name text-lg">{{ user.fullName }}</h5>
+            <span class="author-card-position"
+              >Member since {{ user.joinDate | date }}</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="accordion" id="accountAccordion">
+        <!-- <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOrders">
+            <button
+              class="accordion-button"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseOrders"
+              aria-expanded="true"
+              aria-controls="collapseOrders"
+            >
+              <i class="fe-icon-shopping-bag me-2 text-muted"></i> Orders List
+            </button>
+          </h2>
+          <div
+            id="collapseOrders"
+            class="accordion-collapse collapse show"
+            aria-labelledby="headingOrders"
+            data-bs-parent="#accountAccordion"
+          >
+            <div class="accordion-body" *ngIf="orders">
+              <a href="#">View all orders</a>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- <div class="accordion-item">
+          <h2 class="accordion-header" id="headingAddresses">
+            <button
+              class="accordion-button collapsed"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseAddresses"
+              aria-expanded="false"
+              aria-controls="collapseAddresses"
+            >
+              <i class="fe-icon-map-pin me-2 text-muted"></i> Addresses
+            </button>
+          </h2>
+          <div
+            id="collapseAddresses"
+            class="accordion-collapse collapse"
+            aria-labelledby="headingAddresses"
+            data-bs-parent="#accountAccordion"
+          >
+            <div class="accordion-body" *ngIf="addresses">
+              <div class="card-body">
+                <div *ngIf="addresses.length === 0" class="alert alert-info">
+                  No addresses found for this user.
+                </div>
+                <div
+                  *ngFor="let address of addresses"
+                  class="mb-3 p-3 border rounded"
+                >
+                  <h5>{{ address.addressName }}</h5>
+                  <p>{{ address.street }}, {{ address.city }}</p>
+                  <p>{{ address.country }}, {{ address.postalCode }}</p>
+                  <p>Phone: {{ address.phoneNumber }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <!-- Profile Settings-->
+    <div class="col-lg-8 pb-5">
+      <form class="row" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="account-fn">Full Name</label>
+            <input
+              formControlName="fullName"
+              class="form-control"
+              type="text"
+              id="account-fn"
+              [value]="user.fullName"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input
+              formControlName="email"
+              class="form-control"
+              type="email"
+              id="email"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="account-phone">Phone Number</label>
+            <input
+              formControlName="phoneNumber"
+              class="form-control"
+              type="text"
+              id="account-phone"
+              [value]="user.phoneNumber"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-12">
+          <hr class="mt-2 mb-3" />
+          <div
+            class="d-flex flex-wrap justify-content-between align-items-center"
+          >
+            <button
+              class="btn btn-style-1 btn-success"
+              type="submit"
+              [disabled]="editForm.invalid || isLoading"
+            >
+              Update Profile
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

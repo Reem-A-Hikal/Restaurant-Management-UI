@@ -1,10 +1,9 @@
-import { routes } from './../app.routes';
-import { UserService } from './../modules/user/services/user.service';
+import { UserService } from './../models/user/services/user.service';
 import { AuthService } from './../Core/Auth/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ComponentsModule } from '../components/components.module';
 import { Router, RouterOutlet } from '@angular/router';
-import { SidebarComponent } from "../components/sidebar/sidebar.component";
+import { SidebarComponent } from '../components/sidebar/sidebar.component';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -15,7 +14,7 @@ interface SideNavToggle {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  imports: [ComponentsModule, SidebarComponent],
+  imports: [ComponentsModule, SidebarComponent ],
 })
 export class DashboardComponent implements OnInit {
   isSideNavCollapsed: boolean = false;
@@ -37,9 +36,8 @@ export class DashboardComponent implements OnInit {
 
   onToggleSidenav(data: SideNavToggle): void {
     this.screenWidth = data.screenWidth;
-    this.isSideNavCollapsed = data.isCollapsed
+    this.isSideNavCollapsed = data.isCollapsed;
   }
-
 
   onLogout() {
     this.authService.logout();

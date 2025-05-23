@@ -5,28 +5,28 @@ export const navbarData = [
     label: 'Dashboard',
   },
   {
-    routeLink: '/User',
+    routeLink: '/Home/Users',
     icon: 'fa-regular fa-user',
     label: 'Users',
   },
   {
-    routeLink: '/item',
-    icon: 'bi bi-egg-fried',
-    label: 'Items',
-  },
-  {
-    routeLink: '/Category',
+    routeLink: '/Home/Categories',
     icon: 'bi bi-list-nested',
     label: 'Category',
   },
   {
-    routeLink: '/Order',
+    routeLink: '/Home/Products',
+    icon: 'bi bi-egg-fried',
+    label: 'Items',
+  },
+  {
+    routeLink: '/Home/Orders',
     icon: 'bi bi-car-front',
     label: 'Orders',
   },
-  {
-    routeLink: '/statistics',
-    icon: 'bi bi-bar-chart-line',
-    label: 'statistics',
-  },
+  // {
+  //   routeLink: '/Home/statistics',
+  //   icon: 'bi bi-bar-chart-line',
+  //   label: 'statistics',
+  // },
 ];

@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { UserProfile } from '../models/UserProfile';
 import { environment } from '../../../../environments/environment';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -51,8 +52,13 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const token = this.getToken();
-  if (!token) return false;
-  return true;
+    if (!token) return false;
+    try {
+      const decoded = jwtDecode<{ exp: number }>(token);
+      return decoded.exp > Date.now() / 1000; // Check if token is still valid
+    } catch {
+      return false;
+    }
   }
 
   getUserProfile(): UserProfile | null {

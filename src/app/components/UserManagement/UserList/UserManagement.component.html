@@ -1,0 +1,92 @@
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+  integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+  crossorigin="anonymous"
+></script>
+
+<section class="body" [ngClass]="getBodyClass()">
+  <div class="container mt-4">
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search users..."
+        [(ngModel)]="searchTerm"
+        (input)="applyFilter()"
+      />
+    </div>
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div *ngIf="!isLoading">
+      <div class="row" *ngIf="filteredUsers.length > 0; else noUsers">
+        <div class="col-md-4" *ngFor="let user of users">
+        <div class="card profile-card">
+          <div class="background-block">
+            <img
+              src="/background.jpg"
+              alt="profile-sample1"
+              class="background"
+            />
+          </div>
+          <div class="profile-thumb-block">
+            <img
+              [src]="user.profileImageUrl"
+              alt="profile-image"
+              class="profile"
+            />
+          </div>
+          <div class="card-content">
+            <h2>{{ user.fullName }}</h2>
+            <div class="mb-2">
+              <span
+                class="badge bg-secondary me-1"
+                *ngFor="let role of user.roles"
+              >
+                {{ role }}
+              </span>
+            </div>
+            <div class="icon-block d-flex justify-content-center gap-2">
+              <!-- <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                (click)="viewDetails(user.id)"
+              >
+                <i class="fas fa-info-circle d-none d-xl-inline-block"></i>
+                Details
+              </button> -->
+              <button
+                type="button"
+                class="btn btn-outline-warning btn-sm"
+                (click)="editUser(user.id)"
+              >
+                <i class="fas fa-edit d-none d-xl-inline-block"></i> Edit
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                (click)="deleteUser(user.id)"
+              >
+                <i class="fas fa-trash-alt d-none d-xl-inline-block"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #noUsers>
+        <div class="alert alert-info text-center">
+          No users found
+        </div>
+      </ng-template>
+</section>
