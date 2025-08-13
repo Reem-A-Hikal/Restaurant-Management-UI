@@ -1,12 +1,9 @@
 import { Routes } from '@angular/router';
-import { UserComponent } from './models/user/user/user.component';
-import { RegistrationComponent } from './models/user/registration/registration/registration.component';
-import { LoginComponent } from './models/user/login/login/login.component';
 import { authGuard } from './Core/Auth/shared/auth.guard';
 import { MainComponent } from './layouts/main/main.component';
 import { adminGuard } from './Core/Auth/shared/admin.guard';
 import { publicGuard } from './Core/Auth/shared/public.guard';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent } from './layouts/dashboard/dashboard.component';
 import { DashboardBodyComponent } from './components/dashboardBody/dashboardBody.component';
 import { NotFoundComponent } from './layouts/NotFound/NotFound.component';
 import { UserManagementComponent } from './components/UserManagement/UserList/UserManagement.component';
@@ -15,6 +12,9 @@ import { UserDetailsComponent } from './components/UserManagement/UserDetails/Us
 import { ProductsComponent } from './components/products/products.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { OrdersComponent } from './components/orders/orders.component';
+import { UserComponent } from './components/user/user/user.component';
+import { RegistrationComponent } from './components/user/registration/registration.component';
+import { LoginComponent } from './components/user/login/login.component';
 
 export const routes: Routes = [
   {

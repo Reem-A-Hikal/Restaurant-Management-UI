@@ -1,9 +1,10 @@
-import { UserService } from './../models/user/services/user.service';
-import { AuthService } from './../Core/Auth/services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { ComponentsModule } from '../components/components.module';
-import { Router, RouterOutlet } from '@angular/router';
-import { SidebarComponent } from '../components/sidebar/sidebar.component';
+import { ComponentsModule } from '../../components/components.module';
+import { Router } from '@angular/router';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { AuthService } from '../../Core/Auth/services/auth.service';
+import { UserService } from '../../services/User.service';
+import { ProfileService } from '../../services/profile.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -14,7 +15,7 @@ interface SideNavToggle {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  imports: [ComponentsModule, SidebarComponent ],
+  imports: [ComponentsModule, SidebarComponent],
 })
 export class DashboardComponent implements OnInit {
   isSideNavCollapsed: boolean = false;
@@ -22,12 +23,12 @@ export class DashboardComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private userService: UserService
+    private profileService: ProfileService
   ) {}
 
   fullname: string = '';
   ngOnInit() {
-    this.userService.getUserProfile().subscribe({
+    this.profileService.getUserProfile().subscribe({
       next: (res: any) => (this.fullname = res.fullName),
       error: (err: any) =>
         console.log('error while retrieving user profile:\n', err),

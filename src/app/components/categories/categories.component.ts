@@ -1,7 +1,7 @@
-import { Category } from './../../models/Category/Category';
 import { Component, OnInit } from '@angular/core';
-import { CatService } from '../../models/services/Cat.service';
+import { CatService } from '../../services/Cat.service';
 import { ToastrService } from 'ngx-toastr';
+import { Category } from '../../models/Category';
 
 @Component({
   selector: 'app-categories',
@@ -13,7 +13,7 @@ export class CategoriesComponent implements OnInit {
   constructor(private catService: CatService, private toastr: ToastrService) {}
 
   categories!: Category[];
-  isLoading :boolean =false;
+  isLoading: boolean = false;
 
   ngOnInit() {
     this.loadCategories();

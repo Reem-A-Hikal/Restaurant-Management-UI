@@ -1,4 +1,3 @@
-import { Message } from './../../../../../../node_modules/@angular/build/node_modules/vite/node_modules/postcss/lib/result.d';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -10,9 +9,9 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { AuthService } from '../../../../Core/Auth/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../Core/Auth/services/auth.service';
 
 @Component({
   selector: 'app-registration',

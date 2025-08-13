@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../models/services/api.service';
-import { Product } from '../../models/Products/models/product';
-import { ProductService } from '../../models/services/Product.service';
+import { ProductService } from '../../services/Product.service';
 import { ToastrService } from 'ngx-toastr';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-products',

@@ -1,4 +1,4 @@
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../Core/Auth/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
-  imports: [RouterOutlet],
+  imports: [],
 })
 export class MainComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}

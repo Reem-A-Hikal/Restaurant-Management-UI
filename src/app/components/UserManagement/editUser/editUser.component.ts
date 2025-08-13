@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../models/services/User.service';
+import { UserService } from '../../../services/User.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../../Core/Auth/models/User';
-import { AddressService } from '../../../models/services/Address.service';
+import { AddressService } from '../../../services/Address.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

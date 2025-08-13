@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApiService } from '../../../models/services/api.service';
+import { ApiService } from '../../../services/api.service';
 import { User } from '../../../Core/Auth/models/User';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../Core/Auth/services/auth.service';
-import { UserService } from '../../../models/services/User.service';
+import { UserService } from '../../../services/User.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 

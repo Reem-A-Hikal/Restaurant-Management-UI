@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { ApiService } from './api.service';
 export class AddressService {
   private readonly baseUrl = `${environment.apiBaseUrl}/Address`;
 
-  constructor(private http: HttpClient, private api: ApiService) {}
+  constructor(private api: ApiService) {}
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('auth_token');
     return new HttpHeaders({
@@ -20,7 +20,7 @@ export class AddressService {
 
   getUserAddresses(userId: string, customHeaders?: HttpHeaders) {
     const headers = customHeaders || this.getHeaders();
-    const url = `http://localhost:5181/api/Address/UserAddressesAdmin/${userId}`;
+    const url = `${this.baseUrl}/UserAddressesAdmin/${userId}`;
     return this.api.get<any[]>(url, headers);
   }
 }
