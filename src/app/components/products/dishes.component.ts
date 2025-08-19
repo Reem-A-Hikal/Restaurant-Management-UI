@@ -6,10 +6,10 @@ import { Product } from '../../models/product';
 @Component({
   selector: 'app-products',
   standalone: false,
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css'],
+  templateUrl: './dishes.component.html',
+  styleUrls: ['./dishes.component.css'],
 })
-export class ProductsComponent implements OnInit {
+export class dishesComponent implements OnInit {
   products!: Product[];
   isLoading: boolean = true;
 

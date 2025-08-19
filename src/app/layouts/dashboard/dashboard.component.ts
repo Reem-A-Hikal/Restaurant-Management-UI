@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ComponentsModule } from '../../components/components.module';
 import { Router } from '@angular/router';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { SidebarComponent } from '../../components/shared/sidebar/sidebar.component';
 import { AuthService } from '../../Core/Auth/services/auth.service';
-import { UserService } from '../../services/User.service';
 import { ProfileService } from '../../services/profile.service';
 
 interface SideNavToggle {
@@ -28,11 +27,11 @@ export class DashboardComponent implements OnInit {
 
   fullname: string = '';
   ngOnInit() {
-    this.profileService.getUserProfile().subscribe({
-      next: (res: any) => (this.fullname = res.fullName),
-      error: (err: any) =>
-        console.log('error while retrieving user profile:\n', err),
-    });
+    // this.profileService.getUserProfile().subscribe({
+    //   next: (res: any) => (this.fullname = res.fullName),
+    //   error: (err: any) =>
+    //     console.log('error while retrieving user profile:\n', err),
+    // });
   }
 
   onToggleSidenav(data: SideNavToggle): void {

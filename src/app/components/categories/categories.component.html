@@ -41,9 +41,7 @@
                 <div
                   class="d-flex justify-content-between align-items-center mb-2"
                 >
-                  <span class="price fw-bold"
-                    >{{ cat.description }}</span
-                  >
+                  <span class="price fw-bold">{{ cat.description }}</span>
                 </div>
 
                 <div class="d-flex gap-2">
@@ -61,7 +59,7 @@
 
         <!-- Empty State -->
         <div
-          *ngIf="!isLoading && categories.length === 0"
+          *ngIf="!isLoading && categories?.length === 0"
           class="col-12 text-center py-5"
         >
           <div class="card border-0">

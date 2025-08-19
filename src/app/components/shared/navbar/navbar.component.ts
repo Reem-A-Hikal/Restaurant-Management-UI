@@ -1,6 +1,6 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { AuthService } from '../../Core/Auth/services/auth.service';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../Core/Auth/services/auth.service';
 @Component({
   selector: 'app-navbar',
   standalone: false,
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class NavbarComponent implements OnInit {
   currentPageTitle = 'Dashboard';
   searchQuery = '';
-  userName! :string;
+  userName!: string;
   constructor(private auth: AuthService, private router: Router) {}
 
   ngOnInit() {

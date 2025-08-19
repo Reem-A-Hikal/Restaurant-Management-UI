@@ -1,7 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap");
-/* @import "~@angular/cdk/overlay-prebuilt.css"; */
-
-body {
+/* body {
   position: relative;
 }
 .input-group .form-control:focus {
@@ -34,17 +31,11 @@ body {
   display: block !important;
   font-size: 0.875em;
   margin-top: 0.25rem;
-}
+} */
 
 /* ======================================= */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.card {
+/* .card {
   display: flex;
   flex-direction: column;
   border-radius: 0.5rem;
@@ -63,4 +54,4 @@ body {
   .card-body {
     padding: 1rem 1.5rem;
   }
-}
+} */

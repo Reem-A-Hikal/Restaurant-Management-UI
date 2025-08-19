@@ -1,10 +1,9 @@
-import { User } from './../models/User';
+import { User, UserProfile } from './../models/User';
 import { AuthResponse } from './../models/AuthResponse';
 import { formatDate } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { UserProfile } from '../models/UserProfile';
 import { environment } from '../../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
 

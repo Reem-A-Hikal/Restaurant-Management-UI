@@ -12,7 +12,7 @@ export class UserService {
   constructor(private api: ApiService) {}
 
   getAllUsers(): Observable<User[]> {
-    return this.api.get<User[]>(`${this.basePath}/all`);
+    return this.api.get<User[]>(`${this.basePath}/GetAll`);
   }
 
   getUserById(userId: string): Observable<User> {

@@ -11,3 +11,9 @@ export interface User {
   specialization?: string;
   vehicleNumber?: string;
 }
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  roles: string[];
+}

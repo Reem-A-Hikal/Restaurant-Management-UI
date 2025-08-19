@@ -1,6 +1,3 @@
-import { User } from '../../Core/Auth/models/User';
-
-// Enum definitions referenced in the Order model
 export enum OrderStatus {
   New = 'New',
   Confirmed = 'Confirmed',

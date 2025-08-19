@@ -15,9 +15,9 @@ export const navbarData = [
     label: 'Category',
   },
   {
-    routeLink: '/Home/Products',
+    routeLink: '/Home/Dishes',
     icon: 'bi bi-egg-fried',
-    label: 'Items',
+    label: 'Dishes',
   },
   {
     routeLink: '/Home/Orders',

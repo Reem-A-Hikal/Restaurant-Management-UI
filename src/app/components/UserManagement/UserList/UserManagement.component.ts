@@ -1,15 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
 import { User } from '../../../Core/Auth/models/User';
-import { environment } from '../../../../environments/environment';
-import { AuthService } from '../../../Core/Auth/services/auth.service';
 import { UserService } from '../../../services/User.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ModalComponent } from '../modal/modal.component';
+import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
+import {
+  MdbModalModule,
+  MdbModalRef,
+  MdbModalService,
+} from 'mdb-angular-ui-kit/modal';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-UserManagement',
-  standalone: false,
+  standalone: true,
+  imports: [MdbModalModule, CommonModule, FormsModule, MdbTooltipModule],
   templateUrl: './UserManagement.component.html',
   styleUrls: ['./UserManagement.component.css'],
 })
@@ -19,31 +26,15 @@ export class UserManagementComponent implements OnInit {
   filteredUsers: User[] = [];
   searchTerm = '';
 
+  modalRef: MdbModalRef<ModalComponent> | null = null;
+
   constructor(
     private userService: UserService,
-    private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: MdbModalService
   ) {}
 
-  ngOnInit() {
-    this.loadUsers();
-  }
-
-  loadUsers(): void {
-    this.isLoading = true;
-    this.userService.getAllUsers().subscribe({
-      next: (users) => {
-        this.users = users;
-        this.filteredUsers = [...users];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading users:', err);
-        this.toastr.error('Failed to load users', 'Error');
-        this.isLoading = false;
-      },
-    });
-  }
+  // Inputs for sidebar and responsive design
   @Input() isCollapsed = false;
   @Input() screenWidth = 0;
 
@@ -61,15 +52,33 @@ export class UserManagementComponent implements OnInit {
     return styleClass;
   }
 
+  ngOnInit() {
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.isLoading = true;
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        // console.log('Users loaded:', users);
+        this.users = users;
+        this.filteredUsers = [...users];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+        this.toastr.error('Failed to load users', 'Error');
+        this.isLoading = false;
+      },
+    });
+  }
+
   trackByUserId(index: number, user: User): string {
     return user.id;
   }
 
-  viewDetails(id: string): void {
-    this.router.navigate(['/Home/Users/View', id]);
-  }
-  editUser(id: string) {
-    this.router.navigate(['/Home/Users/Edit', id]);
+  openModal(id: string): void {
+    this.modalRef = this.modalService.open(ModalComponent);
   }
   deleteUser(userId: string): void {
     if (confirm('Are you sure you want to delete this user?')) {
@@ -97,12 +106,17 @@ export class UserManagementComponent implements OnInit {
 
   applyFilter(): void {
     if (!this.searchTerm) {
-      this.filteredUsers = [...this.users];
+      this.reset();
       return;
     }
     const term = this.searchTerm.toLowerCase();
     this.filteredUsers = this.users.filter((user) =>
       user.fullName?.toLowerCase().includes(term)
     );
+  }
+
+  reset(): void {
+    this.searchTerm = '';
+    this.filteredUsers = [...this.users];
   }
 }
