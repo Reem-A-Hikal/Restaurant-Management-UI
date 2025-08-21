@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideAnimationsAsync(),
     provideToastr({
-      positionClass: 'toast-top-center',
+      positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),
   ],

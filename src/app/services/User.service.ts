@@ -7,7 +7,7 @@ import { User } from '../Core/Auth/models/User';
   providedIn: 'root',
 })
 export class UserService {
-  private readonly basePath = '/user';
+  private readonly basePath = `/user`;
 
   constructor(private api: ApiService) {}
 
@@ -24,8 +24,8 @@ export class UserService {
   }
 
   // Delete user (Admin only)
-  deleteUser(userId: string): Observable<void> {
-    return this.api.delete(`${this.basePath}/DeleteUser/${userId}`);
+  deleteUser(userId: string): Observable<any> {
+    return this.api.delete<any>(`${this.basePath}/DeleteUser/${userId}`);
   }
 
   updateUser(userId: string, userData: any): Observable<User> {

@@ -9,42 +9,23 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('auth_token');
-    return new HttpHeaders({
-      'content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    });
-  }
-
   //get
-
   get<T>(url: string, customHeaders?: HttpHeaders): Observable<T> {
-    const headers = customHeaders || this.getHeaders();
-    return this.http.get<T>(`${environment.apiBaseUrl}${url}`, { headers });
+    return this.http.get<T>(`${environment.apiBaseUrl}${url}`);
   }
 
   //post
   post<T>(url: string, body: any, customHeaders?: HttpHeaders): Observable<T> {
-    const headers = customHeaders || this.getHeaders();
-    return this.http.post<T>(`${environment.apiBaseUrl}${url}`, body, {
-      headers,
-    });
+    return this.http.post<T>(`${environment.apiBaseUrl}${url}`, body);
   }
 
   //put
-
-  put<T>(url: string, body: any, customHeaders?: HttpHeaders): Observable<T> {
-    const headers = customHeaders || this.getHeaders();
-    return this.http.put<T>(`${environment.apiBaseUrl}${url}`, body, {
-      headers,
-    });
+  put<T>(url: string, body: any): Observable<T> {
+    return this.http.put<T>(`${environment.apiBaseUrl}${url}`, body);
   }
 
   //delete
-
-  delete<T>(url: string, customHeaders?: HttpHeaders): Observable<T> {
-    const headers = customHeaders || this.getHeaders();
-    return this.http.delete<T>(url, { headers });
+  delete<T>(url: string): Observable<T> {
+    return this.http.delete<T>(`${environment.apiBaseUrl}${url}`);
   }
 }

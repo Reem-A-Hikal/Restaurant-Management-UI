@@ -1,12 +1,16 @@
 <section [ngClass]="getBodyClass()">
   <div class="container mt-4">
     <div
-      class="d-flex mb-3 flex-wrap justify-content-between align-items-center gap-3"
+      class="d-flex flex-column flex-md-row mb-4 justify-content-between align-items-stretch gap-3"
     >
-      <div class="input-group gap-2 flex-wrap rounded w-75">
+      <!-- Search Box -->
+      <div
+        class="input-group gap-2 flex-column flex-md-row rounded justify-content-center align-items-center flex-grow-1"
+      >
         <input
           type="search"
-          class="form-control rounded search"
+          name="search"
+          class="form-control rounded search w-100"
           placeholder="Search"
           [(ngModel)]="searchTerm"
           (keyup.enter)="applyFilter()"
@@ -32,8 +36,27 @@
           </button>
         </div>
       </div>
-      <div class="add">
-        <button type="button" class="btn btn-success" mdbTooltip="Add User">
+      <!-- Filter by Role -->
+      <div class="filter d-flex flex-column flex-md-row gap-2">
+        <select
+          class="form-select"
+          [(ngModel)]="selectedRole"
+          (change)="applyFilter()"
+          aria-label="Filter by Role"
+        >
+          <option *ngFor="let role of roles" [value]="role">
+            {{ role }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Add Button -->
+      <div class="add text-center flex-shrink-0">
+        <button
+          type="button"
+          class="btn btn-success w-100 d-flex align-items-center justify-content-center"
+          mdbTooltip="Add User"
+        >
           <i class="fas fa-plus"></i> Add User
         </button>
       </div>
@@ -46,11 +69,11 @@
     </div>
     <div *ngIf="!isLoading">
       <div
-        class="row row-gap-3 justify-content-center"
+        class="row justify-content-center"
         *ngIf="filteredUsers.length > 0; else noUsers"
       >
         <div
-          class="col-md-4 column"
+          class="col-md-4 column mb-4"
           *ngFor="let user of filteredUsers; let i = index"
         >
           <div class="card profile-card">
@@ -64,6 +87,16 @@
             <!-- Active badge -->
             <div class="active-badge position-absolute">
               {{ user.isActive ? "Active" : "Inactive" }}
+            </div>
+            <div class="delete">
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="deleteUser(user.id)"
+                mdbTooltip="Delete User"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
             </div>
             <div class="profile-thumb-block">
               <img
