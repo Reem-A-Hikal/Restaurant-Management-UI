@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
-import { User } from '../Core/Auth/models/User';
+import { User, UserListApiResponse } from '../Core/Auth/models/User';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,11 @@ export class UserService {
 
   constructor(private api: ApiService) {}
 
-  getAllUsers(): Observable<User[]> {
-    return this.api.get<User[]>(`${this.basePath}/GetAll`);
+  getAllUsers(pageIndex: number, pageSize: number): Observable<UserListApiResponse> {
+    let params = new HttpParams()
+      .set('pageIndex', pageIndex.toString())
+      .set('pageSize', pageSize.toString());
+    return this.api.get<UserListApiResponse>(`${this.basePath}/GetAll`, params);
   }
 
   getUserById(userId: string): Observable<User> {

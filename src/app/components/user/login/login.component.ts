@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
       this.service.login(this.loginForm.value).subscribe({
         next: (res) => {
           if (this.service.isAdmin()) {
-            this.router.navigate(['/Home']);
+            this.router.navigate(['/Dashboard']);
           } else {
             this.router.navigate(['/main']);
           }

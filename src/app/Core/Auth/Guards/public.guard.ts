@@ -8,7 +8,7 @@ export const publicGuard: CanActivateFn = (route, state) => {
 
   if (authService.isAuthenticated()) {
     if (authService.isAdmin()) {
-      router.navigate(['/Home']);
+      router.navigate(['/Dashboard']);
     } else {
       router.navigate(['/main']);
     }

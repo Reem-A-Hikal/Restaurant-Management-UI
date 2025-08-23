@@ -10,12 +10,12 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   //get
-  get<T>(url: string, customHeaders?: HttpHeaders): Observable<T> {
-    return this.http.get<T>(`${environment.apiBaseUrl}${url}`);
+  get<T>(url: string, params?: any): Observable<T> {
+    return this.http.get<T>(`${environment.apiBaseUrl}${url}`, {params});
   }
 
   //post
-  post<T>(url: string, body: any, customHeaders?: HttpHeaders): Observable<T> {
+  post<T>(url: string, body: any): Observable<T> {
     return this.http.post<T>(`${environment.apiBaseUrl}${url}`, body);
   }
 

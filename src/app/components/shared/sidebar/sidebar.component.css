@@ -1,5 +1,12 @@
+.logo-img {
+  object-fit: contain;
+  border-radius: 8px;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: white; */
+}
+
 .sidenav {
-  background: #028052;
+  background: var(--main-color);
   transition: all 0.5s ease;
   position: fixed;
   z-index: 1;
@@ -15,16 +22,10 @@
     width: 100%;
 
     .logo {
-      background: #fff;
-      text-align: center;
-      width: 3rem;
-      min-width: 3rem;
-      border-radius: 0.313rem;
-      padding: 0.313rem;
-      font-size: 24px;
-      font-weight: 900;
       cursor: pointer;
       border: none;
+      background: none;
+      padding: 0;
     }
 
     .logo-text {
@@ -34,19 +35,26 @@
       color: #fff;
     }
 
-    .btn-close {
+    .button-close {
+      position: relative;
       margin-left: auto;
-      cursor: pointer;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 50%;
+      width: 24px;
+      height: 24px;
       background-color: transparent;
       border: none;
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
     }
 
-    .fa-solid {
+    .close {
+      position: absolute;
       color: #fff;
       font-size: 24px;
+      top: 0px;
+      left: -3px;
     }
   }
 }
@@ -93,7 +101,7 @@
   .sidenav-nav-item:hover {
     .sidenav-nav-link {
       background-color: #fff;
-      color: #000;
+      color: var(--main-color);
     }
   }
 }
@@ -103,6 +111,15 @@
 
   .sidenav-link-icon,
   .sidenav-link-text {
-    color: #000;
+    color: var(--main-color);
+  }
+}
+
+.logout-item {
+  margin-top: auto;
+  display: flex;
+  a {
+    cursor: pointer;
+    flex: 1;
   }
 }

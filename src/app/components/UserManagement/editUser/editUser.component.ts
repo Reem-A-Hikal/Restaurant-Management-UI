@@ -107,7 +107,7 @@ export class EditUserComponent implements OnInit {
         next: () => {
           this.isLoading = false;
           this.toastr.success('Profile updated successfully');
-          setTimeout(() => this.router.navigate(['/Home/Users']), 1000);
+          setTimeout(() => this.router.navigate(['/Dashboard/Users']), 1000);
         },
         error: (err) => {
           console.error('Failed to update user', err);

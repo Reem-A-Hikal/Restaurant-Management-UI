@@ -1,5 +1,11 @@
+:root {
+  --main-color: #028052;
+  --main-hover: #2c9a71;
+  --badge-background: #f2f7fa;
+}
+
 ::selection {
-  background-color: #028052;
+  background-color: var(--main-color);
   color: #fff;
 }
 /* body {

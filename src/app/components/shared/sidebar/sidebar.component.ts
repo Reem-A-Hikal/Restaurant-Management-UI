@@ -4,10 +4,9 @@ import {
   Output,
   EventEmitter,
   HostListener,
-  importProvidersFrom,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { navbarData } from './navData';
 import {
   animate,
@@ -16,6 +15,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
+import { AuthService } from '../../../Core/Auth/services/auth.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -25,7 +26,7 @@ interface SideNavToggle {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MdbTooltipModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
   animations: [
@@ -57,7 +58,7 @@ export class SidebarComponent implements OnInit {
   isCollapsed = false;
   navData = navbarData;
   screenWidth = 0;
-  constructor() {}
+  constructor(private authService: AuthService, private router:Router) {}
 
   ngOnInit() {
     this.screenWidth = window.innerWidth;
@@ -87,5 +88,10 @@ export class SidebarComponent implements OnInit {
       isCollapsed: this.isCollapsed,
       screenWidth: this.screenWidth,
     });
+  }
+
+  onLogout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/signin')
   }
 }

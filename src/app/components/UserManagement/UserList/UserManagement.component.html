@@ -1,28 +1,25 @@
 <section [ngClass]="getBodyClass()">
   <div class="container mt-4">
-    <div
-      class="d-flex flex-column flex-md-row mb-4 justify-content-between align-items-stretch gap-3"
-    >
-      <!-- Search Box -->
-      <div
-        class="input-group gap-2 flex-column flex-md-row rounded justify-content-center align-items-center flex-grow-1"
-      >
-        <input
-          type="search"
-          name="search"
-          class="form-control rounded search w-100"
-          placeholder="Search"
-          [(ngModel)]="searchTerm"
-          (keyup.enter)="applyFilter()"
-          aria-label="Search"
-          aria-describedby="search-addon"
-        />
-        <div class="btns d-flex gap-1">
+    <div class="d-flex flex-column flex-md-row align-items-stretch gap-3 mb-4">
+      <!-- Search + Filter Section -->
+      <div class="d-flex flex-column flex-md-row flex-grow-1 gap-2">
+        <!-- Search Box -->
+        <div class="input-group flex-grow-1">
+          <input
+            type="search"
+            name="search"
+            class="form-control rounded search"
+            placeholder="Search"
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="applyFilter()"
+            aria-label="Search Input"
+          />
           <button
             type="button"
             class="btn btn-success"
             mdbTooltip="Search for User"
             (click)="applyFilter()"
+            aria-label="search button"
           >
             <i class="fas fa-search"></i>
           </button>
@@ -31,23 +28,25 @@
             class="btn btn-success"
             mdbTooltip="Reset"
             (click)="reset()"
+            aria-label="reset button"
           >
             <i class="fas fa-refresh"></i>
           </button>
         </div>
-      </div>
-      <!-- Filter by Role -->
-      <div class="filter d-flex flex-column flex-md-row gap-2">
-        <select
-          class="form-select"
-          [(ngModel)]="selectedRole"
-          (change)="applyFilter()"
-          aria-label="Filter by Role"
-        >
-          <option *ngFor="let role of roles" [value]="role">
-            {{ role }}
-          </option>
-        </select>
+
+        <!-- Filter by Role -->
+        <div class="filter">
+          <select
+            class="form-select"
+            [(ngModel)]="selectedRole"
+            (change)="applyFilter()"
+            aria-label="Filter by Role"
+          >
+            <option *ngFor="let role of roles" [value]="role">
+              {{ role }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <!-- Add Button -->
@@ -57,17 +56,27 @@
           class="btn btn-success w-100 d-flex align-items-center justify-content-center"
           mdbTooltip="Add User"
         >
-          <i class="fas fa-plus"></i> Add User
+          <i class="fas fa-plus me-1"></i> Add User
         </button>
       </div>
     </div>
     <!-- Loading Indicator -->
-    <div *ngIf="isLoading" class="text-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+    <div
+      *ngIf="isLoading"
+      class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-50"
+      style="z-index: 1050"
+    >
+      <div class="text-center">
+        <div
+          class="spinner-border text-success mb-3"
+          style="width: 3rem; height: 3rem"
+          role="status"
+        ></div>
+        <div><strong class="text-success">Loading...</strong></div>
       </div>
     </div>
-    <div *ngIf="!isLoading">
+
+    <div *ngIf="!isLoading" #UsersContainer>
       <div
         class="row justify-content-center"
         *ngIf="filteredUsers.length > 0; else noUsers"
@@ -84,7 +93,6 @@
                 class="background"
               />
             </div>
-            <!-- Active badge -->
             <div class="active-badge position-absolute">
               {{ user.isActive ? "Active" : "Inactive" }}
             </div>
@@ -112,24 +120,6 @@
                   {{ role }}
                 </span>
               </div>
-              <!-- <div class="btns-block d-flex justify-content-center gap-2">
-                <button
-                  type="button"
-                  class="btn btn-outline-success d-flex justify-content-center align-items-center gap-1"
-                  (click)="openModal()"
-                >
-                  <i class="fas fa-eye d-none d-xl-inline-block"></i>
-                  <span>View</span>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-danger btn-sm d-flex justify-content-center align-items-center gap-1"
-                  (click)="deleteUser(user.id)"
-                >
-                  <i class="fas fa-trash-alt d-none d-xl-inline-block"></i>
-                  <span>Delete</span>
-                </button>
-              </div> -->
               <div class="info p-2 mt-2">
                 <div class="content">
                   <div class="d-flex align-items-center">
@@ -159,7 +149,7 @@
                 >
                   <a
                     class="footer-text text-black text-decoration-none"
-                    (click)="openModal(user.id)"
+                    (click)="openModal(user)"
                   >
                     View
                   </a>
@@ -171,7 +161,17 @@
         </div>
       </div>
     </div>
+    <!-- Pagination -->
+    @if (!isEmpty && !isLoading) {
+    <app-pagination
+      [pageIndex]="pagination.pageIndex"
+      [totalPages]="pagination.totalPages"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+    }
+    <!-- End Pagination -->
   </div>
+
   <ng-template #noUsers>
     <div class="alert alert-info text-center">No users found</div>
   </ng-template>

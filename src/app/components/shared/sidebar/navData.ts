@@ -1,31 +1,31 @@
 export const navbarData = [
+  // {
+  //   routeLink: '/Dashboard',
+  //   icon: 'bi bi-house-door',
+  //   label: 'Dashboard',
+  // },
   {
-    routeLink: '/Home',
-    icon: 'bi bi-house-door',
-    label: 'Dashboard',
-  },
-  {
-    routeLink: '/Home/Users',
+    routeLink: '/Dashboard/Users',
     icon: 'fa-regular fa-user',
     label: 'Users',
   },
   {
-    routeLink: '/Home/Categories',
+    routeLink: '/Dashboard/Categories',
     icon: 'bi bi-list-nested',
     label: 'Category',
   },
   {
-    routeLink: '/Home/Dishes',
+    routeLink: '/Dashboard/Dishes',
     icon: 'bi bi-egg-fried',
     label: 'Dishes',
   },
   {
-    routeLink: '/Home/Orders',
+    routeLink: '/Dashboard/Orders',
     icon: 'bi bi-car-front',
     label: 'Orders',
   },
   // {
-  //   routeLink: '/Home/statistics',
+  //   routeLink: '/Dashboard/statistics',
   //   icon: 'bi bi-bar-chart-line',
   //   label: 'statistics',
   // },

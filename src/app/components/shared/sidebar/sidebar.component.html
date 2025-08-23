@@ -1,28 +1,70 @@
 <div class="sidenav" [ngClass]="isCollapsed ? 'sidenav-collapsed' : ''">
   <div class="logo-container">
-    <button class="logo" (click)="toggleSidebar()">R</button>
-    <div class="logo-text" @fadeInOut *ngIf="isCollapsed">Rest</div>
     <button
-      class="btn-close"
+      class="logo"
+      (click)="toggleSidebar()"
+      aria-label="Toggle sidebar"
+    >
+      <img
+        class="logo-img"
+        width="50"
+        height="50"
+        src="favicon.png"
+        alt="Logo"
+      />
+    </button>
+    <div class="logo-text" @fadeInOut *ngIf="isCollapsed">Restro</div>
+    <button
+      class="button-close"
       @rotate
       *ngIf="isCollapsed"
       (click)="closeSidenav()"
     >
-      <i class="fa-solid fa-x close-icon"></i>
+      <i class="fa-solid fa-x close"></i>
     </button>
   </div>
   <ul class="sidenav-nav">
+    <li class="sidenav-nav-item">
+      <a
+        class="sidenav-nav-link"
+        routerLink="/Dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="sidenav-link-icon bi bi-house-door"></i>
+        <span class="sidenav-link-text" @fadeInOut *ngIf="isCollapsed">
+          Dashboard
+        </span>
+      </a>
+    </li>
     <li class="sidenav-nav-item" *ngFor="let data of navData">
       <a
         class="sidenav-nav-link"
         [routerLink]="[data.routeLink]"
         routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
+        [routerLinkActiveOptions]="{ exact: false }"
       >
         <i class="sidenav-link-icon" [class]="data.icon"></i>
         <span class="sidenav-link-text" @fadeInOut *ngIf="isCollapsed">{{
           data.label
         }}</span>
+      </a>
+    </li>
+    <li
+      class="sidenav-nav-item logout-item"
+    >
+      <a
+        class="sidenav-nav-link"
+        (click)="onLogout()"
+      >
+        <i class="sidenav-link-icon bi bi-box-arrow-left"></i>
+        <span
+          @fadeInOut
+          class="sidenav-link-text"
+          @fadeInOut
+          *ngIf="isCollapsed"
+          >Logout</span
+        >
       </a>
     </li>
   </ul>

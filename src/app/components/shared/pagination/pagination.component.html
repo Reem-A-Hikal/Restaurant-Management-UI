@@ -1,0 +1,42 @@
+<nav aria-label="Page navigation" *ngIf="totalPages > 1">
+  <ul class="pagination justify-content-center flex-wrap gap-2">
+    <!-- Previous -->
+    <li
+      class="page-item d-none d-md-block"
+      [class.disabled]="pageIndex === 1"
+    >
+      <a
+        class="page-link rounded-pill"
+        (click)="onPageChange(pageIndex - 1)"
+        mdbTooltip="Previous Page"
+      >
+        <i class="fas fa-angle-left"></i>
+      </a>
+    </li>
+
+    <!-- Pages -->
+    <li
+      *ngFor="let page of getPages(); trackBy: trackByPage"
+      class="page-item"
+      [class.active]="page === pageIndex"
+    >
+      <a class="page-link rounded-pill px-3" (click)="onPageChange(page)">
+        {{ page }}
+      </a>
+    </li>
+
+    <!-- Next -->
+    <li
+      class="page-item d-none d-md-block"
+      [class.disabled]="pageIndex === totalPages"
+    >
+      <a
+        class="page-link rounded-pill"
+        (click)="onPageChange(pageIndex + 1)"
+        mdbTooltip="Next Page"
+      >
+        <i class="fas fa-angle-right"></i>
+      </a>
+    </li>
+  </ul>
+</nav>

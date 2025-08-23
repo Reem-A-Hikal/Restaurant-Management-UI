@@ -1,20 +1,15 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './Core/Auth/Guards/auth.guard';
-import { MainComponent } from './layouts/main/main.component';
 import { adminGuard } from './Core/Auth/Guards/admin.guard';
 import { publicGuard } from './Core/Auth/Guards/public.guard';
 import { DashboardComponent } from './layouts/dashboard/dashboard.component';
 import { DashboardBodyComponent } from './components/dashboardBody/dashboardBody.component';
-import { NotFoundComponent } from './components/shared/NotFound/NotFound.component';
 import { UserManagementComponent } from './components/UserManagement/UserList/UserManagement.component';
 import { EditUserComponent } from './components/UserManagement/editUser/editUser.component';
 import { UserDetailsComponent } from './components/UserManagement/UserDetails/UserDetails.component';
+import { dishesComponent } from './components/products/dishes.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { OrdersComponent } from './components/orders/orders.component';
-import { UserComponent } from './components/user/user/user.component';
-import { RegistrationComponent } from './components/user/registration/registration.component';
-import { LoginComponent } from './components/user/login/login.component';
-import { dishesComponent } from './components/products/dishes.component';
 
 export const routes: Routes = [
   {
@@ -23,15 +18,19 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'Home',
+        redirectTo: 'Dashboard',
         pathMatch: 'full',
       },
       {
-        path: 'Home',
+        path: 'Dashboard',
         canActivate: [adminGuard],
         component: DashboardComponent,
         children: [
-          { path: '', component: DashboardBodyComponent, title: 'Dashboard' },
+          {
+            path: '',
+            component: DashboardBodyComponent,
+            title: 'Dashboard',
+          },
           {
             path: 'Users',
             canActivate: [adminGuard],
@@ -71,22 +70,42 @@ export const routes: Routes = [
       },
       {
         path: 'main',
-        component: MainComponent,
+        loadComponent: () =>
+          import('./layouts/main/main.component').then((m) => m.MainComponent),
       },
     ],
   },
   {
     path: '',
-    component: UserComponent,
+    // component: UserComponent,
+    loadComponent: () =>
+      import('./components/user/user/user.component').then(
+        (m) => m.UserComponent
+      ),
     canActivate: [publicGuard],
     children: [
-      { path: 'signup', component: RegistrationComponent },
-      { path: 'signin', component: LoginComponent },
+      {
+        path: 'signup',
+        loadComponent: () =>
+          import('./components/user/registration/registration.component').then(
+            (m) => m.RegistrationComponent
+          ),
+      },
+      {
+        path: 'signin',
+        loadComponent: () =>
+          import('./components/user/login/login.component').then(
+            (m) => m.LoginComponent
+          ),
+      },
     ],
   },
 
   {
     path: '**',
-    component: NotFoundComponent,
+    loadComponent: () =>
+      import('./components/shared/NotFound/NotFound.component').then(
+        (m) => m.NotFoundComponent
+      ),
   },
 ];

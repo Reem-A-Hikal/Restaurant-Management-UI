@@ -3,10 +3,21 @@
   transition: all 1s ease;
 }
 
-/* .search {
-  max-width: 400px;
-  min-width: 200px;
-} */
+.text-success {
+  color: var(--main-color) !important;
+}
+
+.btn-success {
+  background-color: var(--main-color);
+
+  &:hover {
+    background-color: var(--main-hover);
+  }
+}
+
+.search {
+  height: auto;
+}
 
 .row .column {
   min-width: 290px;
@@ -26,7 +37,7 @@
     left: 10px;
     z-index: 9999;
     padding: 2px;
-    background-color: #f2f7fa;
+    background-color: var(--badge-background);
     color: #232323;
     border-radius: 15px;
     width: 80px;
@@ -39,7 +50,7 @@
       left: 7px;
       width: 7px;
       height: 7px;
-      background-color: #1d8c62;
+      background-color: var(--main-color);
       border-radius: 50%;
     }
   }
@@ -100,7 +111,7 @@
   }
 
   .badge {
-    background-color: #f2f7fa;
+    background-color: var(--badge-background);
     color: #232323;
   }
 }
@@ -126,7 +137,7 @@
 }
 
 .profile-card .info {
-  background-color: #f2f7fa;
+  background-color: var(--badge-background);
   border: none;
   border-radius: 10px;
 
@@ -160,7 +171,7 @@
     height: 2px;
     left: 0px;
     bottom: 3px;
-    background-color: #1d8c62;
+    background-color: var(--main-color);
   }
 }
 

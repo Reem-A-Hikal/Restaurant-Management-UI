@@ -19,8 +19,8 @@ export class AddressService {
   }
 
   getUserAddresses(userId: string, customHeaders?: HttpHeaders) {
-    const headers = customHeaders || this.getHeaders();
+    // const headers = customHeaders || this.getHeaders();
     const url = `${this.baseUrl}/UserAddressesAdmin/${userId}`;
-    return this.api.get<any[]>(url, headers);
+    return this.api.get<any[]>(url);
   }
 }
