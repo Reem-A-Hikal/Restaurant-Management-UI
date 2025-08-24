@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../services/User.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../../Core/Auth/models/User';
 import { AddressService } from '../../../services/Address.service';
 import { ToastrService } from 'ngx-toastr';
+import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-editUser',
-  standalone: false,
+  standalone: true,
+  imports: [DatePipe, CommonModule, ReactiveFormsModule],
   templateUrl: './editUser.component.html',
   styleUrls: ['./editUser.component.css'],
 })

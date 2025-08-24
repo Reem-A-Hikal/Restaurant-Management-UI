@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CatService } from '../../services/Cat.service';
 import { ToastrService } from 'ngx-toastr';
 import { Category } from '../../models/Category';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-categories',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css'],
 })
