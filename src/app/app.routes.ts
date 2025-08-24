@@ -6,7 +6,6 @@ import { DashboardComponent } from './layouts/dashboard/dashboard.component';
 import { DashboardBodyComponent } from './components/dashboardBody/dashboardBody.component';
 import { UserManagementComponent } from './components/UserManagement/UserList/UserManagement.component';
 import { EditUserComponent } from './components/UserManagement/editUser/editUser.component';
-import { UserDetailsComponent } from './components/UserManagement/UserDetails/UserDetails.component';
 import { dishesComponent } from './components/products/dishes.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { OrdersComponent } from './components/orders/orders.component';
@@ -44,11 +43,6 @@ export const routes: Routes = [
                 path: 'Edit/:id',
                 component: EditUserComponent,
                 title: 'Edit User',
-              },
-              {
-                path: 'View/:id',
-                component: UserDetailsComponent,
-                title: 'View User',
               },
             ],
           },

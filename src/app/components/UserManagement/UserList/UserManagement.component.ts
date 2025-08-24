@@ -119,28 +119,44 @@ export class UserManagementComponent implements OnInit {
   viewDetails(id: string): void {
     this.router.navigateByUrl(`Dashboard/Users/Edit/${id}`);
   }
-  deleteUser(userId: string): any {
-    if (confirm('Are you sure you want to delete this user?') == true) {
+  async deleteUser(userId: string) {
+    const Swal = await import('sweetalert2');
+    const result = await Swal.default.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (result.isConfirmed) {
       this.isLoading = true;
-      // console.log('Deleting user with ID:', userId);
       this.userService
         .deleteUser(userId)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
           next: (res) => {
             // console.log(res);
+            Swal.default.fire({
+              title: 'Deleted!',
+              text: res.message || 'User has been deleted.',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false,
+              timerProgressBar: true,
+            });
             this.loadUsers(); // Refresh the user list after deletion
-            this.toastr.success(
-              res.message || 'User deleted successfully',
-              'Success'
-            );
           },
           error: (err) => {
-            // console.log(err);
-            this.toastr.error(
-              err.error?.message || 'Failed to delete user',
-              'Error'
-            );
+            Swal.default.fire({
+              title: 'Error!',
+              text: err.error?.message || 'Failed to delete user',
+              icon: 'error',
+              showConfirmButton: true,
+              confirmButtonText: 'OK',
+            });
           },
         });
     }
@@ -171,42 +187,6 @@ export class UserManagementComponent implements OnInit {
     this.searchTerm = '';
     this.filteredUsers = [...this.users];
   }
-
-  // // Pagination Logic
-  // getPages(): number[] {
-  //   const pages: number[] = [];
-  //   const maxVisiblePages = 3;
-  //   const { pageIndex, totalPages } = this.pagination;
-
-  //   if (totalPages <= maxVisiblePages) {
-  //     for (let i = 1; i <= totalPages; i++) {
-  //       pages.push(i);
-  //     }
-  //   } else {
-  //     const half = Math.floor(maxVisiblePages / 2);
-  //     let start = pageIndex - half;
-  //     let end = pageIndex + half;
-
-  //     if (start < 1) {
-  //       start = 1;
-  //       end = maxVisiblePages;
-  //     }
-
-  //     if (end > totalPages) {
-  //       end = totalPages;
-  //       start = Math.max(1, end - maxVisiblePages + 1);
-  //     }
-
-  //     for (let i = start; i <= end; i++) {
-  //       pages.push(i);
-  //     }
-  //   }
-  //   return pages;
-  // }
-
-  // trackByPage(index: number, page: number): number {
-  //   return page;
-  // }
 
   onPageChange(page: number): void {
     this.pagination.pageIndex = page;

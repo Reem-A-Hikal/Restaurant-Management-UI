@@ -1,3 +1,4 @@
+import { Address } from "../../../models/Address";
 import { Pagination } from "../../../models/Pagination";
 
 export interface User {
@@ -13,7 +14,8 @@ export interface User {
   specialization?: string;
   vehicleNumber?: string;
   isAvailable?: boolean;
-  addresses?: string[];
+  addresses?: Address[];
+  orders?: any[]; // Replace 'any' with the actual Order type if available
 }
 
 export interface UserProfile {

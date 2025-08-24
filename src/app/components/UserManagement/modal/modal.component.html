@@ -1,14 +1,82 @@
-<div class="modal-header">
-  <h5 class="modal-title">
-    View Details for <strong>{{ user.fullName }}</strong>
-  </h5>
-  <button type="button" class="btn-close" aria-label="Close" (click)="modalRef.close()"></button>
-</div>
-<div class="modal-body">
-  <p><i class="fas fa-envelope me-2"></i> {{ user.email }}</p>
-  <p><i class="fas fa-phone me-2"></i> {{ user.phoneNumber }}</p>
-  <p><i class="fas fa-calendar me-2"></i> Joined at: {{ user.joinDate | date }}</p>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="modalRef.close()">Close</button>
+<div>
+  <div mdbModalHeader class="border-bottom-0">
+    <div mdbModalContent class="p-4">
+      <!-- Header -->
+      <div
+        class="modal-header d-flex align-items-center"
+        style="padding-inline: 0"
+      >
+        <img
+          [src]="user.profileImageUrl || 'default-avatar.png'"
+          class="rounded-circle border me-3"
+          style="width: 60px; height: 60px"
+          alt="Profile"
+        />
+        <div>
+          <h5 class="mb-0">{{ user.fullName }}</h5>
+          <small class="text-muted">{{ user.email }}</small>
+        </div>
+        <button
+          type="button"
+          class="btn-close ms-auto"
+          data-mdb-dismiss="modal"
+          aria-label="Close"
+          (click)="modalRef.close()"
+        ></button>
+      </div>
+
+      <!-- Body -->
+      <div mdb-modal-body class="mt-2">
+        <!-- Info -->
+        <div class="mb-3">
+          <p><strong>Phone:</strong> {{ user.phoneNumber || "-" }}</p>
+          <p><strong>Join Date:</strong> {{ user.joinDate | date }}</p>
+          <p class="d-flex gap-2 align-items-center">
+            <strong>Status: </strong>
+            <span class="badge badge-success">
+              {{ user.isActive ? "Active" : "Inactive" }}
+            </span>
+          </p>
+        </div>
+
+        <!-- Roles -->
+        <div class="mb-3 d-flex gap-2 align-items-center">
+          <strong>Roles:</strong>
+          <div>
+            @for (role of user.roles; track $index) {
+            <span class="badge bg-primary me-1">
+              {{ role }}
+            </span>
+            }
+          </div>
+        </div>
+
+        <!-- Addresses -->
+        <div>
+          <strong>Addresses:</strong>
+          <ul class="list-group mt-2">
+            @for (address of user.addresses; track $index) {
+            <li class="list-group-item small">
+              {{ address?.addressLine1 }}, {{ address.city }},
+              {{ address.isDefault ? "(Default)" : "" }}
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div mdb-modal-footer class="mt-4 text-end">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-mdb-ripple-init
+          data-mdb-dismiss="modal"
+          (click)="modalRef.close()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
