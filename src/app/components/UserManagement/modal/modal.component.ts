@@ -9,7 +9,8 @@ import { CommonModule, DatePipe } from '@angular/common';
   imports: [
     MdbModalModule,
     DatePipe,
-  ],
+    CommonModule
+],
   templateUrl: './modal.component.html',
 })
 export class ModalComponent {

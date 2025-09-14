@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 export class CategoriesComponent implements OnInit {
   constructor(private catService: CatService, private toastr: ToastrService) {}
 
-  categories!: Category[];
+  categories?: Category[];
   isLoading: boolean = false;
 
   ngOnInit() {

@@ -55,6 +55,7 @@
           type="button"
           class="btn btn-success w-100 d-flex align-items-center justify-content-center"
           mdbTooltip="Add User"
+          (click)="addUser()"
         >
           <i class="fas fa-plus me-1"></i> Add User
         </button>
@@ -116,22 +117,25 @@
             <div class="card-content">
               <h2>{{ user.fullName }}</h2>
               <div class="mb-2">
-                <span class="badge me-1" *ngFor="let role of user.roles">
+                <span
+                  class="badge badge-success"
+                  *ngFor="let role of user.roles"
+                >
                   {{ role }}
                 </span>
               </div>
               <div class="info p-2 mt-2">
                 <div class="content">
                   <div class="d-flex align-items-center">
-                    <i class="fas fa-hashtag me-2"></i>
+                    <i class="fas fa-hashtag me-2 text-success"></i>
                     <p class="mb-1">{{ i + 1 }}</p>
                   </div>
                   <div class="d-flex align-items-center">
-                    <i class="fas fa-envelope me-2"></i>
+                    <i class="fas fa-envelope me-2 text-success"></i>
                     <p class="mb-1 background">{{ user.email }}</p>
                   </div>
                   <div class="d-flex align-items-center">
-                    <i class="fas fa-phone me-2"></i>
+                    <i class="fas fa-phone me-2 text-success"></i>
                     <p class="mb-1 background">{{ user.phoneNumber }}</p>
                   </div>
                 </div>
@@ -166,6 +170,7 @@
     <app-pagination
       [pageIndex]="pagination.pageIndex"
       [totalPages]="pagination.totalPages"
+      [totalItems]="pagination.totalItems"
       (pageChange)="onPageChange($event)"
     ></app-pagination>
     }
@@ -173,6 +178,17 @@
   </div>
 
   <ng-template #noUsers>
-    <div class="alert alert-info text-center">No users found</div>
+    <div class="col-12 text-center py-5">
+      <div class="card border-0">
+        <div class="card-body py-5">
+          <i class="bi bi-box-seam display-4 text-muted mb-3"></i>
+          <h5 class="card-title">No users found</h5>
+          <button class="btn btn-success mt-3" (click)="addUser()">
+            <i class="bi bi-plus-circle me-1"></i>
+            Add New User
+          </button>
+        </div>
+      </div>
+    </div>
   </ng-template>
 </section>

@@ -20,4 +20,13 @@ export const userManagementRoutes: Routes = [
       ),
     title: 'Edit User',
   },
+  {
+    path: 'Add',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./components/UserManagement/addUser/addUser.component').then(
+        (m) => m.AddUserComponent
+      ),
+    title: 'Add User',
+  },
 ];

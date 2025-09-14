@@ -9,10 +9,10 @@ import {
 } from '@angular/animations';
 
 @Component({
-  selector: 'app-user',
+  selector: 'app-auth',
   imports: [RouterOutlet],
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.css'],
+  templateUrl: './auth.component.html',
+  styleUrls: ['./auth.component.css'],
   animations: [
     trigger('routerFadeIn', [
       transition('* <=> *', [
@@ -28,7 +28,7 @@ import {
     ]),
   ],
 })
-export class UserComponent implements OnInit {
+export class AuthComponent implements OnInit {
   constructor(private context: ChildrenOutletContexts) {}
 
   getRouteUrl() {

@@ -51,7 +51,23 @@
           </div>
         </div>
 
+        @if(user.roles.includes('Chef')){
+        <p><strong>Specialization:</strong> {{ user.specialization }}</p>
+        } @if(user.roles.includes('DeliveryPerson')){
+        <p><strong>Vehicle Number:</strong> {{ user.vehicleNumber }}</p>
+        <p class="d-flex gap-2 align-items-center">
+          <strong>Availability: </strong>
+          <span
+            class="badge"
+            [ngClass]="user.isAvailable ? 'badge-success' : 'badge-danger'"
+          >
+            {{ user.isActive ? "Available" : "Unavailable" }}
+          </span>
+        </p>
+        }
+
         <!-- Addresses -->
+        @if(user.addresses?.length) {
         <div>
           <strong>Addresses:</strong>
           <ul class="list-group mt-2">
@@ -63,6 +79,7 @@
             }
           </ul>
         </div>
+        }
       </div>
 
       <!-- Footer -->

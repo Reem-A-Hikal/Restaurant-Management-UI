@@ -12,11 +12,26 @@ export class UserService {
 
   constructor(private api: ApiService) {}
 
-  getAllUsers(pageIndex: number, pageSize: number): Observable<UserListApiResponse> {
+  getAllUsers(): Observable<User[]> {
+    return this.api.get<User[]>(`${this.basePath}/GetAll`);
+  }
+
+  getAllPaginatedUsers(
+    pageIndex: number,
+    pageSize: number,
+    searchTerm?: string,
+    selectedRole?: string
+  ): Observable<UserListApiResponse> {
     let params = new HttpParams()
       .set('pageIndex', pageIndex.toString())
       .set('pageSize', pageSize.toString());
-    return this.api.get<UserListApiResponse>(`${this.basePath}/GetAll`, params);
+
+    if (searchTerm) params = params.set('searchTerm', searchTerm);
+    if (selectedRole) params = params.set('selectedRole', selectedRole);
+    return this.api.get<UserListApiResponse>(
+      `${this.basePath}/GetAllPaginated`,
+      params
+    );
   }
 
   getUserById(userId: string): Observable<User> {
@@ -37,5 +52,9 @@ export class UserService {
       `${this.basePath}/UpdateProfile/${userId}`,
       userData
     );
+  }
+
+  addUser(user: User): Observable<any> {
+    return this.api.post<User>(`${this.basePath}`, user);
   }
 }

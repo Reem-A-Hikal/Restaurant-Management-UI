@@ -3,18 +3,6 @@
   transition: all 1s ease;
 }
 
-.text-success {
-  color: var(--main-color) !important;
-}
-
-.btn-success {
-  background-color: var(--main-color);
-
-  &:hover {
-    background-color: var(--main-hover);
-  }
-}
-
 .search {
   height: auto;
 }
@@ -112,7 +100,6 @@
 
   .badge {
     background-color: var(--badge-background);
-    color: #232323;
   }
 }
 

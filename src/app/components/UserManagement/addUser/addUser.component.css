@@ -1,0 +1,14 @@
+.bg-success {
+  background-color: var(--main-color) !important;
+}
+
+input[type="password"] {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  top: 22px;
+  right: 15px;
+  cursor: pointer;
+}

@@ -27,3 +27,9 @@ export interface UserProfile {
 export interface UserListApiResponse extends Pagination {
   items: User[];
 }
+
+export enum UserRole {
+  Admin = 'Admin',
+  Chef = 'Chef',
+  DeliveryPerson = 'DeliveryPerson'
+}

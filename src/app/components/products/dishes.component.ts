@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/Product.service';
 import { ToastrService } from 'ngx-toastr';
 import { Product } from '../../models/product';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [DecimalPipe, CommonModule],
+  imports: [CurrencyPipe],
   templateUrl: './dishes.component.html',
   styleUrls: ['./dishes.component.css'],
 })

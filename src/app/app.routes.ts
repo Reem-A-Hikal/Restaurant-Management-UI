@@ -29,8 +29,8 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./components/user/user/user.component').then(
-        (m) => m.UserComponent
+      import('./components/user/authBody/auth.component').then(
+        (m) => m.AuthComponent
       ),
     canActivate: [publicGuard],
     children: [

@@ -32,7 +32,6 @@ export class UserManagementComponent implements OnInit {
   @ViewChild('UsersContainer') UsersContainer!: ElementRef;
   @ViewChild('PaginationRef') PaginationRef!: ElementRef;
 
-  users: User[] = [];
   isLoading = false;
   filteredUsers: User[] = [];
   pagination: UserListApiResponse = {
@@ -80,18 +79,24 @@ export class UserManagementComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadUsers();
+    this.loadUsersPaginated();
   }
 
-  loadUsers(): void {
+  loadUsersPaginated(): void {
     this.isLoading = true;
+    let term = this.searchTerm?.trim();
+    let role = this.selectedRole;
     this.filteredUsers = [];
     this.userService
-      .getAllUsers(this.pagination.pageIndex, this.pagination.pageSize)
+      .getAllPaginatedUsers(
+        this.pagination.pageIndex,
+        this.pagination.pageSize,
+        term,
+        role
+      )
       .subscribe({
         next: (response) => {
           // console.log(response);
-          this.users = response.items;
           this.filteredUsers = response.items;
           this.pagination.totalItems = response.totalItems;
           this.pagination.totalPages = response.totalPages;
@@ -119,6 +124,11 @@ export class UserManagementComponent implements OnInit {
   viewDetails(id: string): void {
     this.router.navigateByUrl(`Dashboard/Users/Edit/${id}`);
   }
+
+  addUser(): void {
+    this.router.navigateByUrl('Dashboard/Users/Add');
+  }
+
   async deleteUser(userId: string) {
     const Swal = await import('sweetalert2');
     const result = await Swal.default.fire({
@@ -147,7 +157,7 @@ export class UserManagementComponent implements OnInit {
               showConfirmButton: false,
               timerProgressBar: true,
             });
-            this.loadUsers(); // Refresh the user list after deletion
+            this.loadUsersPaginated(); // Refresh the user list after deletion
           },
           error: (err) => {
             Swal.default.fire({
@@ -162,35 +172,35 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
-  applyFilter(): void {
-    let data = [...this.users];
-    // console.log(this.PaginationRef);
+  applyFilter() {
+    this.isLoading = true;
 
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      data = data.filter((user) => user.fullName?.toLowerCase().includes(term));
+    if (!this.searchTerm) {
+      this.isLoading = false;
     }
 
-    if (this.selectedRole && this.selectedRole !== 'All') {
-      data = data.filter((user) => user.roles.includes(this.selectedRole));
+    if (this.searchTerm || this.selectedRole) {
+      this.load();
     }
+  }
 
-    this.filteredUsers = data;
-    // console.log(this.filteredUsers);
-
-    if (this.filteredUsers.length === 0) {
-      this.toastr.info('No users found matching the search criteria', 'Info');
-    }
+  load() {
+    setTimeout(() => {
+      this.pagination.pageIndex = 1;
+      this.loadUsersPaginated();
+      this.isLoading = false;
+    }, 0);
   }
 
   reset(): void {
     this.searchTerm = '';
-    this.filteredUsers = [...this.users];
+    this.selectedRole = 'All';
+    this.loadUsersPaginated();
   }
 
   onPageChange(page: number): void {
     this.pagination.pageIndex = page;
-    this.loadUsers();
+    this.loadUsersPaginated();
     this.scrollTop();
   }
 

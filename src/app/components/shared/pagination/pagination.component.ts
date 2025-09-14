@@ -3,12 +3,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-pagination',
-  imports:[CommonModule],
+  imports: [CommonModule],
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.css'],
 })
 export class PaginationComponent {
   @Input() totalPages: number = 1;
+  @Input() totalItems!: number;
   @Input() pageIndex: number = 1;
   @Input() maxVisiblePages: number = 3;
 
