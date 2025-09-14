@@ -1,92 +1,128 @@
-<div class="container py-5">
+<div class="container mt-4">
+  <app-TopPage
+    [searchPlaceholder]="'Search for categories...'"
+    [addButtonLabel]="'Add Category'"
+    [filterOptions]="[]"
+    (search)="searchCategories($event)"
+    (reset)="resetCategories()"
+    (filterChange)="filterCategories($event)"
+    (add)="addCategory()"
+  ></app-TopPage>
   <div class="row g-4">
     <div class="col-12">
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
         <!-- Loading Indicator -->
-        @if (isLoading) {
-        <div class="col-12 text-center py-5">
-          <div
-            class="spinner-border text-primary"
-            style="width: 3rem; height: 3rem"
-            role="status"
-          >
-            <span class="visually-hidden">Loading...</span>
+        <ng-container *ngIf="isLoading; else categoryList">
+          <div class="col-12 text-center py-5">
+            <div
+              class="spinner-border text-primary"
+              style="width: 3rem; height: 3rem"
+              role="status"
+            >
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading categories...</p>
           </div>
-          <p class="mt-3">Loading categories...</p>
-        </div>
-        } @else {
-        <!-- Category Cards -->
-        @for (cat of categories; track cat.categoryId; let i = $index) {
-        <div class="col">
-          <div
-            class="card h-100 d-flex flex-column shadow-sm"
-            [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-light'"
-            [ngClass]="cat.isActive ? '' : 'border border-danger'"
-          >
-            <!-- Card Body -->
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title text-center mb-2">{{ cat.name }}</h5>
-              <p class="card-text text-muted small text-center mb-3">
-                {{ cat.description || "No description available" }}
-              </p>
-
-              <ul class="list-unstyled small text-muted mb-3">
-                <li>
+        </ng-container>
+        <ng-template #categoryList>
+          <ng-container *ngIf="(categories?.length ?? 0) > 0; else emptyState">
+            <ng-container
+              *ngFor="
+                let cat of categories;
+                trackBy: trackCategory;
+                let i = index
+              "
+            >
+              <div class="col">
+                <div
+                  class="card h-100 d-flex flex-column shadow-sm"
+                  [ngClass]="[
+                    i % 2 === 0 ? 'bg-white' : 'bg-light',
+                    !cat.isActive ? 'border border-danger' : ''
+                  ]"
+                  tabindex="0"
+                  aria-label="Category card"
+                >
+                  <!-- Card Body -->
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-2">{{ cat.name }}</h5>
+                    <p class="card-text text-muted small text-center mb-3">
+                      {{ cat.description || "No description available" }}
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-3">
+                      <li>
+                        <i
+                          class="bi"
+                          [ngClass]="
+                            cat.isActive
+                              ? 'bi-check-circle text-success'
+                              : 'bi-x-circle text-danger'
+                          "
+                          aria-hidden="true"
+                        ></i>
+                        <span class="ms-1">{{
+                          cat.isActive ? "Active" : "Inactive"
+                        }}</span>
+                      </li>
+                      <li>
+                        <i class="bi bi-list-ol" aria-hidden="true"></i>
+                        <span class="ms-1"
+                          >Display Order: {{ cat.displayOrder }}</span
+                        >
+                      </li>
+                    </ul>
+                    <div class="mt-auto d-flex gap-2">
+                      <button
+                        class="btn btn-outline-primary btn-sm flex-grow-1 d-flex justify-content-center"
+                        (click)="editCategory(cat)"
+                        aria-label="Edit category"
+                      >
+                        <i
+                          class="bi bi-pencil-square me-1"
+                          aria-hidden="true"
+                        ></i
+                        >Edit
+                      </button>
+                      <button
+                        class="btn btn-outline-danger btn-sm flex-grow-1 d-flex justify-content-center"
+                        (click)="deleteCategory(cat)"
+                        aria-label="Delete category"
+                      >
+                        <i class="bi bi-trash me-1" aria-hidden="true"></i
+                        >Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <ng-template #emptyState>
+            <div class="col-12 text-center py-5">
+              <div class="card border-0">
+                <div class="card-body py-5">
                   <i
-                    class="bi"
-                    [ngClass]="
-                      cat.isActive
-                        ? 'bi-check-circle text-success'
-                        : 'bi-x-circle text-danger'
-                    "
+                    class="bi bi-box-seam display-4 text-muted mb-3"
+                    aria-hidden="true"
                   ></i>
-                  <span class="ms-1">{{
-                    cat.isActive ? "Active" : "Inactive"
-                  }}</span>
-                </li>
-                <li>
-                  <i class="bi bi-list-ol"></i>
-                  <span class="ms-1"
-                    >Display Order: {{ cat.displayOrder }}</span
+                  <h5 class="card-title">No categories found</h5>
+                  <p class="card-text text-muted">
+                    Start by adding your first category!
+                  </p>
+                  <button
+                    class="btn btn-primary mt-3"
+                    (click)="addCategory()"
+                    aria-label="Add New Category"
                   >
-                </li>
-              </ul>
-
-              <div class="mt-auto d-flex gap-2">
-                <button
-                  class="btn btn-outline-primary btn-sm flex-grow-1 d-flex justify-content-center"
-                >
-                  <i class="bi bi-pencil-square me-1"></i>Edit
-                </button>
-                <button
-                  class="btn btn-outline-danger btn-sm flex-grow-1 d-flex justify-content-center"
-                >
-                  <i class="bi bi-trash me-1"></i>Delete
-                </button>
+                    <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Add
+                    New Category
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        } }
+          </ng-template>
+        </ng-template>
       </div>
-
-      <!-- Empty State -->
-      @if (!isLoading && categories?.length === 0) {
-      <div class="col-12 text-center py-5">
-        <div class="card border-0">
-          <div class="card-body py-5">
-            <i class="bi bi-box-seam display-4 text-muted mb-3"></i>
-            <h5 class="card-title">No categories found</h5>
-            <p class="card-text text-muted">
-              Start by adding your first category!
-            </p>
-            <button class="btn btn-primary mt-3">
-              <i class="bi bi-plus-circle me-1"></i>Add New Category
-            </button>
-          </div>
-        </div>
-      </div>
-      }
     </div>
   </div>
 </div>

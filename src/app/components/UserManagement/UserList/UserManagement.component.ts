@@ -14,6 +14,10 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
+import {
+  FilterOption,
+  TopPageComponent,
+} from '../../shared/TopPage/TopPage.component';
 
 @Component({
   selector: 'app-UserManagement',
@@ -24,6 +28,7 @@ import { PaginationComponent } from '../../shared/pagination/pagination.componen
     FormsModule,
     MdbTooltipModule,
     PaginationComponent,
+    TopPageComponent,
   ],
   templateUrl: './UserManagement.component.html',
   styleUrls: ['./UserManagement.component.css'],
@@ -44,10 +49,15 @@ export class UserManagementComponent implements OnInit {
     items: [],
   };
   searchTerm = '';
-  selectedRole: string = 'All';
-  roles: string[] = ['All', 'Admin', 'Customer', 'Chef', 'DeliveryPerson']; // Example roles, adjust as needed
+  selectedRole: string = '';
+  filterOptions: FilterOption[] = [];
+  roles: string[] = ['Admin', 'Customer', 'Chef', 'DeliveryPerson'];
 
   modalRef: MdbModalRef<ModalComponent> | null = null;
+
+  // Inputs for sidebar and responsive design
+  @Input() isCollapsed = false;
+  @Input() screenWidth = 0;
 
   constructor(
     private userService: UserService,
@@ -56,9 +66,11 @@ export class UserManagementComponent implements OnInit {
     private router: Router
   ) {}
 
-  // Inputs for sidebar and responsive design
-  @Input() isCollapsed = false;
-  @Input() screenWidth = 0;
+  ngOnInit() {
+    this.filterOptions =
+      this.roles?.map((role) => ({ label: role, value: role })) ?? [];
+    this.loadUsersPaginated();
+  }
 
   getBodyClass(): string {
     let styleClass = '';
@@ -76,10 +88,6 @@ export class UserManagementComponent implements OnInit {
 
   get isEmpty(): boolean {
     return this.filteredUsers.length === 0;
-  }
-
-  ngOnInit() {
-    this.loadUsersPaginated();
   }
 
   loadUsersPaginated(): void {
@@ -172,29 +180,17 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
-  applyFilter() {
-    this.isLoading = true;
-
-    if (!this.searchTerm) {
-      this.isLoading = false;
-    }
-
-    if (this.searchTerm || this.selectedRole) {
-      this.load();
-    }
-  }
-
-  load() {
-    setTimeout(() => {
-      this.pagination.pageIndex = 1;
-      this.loadUsersPaginated();
-      this.isLoading = false;
-    }, 0);
+  applyFilter(event: { searchTerm: string; selectedRole: string }): void {
+    this.searchTerm = event.searchTerm;
+    this.selectedRole = event.selectedRole;
+    this.pagination.pageIndex = 1;
+    this.loadUsersPaginated();
   }
 
   reset(): void {
     this.searchTerm = '';
-    this.selectedRole = 'All';
+    this.selectedRole = '';
+    this.pagination.pageIndex = 1;
     this.loadUsersPaginated();
   }
 

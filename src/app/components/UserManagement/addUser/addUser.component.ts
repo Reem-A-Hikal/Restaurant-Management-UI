@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/User.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 
 @Component({
   selector: 'app-addUser',
@@ -24,6 +25,7 @@ import { ToastrService } from 'ngx-toastr';
     MdbFormsModule,
     MdbValidationModule,
     CommonModule,
+    MdbTooltipModule,
   ],
   templateUrl: './addUser.component.html',
   styleUrls: ['./addUser.component.css'],
@@ -136,5 +138,9 @@ export class AddUserComponent implements OnInit {
     } else {
       this.userForm.markAllAsTouched();
     }
+  }
+
+  goBack() {
+    this.router.navigateByUrl('/Dashboard/Users');
   }
 }

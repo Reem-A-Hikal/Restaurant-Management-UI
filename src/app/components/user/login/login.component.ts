@@ -69,13 +69,13 @@ export class LoginComponent implements OnInit {
           } else {
             this.router.navigate(['/main']);
           }
-          console.log(res.message);
+          // console.log(res.message)
         },
         error: (err) => {
           if (err.status == 400) {
             this.toastr.error('Invalid email or password', 'Login failed');
           } else {
-            console.log('Error during login: \n', err);
+            // console.log('Error during login: \n', err);
           }
         },
       });

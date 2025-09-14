@@ -1,66 +1,14 @@
 <section [ngClass]="getBodyClass()">
   <div class="container mt-4">
-    <div class="d-flex flex-column flex-md-row align-items-stretch gap-3 mb-4">
-      <!-- Search + Filter Section -->
-      <div class="d-flex flex-column flex-md-row flex-grow-1 gap-2">
-        <!-- Search Box -->
-        <div class="input-group flex-grow-1">
-          <input
-            type="search"
-            name="search"
-            class="form-control rounded search"
-            placeholder="Search"
-            [(ngModel)]="searchTerm"
-            (keyup.enter)="applyFilter()"
-            aria-label="Search Input"
-          />
-          <button
-            type="button"
-            class="btn btn-success"
-            mdbTooltip="Search for User"
-            (click)="applyFilter()"
-            aria-label="search button"
-          >
-            <i class="fas fa-search"></i>
-          </button>
-          <button
-            type="button"
-            class="btn btn-success"
-            mdbTooltip="Reset"
-            (click)="reset()"
-            aria-label="reset button"
-          >
-            <i class="fas fa-refresh"></i>
-          </button>
-        </div>
-
-        <!-- Filter by Role -->
-        <div class="filter">
-          <select
-            class="form-select"
-            [(ngModel)]="selectedRole"
-            (change)="applyFilter()"
-            aria-label="Filter by Role"
-          >
-            <option *ngFor="let role of roles" [value]="role">
-              {{ role }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Add Button -->
-      <div class="add text-center flex-shrink-0">
-        <button
-          type="button"
-          class="btn btn-success w-100 d-flex align-items-center justify-content-center"
-          mdbTooltip="Add User"
-          (click)="addUser()"
-        >
-          <i class="fas fa-plus me-1"></i> Add User
-        </button>
-      </div>
-    </div>
+    <app-TopPage
+      [searchPlaceholder]="'Search for users...'"
+      [addButtonLabel]="'Add User'"
+      [filterOptions]="filterOptions"
+      (search)="applyFilter({ searchTerm: $event, selectedRole: selectedRole })"
+      (reset)="reset()"
+      (filterChange)="applyFilter({ searchTerm: searchTerm, selectedRole: $event })"
+      (add)="addUser()"
+    ></app-TopPage>
     <!-- Loading Indicator -->
     <div
       *ngIf="isLoading"
@@ -124,12 +72,8 @@
                   {{ role }}
                 </span>
               </div>
-              <div class="info p-2 mt-2">
+              <div class="info p-2 mt-3">
                 <div class="content">
-                  <div class="d-flex align-items-center">
-                    <i class="fas fa-hashtag me-2 text-success"></i>
-                    <p class="mb-1">{{ i + 1 }}</p>
-                  </div>
                   <div class="d-flex align-items-center">
                     <i class="fas fa-envelope me-2 text-success"></i>
                     <p class="mb-1 background">{{ user.email }}</p>

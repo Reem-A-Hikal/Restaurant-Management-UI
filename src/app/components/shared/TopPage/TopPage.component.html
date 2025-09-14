@@ -1,0 +1,62 @@
+<div class="d-flex flex-column flex-md-row align-items-stretch gap-3 mb-4">
+  <!-- Search + Filter Section -->
+  <div class="d-flex flex-column flex-md-row flex-grow-1 gap-2">
+    <!-- Search Box -->
+    <div class="input-group flex-grow-1">
+      <input
+        type="search"
+        name="search"
+        class="form-control rounded search"
+        [placeholder]="searchPlaceholder"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+        aria-label="Search Input"
+      />
+      <button
+        type="button"
+        class="btn btn-success"
+        mdbTooltip="Search for User"
+        (click)="onSearch()"
+        aria-label="search button"
+      >
+        <i class="fas fa-search"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-success"
+        mdbTooltip="Reset"
+        (click)="onReset()"
+        aria-label="reset button"
+      >
+        <i class="fas fa-refresh"></i>
+      </button>
+    </div>
+
+    <!-- Filter by Role -->
+    <div class="filter">
+      <select
+        class="form-select"
+        [(ngModel)]="selectedFilter"
+        (change)="onFilterChange()"
+        aria-label="Filter by Role"
+      >
+        <option value="">All</option>
+        <option *ngFor="let option of filterOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Add Button -->
+  <div class="add text-center flex-shrink-0">
+    <button
+      type="button"
+      class="btn btn-success w-100 d-flex align-items-center justify-content-center"
+      mdbTooltip="Add User"
+      (click)="onAdd()"
+    >
+      <i class="fas fa-plus me-1"></i> {{ addButtonLabel }}
+    </button>
+  </div>
+</div>

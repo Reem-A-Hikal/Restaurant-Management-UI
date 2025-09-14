@@ -3,6 +3,16 @@
 >
   <div class="card shadow-lg" style="max-width: 850px; width: 100%">
     <div class="card-header bg-success text-white text-center py-4">
+      <!-- Back button -->
+      <div
+        class="position-absolute top-0 start-0 m-3 mt-4"
+        style="cursor: pointer"
+        (click)="goBack()"
+        mdbTooltip="Go Back"
+        aria-label="Go back"
+      >
+        <i class="fas fa-arrow-left fa-lg"></i>
+      </div>
       <h5 class="mb-0 d-flex justify-content-center align-items-center fw-bold">
         <i class="bi bi-person-plus me-2"></i>
         <span>Add New User</span>
