@@ -1,22 +1,52 @@
-import { Component, OnInit } from '@angular/core';
-import { CatService } from '../../services/Cat.service';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { Category } from '../../models/Category';
+import {
+  Category,
+  CategoryListApiResponse,
+  CategoryWithId,
+} from '../../models/Category';
 import { CommonModule } from '@angular/common';
-import { TopPageComponent } from '../shared/TopPage/TopPage.component';
+import {
+  FilterOption,
+  TopPageComponent,
+} from '../shared/TopPage/TopPage.component';
+import { CategoryService } from '../../services/Category.service';
+import { PaginationComponent } from '../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, TopPageComponent],
+  imports: [CommonModule, TopPageComponent, PaginationComponent],
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css'],
 })
 export class CategoriesComponent implements OnInit {
-  constructor(private catService: CatService, private toastr: ToastrService) {}
+  @ViewChild('categoryList') categoryList!: ElementRef;
 
-  categories?: Category[];
+  categories?: CategoryWithId[];
   isLoading: boolean = false;
+  pagination: CategoryListApiResponse = {
+    pageIndex: 1,
+    pageSize: 6,
+    totalPages: 0,
+    totalItems: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+    items: [],
+  };
+
+  searchTerm: string = '';
+  selectedFilter: string = '';
+
+  filterOptions: FilterOption[] = [
+    { value: 'Active', label: 'Active' },
+    { value: 'Inactive', label: 'Inactive' },
+  ];
+
+  constructor(
+    private catService: CategoryService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.loadCategories();
@@ -25,17 +55,30 @@ export class CategoriesComponent implements OnInit {
     return category && category.id ? category.id : index;
   }
   loadCategories(): void {
-    this.catService.getAllCats().subscribe({
-      next: (cats) => {
-        this.categories = cats;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading users:', err);
-        this.toastr.error('Failed to load users', 'Error');
-        this.isLoading = false;
-      },
-    });
+    this.isLoading = true;
+    let term = this.searchTerm?.trim();
+    let filter = this.selectedFilter;
+    this.catService
+      .getPaginatedCats(
+        this.pagination.pageIndex,
+        this.pagination.pageSize,
+        term,
+        filter
+      )
+      .subscribe({
+        next: (response) => {
+          this.categories = response.data.items;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.toastr.error("Failed to load categories", 'Error');
+          this.isLoading = false;
+        },
+      });
+  }
+
+  get isEmpty(): boolean {
+    return this.categories?.length === 0;
   }
 
   addCategory(): void {}
@@ -60,5 +103,20 @@ export class CategoriesComponent implements OnInit {
       this.loadCategories();
       return;
     }
+  }
+
+  onPageChange(page: number): void {
+    this.pagination.pageIndex = page;
+    this.loadCategories();
+    this.scrollTop();
+  }
+
+  private scrollTop() {
+    setTimeout(() => {
+      this.categoryList?.nativeElement?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 0);
   }
 }

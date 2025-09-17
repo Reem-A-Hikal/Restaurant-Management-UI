@@ -1,4 +1,4 @@
-import { User, UserProfile } from './../models/User';
+import { User, UserProfile } from '../../../models/User';
 import { AuthResponse } from './../models/AuthResponse';
 import { formatDate } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';

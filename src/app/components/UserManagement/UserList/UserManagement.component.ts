@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { User, UserListApiResponse } from '../../../Core/Auth/models/User';
+import { User, UserListApiResponse } from '../../../models/User';
 import { UserService } from '../../../services/User.service';
 import { ToastrService } from 'ngx-toastr';
 import { ModalComponent } from '../modal/modal.component';
@@ -35,7 +35,6 @@ import {
 })
 export class UserManagementComponent implements OnInit {
   @ViewChild('UsersContainer') UsersContainer!: ElementRef;
-  @ViewChild('PaginationRef') PaginationRef!: ElementRef;
 
   isLoading = false;
   filteredUsers: User[] = [];

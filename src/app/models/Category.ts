@@ -1,11 +1,15 @@
-import { Product } from "./product";
+import { Pagination } from './Pagination';
 
 export interface Category {
-  categoryId: number;
   name: string;
   description?: string;
-  image?: string;
   isActive: boolean;
   displayOrder: number;
-  products: Product[];
+}
+export interface CategoryWithId extends Category {
+  categoryId: number;
+}
+
+export interface CategoryListApiResponse extends Pagination {
+  items: Category[];
 }

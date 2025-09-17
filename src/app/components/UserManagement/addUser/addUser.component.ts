@@ -1,4 +1,4 @@
-import { UserRole } from './../../../Core/Auth/models/User';
+import { UserRole } from '../../../models/User';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,

@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../services/User.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { User } from '../../../Core/Auth/models/User';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { User } from '../../../models/User';
 import { AddressService } from '../../../services/Address.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule, DatePipe } from '@angular/common';

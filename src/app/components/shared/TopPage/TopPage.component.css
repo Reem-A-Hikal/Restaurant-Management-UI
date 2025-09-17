@@ -1,0 +1,4 @@
+.input-group > .form-control {
+  min-height: calc(2.08rem + 6px);
+  height: calc(2.08rem + 6px);
+}

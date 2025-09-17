@@ -1,5 +1,5 @@
-import { Address } from "../../../models/Address";
-import { Pagination } from "../../../models/Pagination";
+import { Address } from './Address';
+import { Pagination } from './Pagination';
 
 export interface User {
   id: string;

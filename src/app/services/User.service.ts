@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
-import { User, UserListApiResponse } from '../Core/Auth/models/User';
+import { User, UserListApiResponse } from '../models/User';
 import { HttpParams } from '@angular/common/http';
 
 @Injectable({
