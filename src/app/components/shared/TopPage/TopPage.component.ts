@@ -23,7 +23,7 @@ export class TopPageComponent {
   @Input() roles: string[] = [];
 
   @Output() search = new EventEmitter<string>();
-  @Output() filterChange = new EventEmitter<string>();
+  @Output() filterChange = new EventEmitter<any>();
   @Output() add = new EventEmitter<void>();
   @Output() reset = new EventEmitter<void>();
 

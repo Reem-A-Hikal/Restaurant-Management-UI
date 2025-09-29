@@ -6,7 +6,7 @@
     (search)="searchCategories($event)"
     (reset)="resetCategories()"
     (filterChange)="filterCategories($event)"
-    (add)="addCategory()"
+    (add)="openModal()"
   ></app-TopPage>
   <div class="row g-4">
     <div class="col-12">
@@ -88,7 +88,7 @@
                       </button>
                       <button
                         class="btn btn-outline-danger btn-sm flex-grow-1 d-flex justify-content-center"
-                        (click)="deleteCategory(cat)"
+                        (click)="deleteCategory(cat.categoryId)"
                         aria-label="Delete category"
                       >
                         <i class="bi bi-trash me-1" aria-hidden="true"></i

@@ -1,0 +1,108 @@
+<div class="modal-header bg-success text-white">
+  <h5 class="modal-title">
+    <i class="bi bi-tags-fill me-2"></i> Add New Category
+  </h5>
+  <button type="button" class="btn-close" (click)="modalRef.close()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <!-- Name -->
+    <div class="form-floating mb-3">
+      <input
+        type="text"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid':
+            categoryForm.get('name')?.touched &&
+            categoryForm.get('name')?.invalid
+        }"
+        id="name"
+        formControlName="name"
+        placeholder="Category Name"
+      />
+      <label for="name">Category Name</label>
+      <div class="invalid-feedback">
+        <div *ngIf="categoryForm.get('name')?.errors?.['required']">
+          Name is required
+        </div>
+        <div *ngIf="categoryForm.get('name')?.errors?.['maxlength']">
+          Max 50 characters allowed
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-floating mb-3">
+      <textarea
+        class="form-control"
+        [ngClass]="{
+          'is-invalid':
+            categoryForm.get('description')?.touched &&
+            categoryForm.get('description')?.invalid
+        }"
+        id="description"
+        formControlName="description"
+        placeholder="Description"
+      ></textarea>
+      <label for="description">Description</label>
+      <div class="invalid-feedback">
+        <div *ngIf="categoryForm.get('description')?.errors?.['required']">
+          Description is required
+        </div>
+        <div *ngIf="categoryForm.get('description')?.errors?.['maxlength']">
+          Max 200 characters allowed
+        </div>
+      </div>
+    </div>
+
+    <!-- Display Order -->
+    <div class="form-floating mb-3">
+      <input
+        type="number"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid':
+            categoryForm.get('displayOrder')?.touched &&
+            categoryForm.get('displayOrder')?.invalid
+        }"
+        id="displayOrder"
+        formControlName="displayOrder"
+        placeholder="Display Order"
+      />
+      <label for="displayOrder">Display Order</label>
+      <div class="invalid-feedback">
+        <div *ngIf="categoryForm.get('displayOrder')?.errors?.['required']">
+          Display Order is required
+        </div>
+        <div *ngIf="categoryForm.get('displayOrder')?.errors?.['min']">
+          Minimum value is 1
+        </div>
+      </div>
+    </div>
+
+    <!-- Active -->
+    <div class="form-check form-switch mb-3">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="isActive"
+        formControlName="isActive"
+      />
+      <label class="form-check-label" for="isActive">Active</label>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="btn btn-success w-100"
+      [disabled]="categoryForm.invalid || isSubmitting"
+    >
+      <span
+        *ngIf="isSubmitting"
+        class="spinner-border spinner-border-sm me-2"
+      ></span>
+      Save Category
+    </button>
+  </form>
+</div>

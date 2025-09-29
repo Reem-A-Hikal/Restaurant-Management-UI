@@ -7,8 +7,8 @@ export const userManagementRoutes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () =>
       import(
-        './components/UserManagement/UserList/UserManagement.component'
-      ).then((m) => m.UserManagementComponent),
+        './components/UserManagement/UserList/UserList.component'
+      ).then((m) => m.UserListComponent),
     title: 'User Management',
   },
   {

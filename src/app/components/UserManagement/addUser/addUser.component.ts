@@ -124,7 +124,7 @@ export class AddUserComponent implements OnInit {
   onSubmit() {
     if (this.userForm.valid) {
       const formValue = { ...this.userForm.value };
-      console.log('User form submitted:', formValue);
+      // console.log('User form submitted:', formValue);
       this.serv.addUser(formValue).subscribe({
         next: (res) => {
           this.toastr.success(res.message, 'Success');

@@ -27,23 +27,23 @@ export class CategoryService {
       .set('pageSize', pageSize.toString());
 
     if (searchTerm) params = params.set('searchTerm', searchTerm);
-    if (selectedFilter) params = params.set('selectedRole', selectedFilter);
+    if (selectedFilter) params = params.set('selectedFilter', selectedFilter);
     return this.api.get<ApiResponse>(`${this.basePath}/GetAllPaginated`, params);
   }
 
-  getCatById(id: string): Observable<Category> {
-    return this.api.get<Category>(`${this.basePath}/${id}`);
+  getCatById(id: string): Observable<ApiResponse> {
+    return this.api.get<ApiResponse>(`${this.basePath}/getcategory/${id}`);
   }
 
-  createCat(product: Category): Observable<Category> {
-    return this.api.post<Category>(this.basePath, product);
+  createCat(product: Category): Observable<ApiResponse> {
+    return this.api.post<ApiResponse>(`${this.basePath}/add`, product);
   }
 
-  updateCat(id: string, product: Category): Observable<Category> {
-    return this.api.put<Category>(`${this.basePath}/${id}`, product);
+  updateCat(id: string, product: Category): Observable<ApiResponse> {
+    return this.api.put<ApiResponse>(`${this.basePath}/update/${id}`, product);
   }
 
-  deleteCat(id: string): Observable<void> {
-    return this.api.delete(`${this.basePath}/${id}`);
+  deleteCat(id: number): Observable<any> {
+    return this.api.delete<any>(`${this.basePath}/delete/${id}`);
   }
 }

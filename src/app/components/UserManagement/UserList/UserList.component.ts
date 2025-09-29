@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { User, UserListApiResponse } from '../../../models/User';
 import { UserService } from '../../../services/User.service';
 import { ToastrService } from 'ngx-toastr';
-import { ModalComponent } from '../modal/modal.component';
+import { ModalComponent } from '../viewModal/modal.component';
 import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import {
   MdbModalModule,
@@ -20,7 +20,7 @@ import {
 } from '../../shared/TopPage/TopPage.component';
 
 @Component({
-  selector: 'app-UserManagement',
+  selector: 'app-UserList',
   standalone: true,
   imports: [
     MdbModalModule,
@@ -30,10 +30,10 @@ import {
     PaginationComponent,
     TopPageComponent,
   ],
-  templateUrl: './UserManagement.component.html',
-  styleUrls: ['./UserManagement.component.css'],
+  templateUrl: './UserList.component.html',
+  styleUrls: ['./UserList.component.css'],
 })
-export class UserManagementComponent implements OnInit {
+export class UserListComponent implements OnInit {
   @ViewChild('UsersContainer') UsersContainer!: ElementRef;
 
   isLoading = false;
@@ -126,10 +126,6 @@ export class UserManagementComponent implements OnInit {
       modalClass: 'modal-dialog-centered',
       data: { user, title: 'User Details' },
     });
-  }
-
-  viewDetails(id: string): void {
-    this.router.navigateByUrl(`Dashboard/Users/Edit/${id}`);
   }
 
   addUser(): void {

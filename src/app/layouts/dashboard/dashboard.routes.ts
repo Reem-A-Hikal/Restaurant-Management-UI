@@ -22,6 +22,7 @@ export const dashboardRoutes: Routes = [
           import('../../user-management.routes').then(
             (m) => m.userManagementRoutes
           ),
+        title: 'User Management',
       },
       {
         path: 'Dishes',
@@ -29,13 +30,15 @@ export const dashboardRoutes: Routes = [
           import('../../components/products/dishes.component').then(
             (m) => m.dishesComponent
           ),
+        title: 'Dishes',
       },
       {
         path: 'Categories',
         loadComponent: () =>
-          import('../../components/categories/categories.component').then(
-            (m) => m.CategoriesComponent
-          ),
+          import(
+            '../../components/categories/categoriesList/categoriesList.component'
+          ).then((m) => m.CategoriesListComponent),
+        title: 'Categories',
       },
       {
         path: 'Orders',
@@ -43,6 +46,7 @@ export const dashboardRoutes: Routes = [
           import('../../components/orders/orders.component').then(
             (m) => m.OrdersComponent
           ),
+        title: 'Orders',
       },
     ],
   },
