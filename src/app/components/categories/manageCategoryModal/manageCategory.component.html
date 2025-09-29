@@ -1,8 +1,12 @@
 <div class="modal-header bg-success text-white">
-  <h5 class="modal-title">
-    <i class="bi bi-tags-fill me-2"></i> Add New Category
-  </h5>
-  <button type="button" class="btn-close" (click)="modalRef.close()"></button>
+  <h5 class="modal-title"><i class="bi bi-tags-fill me-2"></i> {{ title }}</h5>
+  <button
+    type="button"
+    class="p-0 border-0 bg-transparent"
+    (click)="modalRef.close()"
+  >
+    <i class="fa-solid fa-x fs-5 text-white"></i>
+  </button>
 </div>
 
 <div class="modal-body">
@@ -25,6 +29,9 @@
       <div class="invalid-feedback">
         <div *ngIf="categoryForm.get('name')?.errors?.['required']">
           Name is required
+        </div>
+        <div *ngIf="categoryForm.get('name')?.errors?.['minlength']">
+          Minimum 3 characters required
         </div>
         <div *ngIf="categoryForm.get('name')?.errors?.['maxlength']">
           Max 50 characters allowed
@@ -49,6 +56,9 @@
       <div class="invalid-feedback">
         <div *ngIf="categoryForm.get('description')?.errors?.['required']">
           Description is required
+        </div>
+        <div *ngIf="categoryForm.get('description')?.errors?.['minlength']">
+          Minimum 3 characters required
         </div>
         <div *ngIf="categoryForm.get('description')?.errors?.['maxlength']">
           Max 200 characters allowed

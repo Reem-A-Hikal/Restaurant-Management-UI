@@ -1,0 +1,10 @@
+.modal-header button:hover i {
+  opacity: 75%;
+}
+
+.form-check-input[type="checkbox"]:checked {
+  background-color: var(--main-color);
+  &::after {
+    background-color: var(--main-color);
+  }
+}

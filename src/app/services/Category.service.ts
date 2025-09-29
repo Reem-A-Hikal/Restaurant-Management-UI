@@ -39,7 +39,7 @@ export class CategoryService {
     return this.api.post<ApiResponse>(`${this.basePath}/add`, product);
   }
 
-  updateCat(id: string, product: Category): Observable<ApiResponse> {
+  updateCat(id: number, product: Category): Observable<ApiResponse> {
     return this.api.put<ApiResponse>(`${this.basePath}/update/${id}`, product);
   }
 

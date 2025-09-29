@@ -12,15 +12,23 @@ import {
 } from '../../shared/TopPage/TopPage.component';
 import { CategoryService } from '../../../services/Category.service';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
-import { finalize } from 'rxjs';
-import { Router } from '@angular/router';
-import { MdbModalModule, MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit/modal';
-import { AddCategoryComponent } from '../addCategoryModal/addCategory.component';
+import { finalize, take } from 'rxjs';
+import {
+  MdbModalModule,
+  MdbModalRef,
+  MdbModalService,
+} from 'mdb-angular-ui-kit/modal';
+import { ManageCategoryComponent } from '../manageCategoryModal/manageCategory.component';
 
 @Component({
   selector: 'app-categoriesList',
   standalone: true,
-  imports: [CommonModule, TopPageComponent, PaginationComponent, MdbModalModule],
+  imports: [
+    CommonModule,
+    TopPageComponent,
+    PaginationComponent,
+    MdbModalModule,
+  ],
   templateUrl: './categoriesList.component.html',
   styleUrls: ['./categoriesList.component.css'],
 })
@@ -47,13 +55,12 @@ export class CategoriesListComponent implements OnInit {
     { value: 'Inactive', label: 'Inactive' },
   ];
 
-  modalRef: MdbModalRef<AddCategoryComponent> | null = null;
+  modalRef: MdbModalRef<ManageCategoryComponent> | null = null;
 
   constructor(
     private catService: CategoryService,
     private toastr: ToastrService,
-    private router: Router,
-    private modalService: MdbModalService,
+    private modalService: MdbModalService
   ) {}
 
   ngOnInit() {
@@ -88,29 +95,22 @@ export class CategoriesListComponent implements OnInit {
   }
 
   get isEmpty(): boolean {
-    return this.categories?.length === 0;
+    return !this.isLoading && (this.categories?.length ?? 0) === 0;
   }
 
-  addCategory(): void {}
+  openModal(category?: CategoryWithId): void {
+    this.modalRef = this.modalService.open(ManageCategoryComponent, {
+      modalClass: 'modal-dialog-centered',
+      data: { categoryToEdit: category, title: category ? 'Edit Category' : 'Add New Category' },
+    });
 
-  editCategory(cat: Category): void {}
-
-openModal(): void {
-  this.modalRef = this.modalService.open(AddCategoryComponent, {
-    modalClass: 'modal-dialog-centered'
-  });
-
-  if (this.modalRef && this.modalRef.onClose) {
-    const subscription = this.modalRef.onClose.subscribe((result) => {
+    this.modalRef.onClose.pipe(take(1)).subscribe((result) => {
       if (result === 'success') {
         this.loadCategories();
-        this.toastr.success('Category added successfully');
       }
-      subscription.unsubscribe();
     });
   }
-}
-  
+
   async deleteCategory(catId: number) {
     const Swal = await import('sweetalert2');
     const result = await Swal.default.fire({
@@ -143,7 +143,7 @@ openModal(): void {
           error: (err) => {
             Swal.default.fire({
               title: 'Error!',
-              text: err.errors[0] || 'Failed to deactivate this Category',
+              text: err.error?.title || 'Failed to deactivate this Category',
               icon: 'error',
               showConfirmButton: true,
               confirmButtonText: 'OK',
@@ -154,7 +154,8 @@ openModal(): void {
   }
 
   searchCategories(term: string): void {
-    this.searchTerm = term;
+    this.searchTerm = term.trim();
+    this.pagination.pageIndex = 1;
     if (term) {
       this.loadCategories();
     }
@@ -162,12 +163,13 @@ openModal(): void {
 
   resetCategories(): void {
     this.searchTerm = '';
-    this.selectedFilter = '';
+    this.selectedFilter = undefined;
     this.loadCategories();
   }
 
   filterCategories(filter: string): void {
     this.selectedFilter = filter;
+    this.pagination.pageIndex = 1;
     this.loadCategories();
   }
 
