@@ -1,7 +1,6 @@
-import { Category } from "./Category";
+import { Pagination } from './Pagination';
 
 export interface Product {
-  productId: number;
   name: string;
   price: number;
   description: string;
@@ -13,5 +12,10 @@ export interface Product {
   discountPercent: number;
   allowedDiscountPercent: number;
   categoryId: number;
-  category: Category;
+}
+export interface ProductWithId extends Product {
+  productId: number;
+}
+export interface ProductsListApiResponse extends Pagination {
+  items: ProductWithId[];
 }

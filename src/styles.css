@@ -24,3 +24,16 @@
 .bg-success {
   background-color: var(--main-color) !important;
 }
+
+.hover-shadow:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) scale(1.02);
+}
+.transition {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

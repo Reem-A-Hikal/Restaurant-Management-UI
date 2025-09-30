@@ -101,7 +101,10 @@ export class CategoriesListComponent implements OnInit {
   openModal(category?: CategoryWithId): void {
     this.modalRef = this.modalService.open(ManageCategoryComponent, {
       modalClass: 'modal-dialog-centered',
-      data: { categoryToEdit: category, title: category ? 'Edit Category' : 'Add New Category' },
+      data: {
+        categoryToEdit: category,
+        title: category ? 'Edit Category' : 'Add New Category',
+      },
     });
 
     this.modalRef.onClose.pipe(take(1)).subscribe((result) => {

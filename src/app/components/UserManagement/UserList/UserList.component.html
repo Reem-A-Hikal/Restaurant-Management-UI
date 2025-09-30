@@ -30,14 +30,14 @@
 
     <ng-template #UsersContainer>
       <div
-        class="row justify-content-center"
+        class="row justify-content-center row-gap-4"
         *ngIf="filteredUsers.length > 0; else noUsers"
       >
         <div
           class="col-md-4 column"
           *ngFor="let user of filteredUsers; let i = index"
         >
-          <div class="card profile-card">
+          <div class="card profile-card shadow-sm border-0 hover-shadow transition">
             <div class="background-block">
               <img
                 src="/background.jpg"

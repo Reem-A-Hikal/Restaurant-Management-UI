@@ -18,7 +18,7 @@
   overflow: hidden;
   width: 100%;
   text-align: center;
-  height: 415px;
+  max-height: 415px;
 
   .active-badge {
     top: 10px;
@@ -80,7 +80,7 @@
 
 .profile-card .card-content {
   width: 100%;
-  padding: 30px 25px;
+  padding: 15px 25px;
   color: #232323;
   height: 50%;
   position: relative;
@@ -92,7 +92,7 @@
     width: 120%;
     height: 100%;
     left: -10px;
-    bottom: 54px;
+    bottom: 60px;
     position: absolute;
     z-index: -1;
     transform: rotate(-13deg);

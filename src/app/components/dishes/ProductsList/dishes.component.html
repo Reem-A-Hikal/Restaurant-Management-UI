@@ -1,0 +1,137 @@
+<div class="container mt-4">
+  <!-- TopPage component -->
+  <app-TopPage
+    [searchPlaceholder]="'Search with Product Name...'"
+    [addButtonLabel]="'Add New Product'"
+    [filterOptions]="filterOptions"
+    (search)="applySearch($event)"
+    (add)="addNewProduct()"
+    (filterChange)="filterProducts($event)"
+    (reset)="resetFilters()"
+  ></app-TopPage>
+
+  <!-- Loading Indicator -->
+  <ng-container *ngIf="isLoading; else productGrid">
+    <div
+      class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-50"
+      style="z-index: 1050"
+    >
+      <div class="text-center">
+        <div
+          class="spinner-border text-success mb-3"
+          style="width: 3rem; height: 3rem"
+          role="status"
+        ></div>
+        <div><strong class="text-success">Loading...</strong></div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Product Grid -->
+  <ng-template #productGrid>
+    <ng-container *ngIf="!isEmpty; else emptyState">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-gap-3">
+        <ng-container *ngFor="let product of products; trackBy: trackProduct">
+          <div class="col">
+            <div
+              class="card h-100 shadow-sm border-0 hover-shadow transition position-relative"
+            >
+              <div class="ratio ratio-4x3">
+                <div class="delete">
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteProduct(product.productId)"
+                    mdbTooltip="Delete User"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+                <img
+                  [src]="product.image || 'assets/images/placeholder.png'"
+                  class="card-img-top object-fit-cover rounded-top"
+                  [alt]="product.name"
+                  loading="lazy"
+                />
+              </div>
+              <div class="card-body d-flex flex-column">
+                <h5
+                  class="card-title text-center fw-semibold text-truncate"
+                  title="{{ product.name }}"
+                >
+                  {{ product.name }}
+                </h5>
+
+                <h6 class="card-subtitle mb-2 text-success text-center">
+                  {{ product.price | currency : "USD" : "symbol" : "1.2-2" }}
+                </h6>
+                <p
+                  *ngIf="product.description"
+                  class="card-text text-muted small flex-grow-1 text-center text-truncate"
+                  title="{{ product.description }}"
+                >
+                  {{ product.description }}
+                </p>
+              </div>
+              <div class="card-footer bg-white border-0 mt-auto">
+                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                  <button
+                    class="btn btn-outline-success btn-sm px-3"
+                    (click)="viewProduct(product.productId)"
+                    aria-label="View product"
+                  >
+                    <i class="bi bi-eye me-1 d-md-none d-lg-inline"></i>
+                    <span>View</span>
+                  </button>
+                  <button
+                    class="btn btn-outline-primary btn-sm px-3"
+                    (click)="editProduct(product.productId, product)"
+                    aria-label="Edit product"
+                  >
+                    <i
+                      class="bi bi-pencil-square me-1 d-md-none d-lg-inline"
+                    ></i>
+                    <span>Edit</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <!-- Empty State -->
+    <ng-template #emptyState>
+      <div class="row">
+        <div class="col-12 text-center py-5">
+          <div class="card border-0 shadow-0">
+            <div class="card-body py-5">
+              <i class="bi bi-box-seam display-4 text-muted mb-3"></i>
+              <h5 class="card-title">No products found</h5>
+              <p class="card-text text-muted">
+                Check back later for new arrivals!
+              </p>
+              <button class="btn btn-success mt-3" (click)="addNewProduct()">
+                <i class="bi bi-plus-circle me-1"></i>
+                Add New Product
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+  <!-- Pagination -->
+  <div
+    class="d-flex justify-content-center mt-4"
+    *ngIf="!isEmpty && !isLoading"
+  >
+    <app-pagination
+      [pageIndex]="pagination.pageIndex"
+      [totalPages]="pagination.totalPages"
+      [totalItems]="pagination.totalItems"
+      (pageChange)="onPageChange($event)"
+    >
+    </app-pagination>
+  </div>
+</div>

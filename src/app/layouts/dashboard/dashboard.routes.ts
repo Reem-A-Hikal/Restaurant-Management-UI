@@ -27,8 +27,8 @@ export const dashboardRoutes: Routes = [
       {
         path: 'Dishes',
         loadComponent: () =>
-          import('../../components/products/dishes.component').then(
-            (m) => m.dishesComponent
+          import('../../components/dishes/ProductsList/dishes.component').then(
+            (m) => m.DishesComponent
           ),
         title: 'Dishes',
       },
