@@ -31,7 +31,7 @@
         *ngIf="currentPage === 1"
         title="category"
         symbol="space_dashboard_2"
-        (add)="(addCategory)"
+        (add)="addCategory.emit()"
       ></app-add-card>
     </div>
   </ng-container>
