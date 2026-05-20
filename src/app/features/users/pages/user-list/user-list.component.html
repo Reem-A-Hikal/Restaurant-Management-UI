@@ -1,0 +1,80 @@
+<section [ngClass]="getBodyClass()">
+  <div class="container mt-4">
+    <app-top-page
+      pageTitle="Staff Directory"
+      pageSubtitle="Manage your kitchen team and administrative staff"
+      searchPlaceholder="Search by name"
+      addButtonLabel="Add New User"
+      [filterOptions]="filterOptions"
+      (searchEvent)="
+        applyFilter({ searchTerm: $event, selectedRole: selectedRole })
+      "
+      (filterChange)="
+        applyFilter({ searchTerm: searchTerm, selectedRole: $event })
+      "
+      (addEvent)="addUser()"
+      (resetEvent)="reset()"
+    ></app-top-page>
+    <!-- Loading Indicator -->
+    <ng-container *ngIf="isLoading; else UsersContainer">
+      <div
+        class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-50"
+        style="z-index: 1050"
+      >
+        <div class="text-center">
+          <output
+            class="spinner-border text-success mb-3"
+            style="width: 3rem; height: 3rem"
+          ></output>
+          <div><strong class="text-success">Loading...</strong></div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #UsersContainer>
+      <div
+        class="staff-page__grid"
+        *ngIf="filteredUsers.length > 0; else noUsers"
+      >
+        <!-- Staff Cards -->
+        <app-card
+          *ngFor="let member of filteredUsers; trackBy: trackByUserId"
+          [user]="member"
+          (edit)="editUser(member.id)"
+          (delete)="deleteUser(member.id)"
+        ></app-card>
+
+        <!-- Add Card (always last) -->
+        <app-add-card
+          symbol="person_add"
+          title="User"
+          subtitle="Configure permissions and assign roles for new staff members."
+          (add)="addUser()"
+          *ngIf="filteredUsers.length > 0; else noUsers"
+        ></app-add-card>
+      </div>
+    </ng-template>
+    <!-- Pagination -->
+    @if (!isEmpty && !isLoading) {
+      <app-pagination
+        [pageIndex]="pagination.pageIndex"
+        [totalPages]="pagination.totalPages"
+        [totalItems]="pagination.totalItems"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    }
+    <!-- End Pagination -->
+  </div>
+
+  <!-- Empty State -->
+  <ng-template #noUsers>
+    <app-empty-state
+      icon="person"
+      title="staff"
+      description="Start by adding your first user!"
+      buttonText="Staff"
+      (add)="addUser()"
+    >
+    </app-empty-state>
+  </ng-template>
+</section>

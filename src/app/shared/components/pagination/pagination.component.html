@@ -1,0 +1,51 @@
+<nav aria-label="Page navigation" *ngIf="totalItems > 6" class="mt-4">
+  <ul class="pagination justify-content-center flex-wrap gap-2">
+    <!-- Previous -->
+    <li class="page-item d-none d-md-block" [class.disabled]="pageIndex === 1">
+      <button
+        type="button"
+        class="page-link rounded-pill"
+        (click)="onPageChange(pageIndex - 1)"
+        mdbTooltip="Previous Page"
+        [disabled]="pageIndex === 1"
+        [attr.aria-label]="'Go to previous page, current page ' + pageIndex"
+      >
+        <i class="fas fa-angle-left" aria-hidden="true"></i>
+      </button>
+    </li>
+
+    <!-- Pages -->
+    <li
+      *ngFor="let page of getPages(); trackBy: trackByPage"
+      class="page-item"
+      [class.active]="page === pageIndex"
+    >
+      <button
+        class="page-link rounded-pill px-3"
+        (click)="onPageChange(page)"
+        [attr.aria-label]="'Go to page ' + page"
+        [attr.aria-current]="page === pageIndex ? 'page' : null"
+        type="button"
+      >
+        {{ page }}
+      </button>
+    </li>
+
+    <!-- Next -->
+    <li
+      class="page-item d-none d-md-block"
+      [class.disabled]="pageIndex === totalPages"
+    >
+      <button
+        class="page-link rounded-pill"
+        (click)="onPageChange(pageIndex + 1)"
+        [disabled]="pageIndex === totalPages"
+        mdbTooltip="Next Page"
+        [attr.aria-label]="'Go to next page, current page ' + pageIndex"
+        type="button"
+      >
+        <i class="fas fa-angle-right" aria-hidden="true"></i>
+      </button>
+    </li>
+  </ul>
+</nav>

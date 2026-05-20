@@ -15,8 +15,8 @@ export const routes: Routes = [
       {
         path: 'Dashboard',
         loadChildren: () =>
-          import('./layouts/dashboard/dashboard.routes').then(
-            (m) => m.dashboardRoutes
+          import('./features/dashboard/dashboard.routes').then(
+            (m) => m.dashboardRoutes,
           ),
       },
       {
@@ -29,23 +29,23 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./components/user/authBody/auth.component').then(
-        (m) => m.AuthComponent
+      import('./features/auth/authView/auth.component').then(
+        (m) => m.AuthComponent,
       ),
     canActivate: [publicGuard],
     children: [
       {
         path: 'signup',
         loadComponent: () =>
-          import('./components/user/registration/registration.component').then(
-            (m) => m.RegistrationComponent
+          import('./features/auth/registration/registration.component').then(
+            (m) => m.RegistrationComponent,
           ),
       },
       {
         path: 'signin',
         loadComponent: () =>
-          import('./components/user/login/login.component').then(
-            (m) => m.LoginComponent
+          import('./features/auth/login/login.component').then(
+            (m) => m.LoginComponent,
           ),
       },
     ],
@@ -54,8 +54,8 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () =>
-      import('./components/shared/NotFound/NotFound.component').then(
-        (m) => m.NotFoundComponent
+      import('./shared/components/NotFound/NotFound.component').then(
+        (m) => m.NotFoundComponent,
       ),
   },
 ];

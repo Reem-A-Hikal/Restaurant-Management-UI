@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <app-top-page
+    pageTitle="Menu Categories"
+    pageSubtitle="Manage your restaurant menu sections and visibility."
+    [searchPlaceholder]="'Search for categories...'"
+    [addButtonLabel]="'Add Category'"
+    [filterOptions]="filterOptions"
+    (searchEvent)="searchCategories($event)"
+    (resetEvent)="resetCategories()"
+    (filterChange)="filterCategories($event)"
+    (addEvent)="openModal()"
+  ></app-top-page>
+  <app-category-list
+    [categories]="categories ?? []"
+    [isLoading]="isLoading"
+    (editCategory)="openModal($event)"
+    (deleteCategory)="archiveCategory($event.categoryId)"
+    (addCategory)="openModal()"
+  ></app-category-list>
+  @if (!isEmpty && !isLoading) {
+    <app-pagination
+      [pageIndex]="pagination.pageIndex"
+      [totalPages]="pagination.totalPages"
+      [totalItems]="pagination.totalItems"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  }
+</div>

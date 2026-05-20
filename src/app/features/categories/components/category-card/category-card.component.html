@@ -1,0 +1,35 @@
+<div class="category-card" *ngIf="category">
+  <!-- Status Badge -->
+  <span class="category-card__badge" [ngClass]="statusClass">
+    <span class="badge__dot"></span>
+    {{ CategoryStatusLabels[category.status] }}
+  </span>
+
+  <!-- Icon -->
+  <div class="category-card__icon">
+    <i [class]="categoryIcon"></i>
+  </div>
+
+  <!-- Info -->
+  <div class="category-card__info">
+    <h3 class="category-card__name">{{ category.name }}</h3>
+    <p class="category-card__count">{{ category.totalItems }} Items</p>
+  </div>
+
+  <!-- Actions -->
+  <div class="category-card__actions">
+    <button class="action-btn action-btn--edit" (click)="onEdit()" title="Edit">
+      <i class="bi bi-pencil"></i>
+    </button>
+    <button
+      class="action-btn action-btn--delete"
+      (click)="onDelete()"
+      title="Delete"
+    >
+      <i class="bi bi-trash"></i>
+    </button>
+    <button class="action-btn action-btn--drag" title="Reorder">
+      <i class="bi bi-grip-vertical"></i>
+    </button>
+  </div>
+</div>

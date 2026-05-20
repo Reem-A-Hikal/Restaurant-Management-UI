@@ -1,0 +1,16 @@
+.card-cover {
+  height: 80px;
+  background-color: #f0f4f7;
+}
+
+.avatar img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+}
+
+.badge {
+  background-color: #e8f5ee;
+  color: var(--color-primary);
+  font-size: 11px;
+}

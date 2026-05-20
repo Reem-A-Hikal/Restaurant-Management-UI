@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SidebarComponent } from '../../components/shared/sidebar/sidebar.component';
+import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
+import { BodyComponent } from '../../shared/components/body/body.component';
 import { AuthService } from '../../Core/Auth/services/auth.service';
 import { ProfileService } from '../../services/profile.service';
-import { BodyComponent } from '../../components/shared/body/body.component';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -20,9 +20,9 @@ export class DashboardComponent implements OnInit {
   isSideNavCollapsed: boolean = false;
   screenWidth: number = 0;
   constructor(
-    private router: Router,
-    private authService: AuthService,
-    private profileService: ProfileService
+    private readonly router: Router,
+    private readonly authService: AuthService,
+    private readonly profileService: ProfileService,
   ) {}
 
   fullname: string = '';

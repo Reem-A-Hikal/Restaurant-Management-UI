@@ -1,0 +1,201 @@
+<div class="container mt-4" *ngIf="!isLoading; else loadingTpl">
+  <div class="row g-4">
+    <!-- Left: Profile Card (Read Only) -->
+    <div class="col-lg-3">
+      <div class="card border-0 shadow-sm">
+        <!-- Cover -->
+        <div class="card-cover"></div>
+
+        <div class="card-body text-center pt-0">
+          <!-- Avatar -->
+          <div class="avatar mx-auto mt-n4 mb-3">
+            <img
+              [src]="user.profileImageUrl || 'assets/images/default-avatar.png'"
+              [alt]="user.fullName"
+              class="rounded-circle border border-3 border-white shadow-sm"
+            />
+          </div>
+
+          <h6 class="fw-500 mb-1">{{ user.fullName }}</h6>
+          <p class="text-muted small mb-2">{{ user.email }}</p>
+
+          <!-- Role -->
+          <div class="d-flex flex-wrap gap-1 justify-content-center mb-3">
+            <span class="badge rounded-pill">
+              {{ user.role }}
+            </span>
+          </div>
+
+          <div class="border-top pt-3 text-start">
+            <div class="d-flex justify-content-between mb-2">
+              <small class="text-muted">Joined</small>
+              <small>{{ user.joinDate | date }}</small>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <small class="text-muted">Phone</small>
+              <small>{{ user.phoneNumber || "-" }}</small>
+            </div>
+            <div class="d-flex justify-content-between">
+              <small class="text-muted">Status</small>
+              <span
+                class="badge rounded-pill"
+                style="font-size: 11px"
+                [style.background-color]="user.isActive ? '#e8f5ee' : '#fde8e8'"
+                [style.color]="user.isActive ? '#028052' : '#d33'"
+              >
+                {{ user.isActive ? "Active" : "Inactive" }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Edit Form -->
+    <div class="col-lg-9">
+      <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <!-- Section: Account Settings -->
+            <p
+              class="text-muted small text-uppercase fw-500 letter-spacing mb-3"
+            >
+              Account settings
+            </p>
+
+            <div class="row g-3 mb-4">
+              <!-- IsActive Toggle -->
+              <div class="col-md-6">
+                <label class="form-label small text-muted" for="isActive"
+                  >Account status</label
+                >
+                <div class="form-check form-switch mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="isActive"
+                    formControlName="isActive"
+                  />
+                  <label class="form-check-label" for="isActive">
+                    {{
+                      editForm.get("isActive")?.value ? "Active" : "Inactive"
+                    }}
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section: Chef Details -->
+            <ng-container *ngIf="isChef">
+              <div class="border-top pt-4 mb-4">
+                <p
+                  class="text-muted small text-uppercase fw-500 letter-spacing mb-3"
+                >
+                  <i class="bi bi-egg-fried me-1"></i> Chef details
+                </p>
+                <div class="col-md-6">
+                  <label
+                    class="form-label small text-muted"
+                    for="specialization"
+                    >Specialization</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="specialization"
+                    placeholder="e.g. Italian Cuisine"
+                  />
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Section: Delivery Person Details -->
+            <ng-container *ngIf="isDeliveryPerson">
+              <div class="border-top pt-4 mb-4">
+                <p
+                  class="text-muted small text-uppercase fw-500 letter-spacing mb-3"
+                >
+                  <i class="bi bi-car-front me-1"></i> Delivery person details
+                </p>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label
+                      class="form-label small text-muted"
+                      for="vehicleNumber"
+                      >Vehicle number</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="vehicleNumber"
+                      placeholder="e.g. ABC-1234"
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small text-muted" for="isAvailable"
+                      >Availability</label
+                    >
+                    <div class="form-check form-switch mt-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="isAvailable"
+                        formControlName="isAvailable"
+                      />
+                      <label class="form-check-label" for="isAvailable">
+                        {{
+                          editForm.get("isAvailable")?.value
+                            ? "Available"
+                            : "Unavailable"
+                        }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Actions -->
+            <div class="border-top pt-4 d-flex justify-content-end gap-2">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary px-4"
+                (click)="goBack()"
+                [disabled]="isSaving"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-sm btn-success px-4"
+                [disabled]="isSaving"
+              >
+                <span
+                  *ngIf="isSaving"
+                  class="spinner-border spinner-border-sm me-1"
+                ></span>
+                {{ isSaving ? "Saving..." : "Save changes" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<ng-template #loadingTpl>
+  <div
+    class="d-flex justify-content-center align-items-center"
+    style="min-height: 300px"
+  >
+    <div class="text-center">
+      <div
+        class="spinner-border text-success mb-2"
+        style="width: 2.5rem; height: 2.5rem"
+      ></div>
+      <div><small class="text-muted">Loading user data...</small></div>
+    </div>
+  </div>
+</ng-template>

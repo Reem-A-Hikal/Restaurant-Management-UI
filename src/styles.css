@@ -1,28 +1,70 @@
 :root {
-  --main-color: #028052;
-  --main-hover: #2c9a71;
-  --badge-background: #f2f7fa;
+  --color-primary: #00643f;
+  --color-primary-dark: #005233;
+  --color-primary-light: #d2ffe1;
+  --color-primary-fixed: #92f7bf;
+  --color-primary-shadow: rgba(0, 100, 63, 0.25);
+
+  /* ── Surface ── */
+  --color-surface: #ffffff;
+  --color-surface-low: #f0f5ee;
+  --color-surface-container: #eaefe9;
+  --color-surface-high: #e4eae3;
+  --color-background: #f6fbf4;
+
+  /* ── Border ── */
+  --color-outline: #dfe4dd;
+  --color-outline-mid: #bdcabf;
+
+  /* ── Text ── */
+  --color-text-primary: #171d19;
+  --color-text-secondary: #3e4942;
+  --color-text-muted: #6e7a71;
+  --color-text-placeholder: #9eaaa0;
+
+  /* ── Role Badges ── */
+  --color-badge-admin-bg: #c1e9ce;
+  --color-badge-admin-text: #2a4e3a;
+
+  --color-badge-chef-text: #7a2123;
+
+  --color-badge-logistics-bg: rgba(117, 218, 164, 0.22);
+
+  --color-badge-customer-bg: #eaf4ee;
+
+  --color-badge-default-bg: #eaefe9;
+
+  /* ── Status ── */
+  --color-status-active: #00a86b;
+  --color-status-offline: #9eaaa0;
+
+  /* ── Error / Danger ── */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+
+  /* ── Tertiary (Chef red) ── */
+  --color-tertiary: #933a3c;
 }
 
 ::selection {
-  background-color: var(--main-color);
+  background-color: var(--color-primary);
   color: #fff;
 }
 
 .text-success {
-  color: var(--main-color) !important;
+  color: var(--color-primary) !important;
 }
 
 .btn-success {
-  background-color: var(--main-color);
+  background-color: var(--color-primary);
 
   &:hover {
-    background-color: var(--main-hover);
+    background-color: var(--color-primary-dark);
   }
 }
 
 .bg-success {
-  background-color: var(--main-color) !important;
+  background-color: var(--color-primary) !important;
 }
 
 .hover-shadow:hover {
@@ -30,10 +72,20 @@
   transform: translateY(-2px) scale(1.02);
 }
 .transition {
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
 }

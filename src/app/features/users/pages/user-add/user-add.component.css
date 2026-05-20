@@ -1,0 +1,17 @@
+.btn-back {
+  background-color: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+input[type="password"] {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  top: 22px;
+  right: 15px;
+  cursor: pointer;
+  border: none;
+}

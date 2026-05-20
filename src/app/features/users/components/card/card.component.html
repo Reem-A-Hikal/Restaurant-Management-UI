@@ -1,0 +1,92 @@
+<div class="staff-card">
+  <div class="staff-card__header">
+    <div class="staff-card__avatar-wrapper">
+      <img
+        *ngIf="user.profileImageUrl; else initialsAvatar"
+        [src]="user.profileImageUrl"
+        [alt]="user.fullName"
+        class="staff-card__avatar"
+      />
+      <ng-template #initialsAvatar>
+        <div class="staff-card__avatar staff-card__avatar--initials">
+          {{ user.fullName.charAt(0) }}
+        </div>
+      </ng-template>
+      <span
+        class="staff-card__status-dot"
+        [ngClass]="{
+          'staff-card__status-dot--active': user.isActive,
+          'staff-card__status-dot--offline': !user.isActive,
+        }"
+      >
+      </span>
+    </div>
+
+    <div class="staff-card__actions">
+      <button
+        class="staff-card__action-btn staff-card__action-btn--edit"
+        (click)="onEdit()"
+        type="button"
+      >
+        <span class="material-symbols-outlined">edit</span>
+      </button>
+      <button
+        class="staff-card__action-btn staff-card__action-btn--delete"
+        (click)="onDelete()"
+        type="button"
+      >
+        <span class="material-symbols-outlined">delete</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Name + Badges -->
+  <div class="staff-card__identity">
+    <h3 class="staff-card__name">{{ user.fullName }}</h3>
+    <div class="staff-card__badges">
+      <span
+        *ngIf="roleBadgeClass"
+        class="staff-card__badge"
+        [ngClass]="roleBadgeClass.css"
+      >
+        {{ roleBadgeClass.label }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Info Rows -->
+  <div class="staff-card__info">
+    <div class="staff-card__info-row">
+      <span class="material-symbols-outlined staff-card__info-icon">mail</span>
+      <span class="staff-card__info-text">{{ user.email }}</span>
+    </div>
+    <div class="staff-card__info-row">
+      <span class="material-symbols-outlined staff-card__info-icon">call</span>
+      <span class="staff-card__info-text">{{ user.phoneNumber }}</span>
+    </div>
+    <!-- Dynamic row: Chef or Delivery only -->
+    <div class="staff-card__info-row" *ngIf="secondaryInfo">
+      <span class="material-symbols-outlined staff-card__info-icon">
+        {{ secondaryInfo.icon }}
+      </span>
+      <span class="staff-card__info-text">{{ secondaryInfo.text }}</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="staff-card__footer">
+    <span class="staff-card__joined">
+      Joined {{ user.joinDate | date: "MMM d, y" }}
+    </span>
+    <div
+      class="staff-card__status-label"
+      [ngClass]="{
+        'staff-card__status-label--active': user.isActive,
+        'staff-card__status-label--offline': !user.isActive,
+      }"
+    >
+      <span class="staff-card__status-pip"></span>
+      {{ statusLabel }}
+    </div>
+  </div>
+</div>

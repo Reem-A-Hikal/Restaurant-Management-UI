@@ -1,0 +1,11 @@
+<div class="empty-state">
+  <div class="empty-state__icon">
+    <span class="material-symbols-outlined add-card__icon">{{ icon }}</span>
+  </div>
+  <h3 class="empty-state__title">No {{ title }} found</h3>
+  <p class="empty-state__desc">{{ description }}</p>
+  <button class="btn-primary" (click)="onAdd()">
+    <span class="material-symbols-outlined add-card__icon">add</span>
+    Add {{ buttonText }}
+  </button>
+</div>

@@ -1,11 +1,10 @@
-import { User, UserProfile } from '../../../models/User';
-import { AuthResponse } from './../models/AuthResponse';
-import { formatDate } from '@angular/common';
+import { AuthResponse } from '../models/auth-response.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
+import { UserProfile } from '../../../features/users/models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,29 +13,30 @@ export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_profile';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   createUser(formData: any): Observable<any> {
-    return this.http.post(
-      environment.apiBaseUrl + `/account/register`,
-      formData,
-      {
+    return this.http
+      .post<any>(environment.apiBaseUrl + `/account/register`, formData, {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
         }),
-      }
-    );
+      })
+      .pipe(map((res) => res?.data ?? res));
   }
 
-  login(formatDate: any): Observable<AuthResponse> {
+  login(credentials: any): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(environment.apiBaseUrl + `/account/login`, formatDate)
+      .post<any>(environment.apiBaseUrl + `/account/login`, credentials)
       .pipe(
+        map((res) => {
+          return (res?.data ?? res) as AuthResponse;
+        }),
         tap((response) => {
-          if (response.token) {
+          if (response?.token) {
             this.saveAuhData(response);
           }
-        })
+        }),
       );
   }
 
@@ -65,12 +65,36 @@ export class AuthService {
     return userDate ? JSON.parse(userDate) : null;
   }
 
-  getCurrentUser(): string | 'User' {
+  getCurrentUserEmail(): string {
     return this.getUserProfile()?.email || 'User';
   }
 
-  saveToken(token: string) {
-    localStorage.setItem(this.TOKEN_KEY, token);
+  getCurrentUserFullName(): string {
+    return this.getUserProfile()?.fullName || 'User';
+  }
+
+  getCurrentUserId(): string | null {
+    return this.getUserProfile()?.id || null;
+  }
+
+  getRole(): string {
+    return this.getUserProfile()?.role ?? '';
+  }
+
+  isAdmin(): boolean {
+    return this.getRole() === 'Admin';
+  }
+  isChef(): boolean {
+    return this.getRole() === 'Chef';
+  }
+  isDeliveryPerson(): boolean {
+    return this.getRole() === 'DeliveryPerson';
+  }
+  isCustomer(): boolean {
+    return this.getRole() === 'Customer';
+  }
+  hasRole(role: string): boolean {
+    return this.getRole() === role;
   }
 
   private saveAuhData(authResponse: AuthResponse): void {
@@ -78,20 +102,11 @@ export class AuthService {
 
     const userProfile: UserProfile = {
       id: authResponse.userId,
+      fullName: authResponse.fullName,
       email: authResponse.email,
-      roles: authResponse.roles || [],
+      role: authResponse.role,
     };
 
     localStorage.setItem(this.USER_KEY, JSON.stringify(userProfile));
-  }
-
-  isAdmin(): boolean {
-    const user = this.getUserProfile();
-    return user?.roles.includes('Admin') ?? false;
-  }
-
-  hasRole(role: string): boolean {
-    const user = this.getUserProfile();
-    return user ? user.roles.includes(role) : false;
   }
 }

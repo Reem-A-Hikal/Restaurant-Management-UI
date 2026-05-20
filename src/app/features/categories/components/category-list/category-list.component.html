@@ -1,0 +1,38 @@
+<section class="category-list-page">
+  <!-- ── Loading Skeleton ── -->
+  <ng-container *ngIf="isLoading">
+    <div class="categories-grid">
+      <div class="skeleton-card" *ngFor="let s of [1, 2, 3, 4, 5, 6]"></div>
+    </div>
+  </ng-container>
+
+  <!-- ── Empty State ── -->
+  <ng-container *ngIf="!isLoading && categories.length === 0">
+    <app-empty-state
+      icon="space_dashboard_2"
+      title="categories"
+      description="Start by adding your first category"
+      buttonText="Category"
+      (add)="addCategory.emit()"
+    >
+    </app-empty-state>
+  </ng-container>
+
+  <!-- ── Grid ── -->
+  <ng-container *ngIf="!isLoading && categories.length > 0">
+    <div class="categories-grid">
+      <app-category-card
+        *ngFor="let cat of categories"
+        [category]="cat"
+        (edit)="editCategory.emit($event)"
+        (delete)="deleteCategory.emit($event)"
+      />
+      <app-add-card
+        *ngIf="currentPage === 1"
+        title="category"
+        symbol="space_dashboard_2"
+        (add)="(addCategory)"
+      ></app-add-card>
+    </div>
+  </ng-container>
+</section>

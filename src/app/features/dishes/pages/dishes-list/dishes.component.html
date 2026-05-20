@@ -1,0 +1,146 @@
+<div class="container mt-4">
+  <app-top-page
+    pageTitle="Menu Dishes"
+    pageSubtitle="Search by product name, filter by category, or add a new dish"
+    [searchPlaceholder]="'Search with Product Name...'"
+    [addButtonLabel]="'Add New Product'"
+    [filterOptions]="filterOptions"
+    (searchEvent)="applySearch($event)"
+    (addEvent)="addDish()"
+    (filterChange)="filterDishes($event)"
+    (resetEvent)="resetFilters()"
+  ></app-top-page>
+
+  <!-- ── Category Nav ── -->
+  <!-- <div class="category-nav" *ngIf="categories.length > 0">
+    <button
+      class="category-nav__tab"
+      [class.category-nav__tab--active]="selectedCategoryId === null"
+      (click)="selectCategory(null)"
+    >
+      <i class="bi bi-grid-3x3-gap"></i>
+      All
+    </button>
+    <button
+      *ngFor="let cat of categories"
+      class="category-nav__tab"
+      [class.category-nav__tab--active]="selectedCategoryId === cat.categoryId"
+      (click)="selectCategory(cat.categoryId)"
+    >
+      {{ cat.name }}
+    </button>
+  </div> -->
+
+  <!-- ── Loading ── -->
+  <ng-container *ngIf="isLoading">
+    <div class="products-grid">
+      <div class="skeleton-card" *ngFor="let s of [1, 2, 3, 4, 5, 6]"></div>
+    </div>
+  </ng-container>
+
+  <!-- ── Empty ── -->
+  <ng-container *ngIf="!isLoading && isEmpty">
+    <app-empty-state
+      icon="egg_alt"
+      title="dishes"
+      description="Start by adding your first dish."
+      buttonText="Dish"
+      (add)="addDish()"
+    >
+    </app-empty-state>
+  </ng-container>
+
+  <!-- ── Products Grid ── -->
+  <ng-container *ngIf="!isLoading && !isEmpty">
+    <div class="products-grid">
+      <div class="product-card" *ngFor="let dish of dishes; trackBy: trackDish">
+        <!-- Badges -->
+        <div class="product-card__badges">
+          <span class="badge badge--promoted" *ngIf="dish.isPromoted">
+            <i class="bi bi-star-fill"></i> Featured
+          </span>
+          <span class="badge badge--discount" *ngIf="dish.discountPercent > 0">
+            -{{ dish.discountPercent }}%
+          </span>
+        </div>
+
+        <!-- Image -->
+        <div class="product-card__img-wrap">
+          <img
+            [src]="dish.image || 'assets/images/placeholder.png'"
+            [alt]="dish.name"
+            class="product-card__img"
+            loading="lazy"
+          />
+        </div>
+
+        <!-- Availability -->
+        <span
+          class="product-card__status"
+          [class.product-card__status--available]="dish.isAvailable"
+          [class.product-card__status--unavailable]="!dish.isAvailable"
+        >
+          <span class="badge__dot"></span>
+          {{ dish.isAvailable ? "Available" : "Unavailable" }}
+        </span>
+
+        <!-- Info -->
+        <div class="product-card__info">
+          <h3 class="product-card__name">{{ dish.name }}</h3>
+          <p class="product-card__desc" *ngIf="dish.description">
+            {{ dish.description }}
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="product-card__footer">
+          <div class="product-card__price-wrap">
+            <span class="product-card__price">
+              {{ dish.price | currency: "USD" : "symbol" : "1.2-2" }}
+            </span>
+            <span
+              class="product-card__price-old"
+              *ngIf="dish.discountPercent > 0"
+            >
+              {{
+                dish.price / (1 - dish.discountPercent / 100)
+                  | currency: "USD" : "symbol" : "1.2-2"
+              }}
+            </span>
+          </div>
+          <div class="product-card__actions">
+            <button
+              class="action-btn action-btn--edit"
+              (click)="editDish(dish.Id, dish)"
+              title="Edit"
+            >
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button
+              class="action-btn action-btn--delete"
+              (click)="deleteDish(dish.Id)"
+              title="Delete"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <app-add-card
+        symbol="room_service"
+        title="Dish"
+        (add)="addDish()"
+        *ngIf="dishes.length > 0"
+      ></app-add-card>
+    </div>
+
+    <!-- ── Pagination ── -->
+    <app-pagination
+      *ngIf="!isEmpty && !isLoading"
+      [pageIndex]="pagination.pageIndex"
+      [totalPages]="pagination.totalPages"
+      [totalItems]="pagination.totalItems"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  </ng-container>
+</div>

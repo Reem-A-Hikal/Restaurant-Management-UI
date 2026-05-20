@@ -1,0 +1,90 @@
+<div class="top-page">
+  <div class="top-page__toolbar">
+    <!-- Title Block -->
+    <div class="top-page__titles" *ngIf="pageTitle">
+      <h2 class="top-page__heading">{{ pageTitle }}</h2>
+      <p class="top-page__subheading" *ngIf="pageSubtitle">
+        {{ pageSubtitle }}
+      </p>
+    </div>
+
+    <!-- Search Wrapper: input + clear + search btn + reset btn -->
+    <div class="top-page__search-wrapper">
+      <span class="material-symbols-outlined top-page__search-icon"
+        >search</span
+      >
+
+      <input
+        class="top-page__search-input"
+        type="search"
+        name="search"
+        [placeholder]="searchPlaceholder"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onKeyEnter()"
+        autocomplete="off"
+        aria-label="Search input"
+      />
+
+      <button
+        *ngIf="searchTerm"
+        class="top-page__clear-btn"
+        type="button"
+        (click)="onReset()"
+        title="Clear"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <button
+        class="top-page__btn top-page__btn--icon"
+        type="button"
+        [disabled]="isSearchDisabled"
+        (click)="onSearch()"
+        title="Search"
+      >
+        <span class="material-symbols-outlined">search</span>
+      </button>
+
+      <button
+        class="top-page__btn top-page__btn--icon top-page__btn--reset"
+        type="button"
+        (click)="onReset()"
+        title="Reset"
+      >
+        <span class="material-symbols-outlined">refresh</span>
+      </button>
+    </div>
+
+    <!-- Actions: Filter + Add -->
+    <div class="top-page__actions">
+      <div class="top-page__filter-wrapper" *ngIf="filterOptions.length > 0">
+        <span class="material-symbols-outlined top-page__filter-icon"
+          >tune</span
+        >
+        <select
+          class="top-page__filter"
+          [(ngModel)]="selectedFilter"
+          (change)="onFilterChange()"
+          aria-label="Filter"
+        >
+          <option value="">All</option>
+          <option *ngFor="let opt of filterOptions" [value]="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+        <span class="material-symbols-outlined top-page__filter-arrow"
+          >expand_more</span
+        >
+      </div>
+
+      <button
+        class="top-page__btn top-page__btn--primary"
+        type="button"
+        (click)="onAdd()"
+      >
+        <span class="material-symbols-outlined">add</span>
+        {{ addButtonLabel }}
+      </button>
+    </div>
+  </div>
+</div>

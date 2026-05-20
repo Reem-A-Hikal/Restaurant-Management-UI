@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.staff-page {
+  padding: 32px;
+  background: #f6fbf4;
+  min-height: 100%;
+}
+
+/* ── Cards Grid ── */
+.staff-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .staff-page {
+    padding: 16px;
+  }
+
+  .staff-page__grid {
+    grid-template-columns: 1fr;
+  }
+}

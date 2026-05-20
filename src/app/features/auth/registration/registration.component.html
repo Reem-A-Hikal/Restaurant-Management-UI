@@ -1,0 +1,150 @@
+<div class="mb-4">
+  <h2 class="mb-4 text-center text-success">Sign Up</h2>
+</div>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+  <!-- Full Name -->
+  <div class="mb-3">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-person"></i></span>
+      <input
+        type="text"
+        class="form-control bg-body-secondary"
+        placeholder="Full Name"
+        formControlName="fullName"
+        [class.is-invalid]="hasError('fullName')"
+        [class.is-valid]="f['fullName'].valid"
+        autocomplete="name"
+        aria-label="Full Name"
+        [attr.aria-invalid]="hasError('fullName')"
+      />
+    </div>
+    <div class="invalid-feedback" *ngIf="hasError('fullName')">
+      {{ getError("fullName") }}
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div class="mb-3">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
+      <input
+        type="email"
+        class="form-control bg-body-secondary"
+        placeholder="E-mail"
+        formControlName="email"
+        [class.is-invalid]="hasError('email')"
+        [class.is-valid]="f['email'].valid"
+        autocomplete="email"
+        aria-label="Email"
+        [attr.aria-invalid]="hasError('email')"
+      />
+    </div>
+    <div class="invalid-feedback" *ngIf="hasError('email')">
+      {{ getError("email") }}
+    </div>
+  </div>
+
+  <!-- Phone -->
+  <div class="mb-3">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-phone"></i></span>
+      <input
+        type="tel"
+        class="form-control bg-body-secondary"
+        placeholder="Phone Number"
+        formControlName="phone"
+        [class.is-invalid]="hasError('phone')"
+        [class.is-valid]="f['phone'].valid"
+        autocomplete="tel"
+        aria-label="Phone Number"
+        [attr.aria-invalid]="hasError('phone')"
+      />
+    </div>
+    <div class="invalid-feedback" *ngIf="hasError('phone')">
+      {{ getError("phone") }}
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="mb-3">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-lock"></i></span>
+      <input
+        [type]="showPassword ? 'text' : 'password'"
+        class="form-control bg-body-secondary"
+        placeholder="Password"
+        formControlName="password"
+        [class.is-invalid]="hasError('password')"
+        [class.is-valid]="f['password'].valid"
+        aria-label="Password"
+        [attr.aria-invalid]="hasError('password')"
+      />
+      <button
+        class="btn btn-outline-secondary rounded-end-3 border"
+        type="button"
+        (click)="togglePasswordVisibility()"
+        aria-label="Toggle password visibility"
+      >
+        <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+      </button>
+    </div>
+    <div class="invalid-feedback" *ngIf="hasError('password')">
+      {{ getError("password") }}
+    </div>
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="mb-3">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-lock"></i></span>
+      <input
+        [type]="showConfirmPassword ? 'text' : 'password'"
+        class="form-control bg-body-secondary"
+        placeholder="Confirm Password"
+        formControlName="confirmPassword"
+        [class.is-invalid]="confirmPasswordError"
+        [class.is-valid]="f['confirmPassword'].valid"
+        aria-label="Confirm Password"
+        [attr.aria-invalid]="confirmPasswordError"
+      />
+      <button
+        class="btn btn-outline-secondary rounded-end-3 border"
+        type="button"
+        (click)="toggleConfirmPasswordVisibility()"
+        aria-label="Toggle confirm password visibility"
+      >
+        <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+      </button>
+    </div>
+    <div class="invalid-feedback" *ngIf="confirmPasswordError">
+      {{ confirmPasswordError }}
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="mb-3">
+    <button
+      type="submit"
+      class="btn btn-success w-100 rounded-3 py-2"
+      [disabled]="registerForm.invalid"
+      aria-label="Create Account"
+    >
+      <span *ngIf="!isSubmitting">Create Account</span>
+      <span *ngIf="isSubmitting">
+        <output
+          class="spinner-border spinner-border-sm me-2"
+          aria-hidden="true"
+        ></output>
+        Creating Account...
+      </span>
+    </button>
+  </div>
+
+  <!-- Login Link -->
+  <div class="text-center text-muted">
+    Already have an account?
+    <a routerLink="/signin" class="text-success text-decoration-none"
+      >Sign in</a
+    >
+  </div>
+</form>
