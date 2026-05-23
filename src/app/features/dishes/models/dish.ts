@@ -14,7 +14,7 @@ export interface Dish {
   categoryId: number;
 }
 export interface DishWithId extends Dish {
-  Id: number;
+  productId: number;
 }
 export interface DishesListApiResponse extends Pagination {
   items: DishWithId[];

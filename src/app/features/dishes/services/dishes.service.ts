@@ -13,11 +13,11 @@ export class DishesService {
 
   private readonly basePath = '/Product';
 
-  getAllProducts(): Observable<DishWithId[]> {
+  getAll(): Observable<DishWithId[]> {
     return this.api.get<DishWithId[]>(`${this.basePath}/all`);
   }
 
-  getPaginatedProducts(
+  getPaginated(
     pageIndex: number,
     pageSize: number,
     searchTerm?: string,
@@ -33,22 +33,26 @@ export class DishesService {
     return this.api.get<ApiResponse>(`${this.basePath}/paginated`, params);
   }
 
-  getProductById(id: string): Observable<DishWithId> {
+  getById(id: number): Observable<DishWithId> {
     return this.api.get<DishWithId>(`${this.basePath}/GetProduct/${id}`);
   }
 
-  createProduct(dish: Dish): Observable<ApiResponse> {
+  getByCategory(id: number): Observable<ApiResponse<DishWithId[]>> {
+    return this.api.get<ApiResponse>(`${this.basePath}/Category/${id}`);
+  }
+
+  create(dish: Dish): Observable<ApiResponse> {
     return this.api.post<ApiResponse>(`${this.basePath}/AddProduct`, dish);
   }
 
-  updateProduct(id: string, dish: DishWithId): Observable<ApiResponse> {
+  update(id: number, dish: DishWithId): Observable<ApiResponse> {
     return this.api.put<ApiResponse>(
       `${this.basePath}/EditProduct/${id}`,
       dish,
     );
   }
 
-  deleteProduct(id: number): Observable<ApiResponse> {
+  delete(id: number): Observable<ApiResponse> {
     return this.api.delete<ApiResponse>(`${this.basePath}/Delete/${id}`);
   }
 }

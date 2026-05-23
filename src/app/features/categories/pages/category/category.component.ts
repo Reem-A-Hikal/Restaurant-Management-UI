@@ -43,7 +43,7 @@ export class CategoryComponent implements OnInit {
 
   pagination: CategoryListApiResponse = {
     pageIndex: 1,
-    pageSize: 7,
+    pageSize: 9,
     totalPages: 0,
     totalItems: 0,
     hasNextPage: false,

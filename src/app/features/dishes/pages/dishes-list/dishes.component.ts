@@ -1,3 +1,4 @@
+import { CategoryService } from './../../../categories/services/category.service';
 import { DishesListApiResponse, DishWithId } from '../../models/dish';
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
@@ -9,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DishesService } from '../../services/dishes.service';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { Category } from '../../../categories/models/category.model';
 
 @Component({
   selector: 'app-dishes',
@@ -19,16 +21,18 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     CommonModule,
     TopPageComponent,
     AddCardComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
   ],
   templateUrl: './dishes.component.html',
   styleUrls: ['./dishes.component.css'],
 })
 export class DishesComponent implements OnInit {
   dishes!: DishWithId[];
+  categories!: Category[];
   isLoading: boolean = false;
   searchTerm: string = '';
   selectedFilter: string = 'All';
+  selectedCategoryId: any = null;
 
   get isEmpty(): boolean {
     return !this.isLoading && (this.dishes?.length ?? 0) === 0;
@@ -41,7 +45,7 @@ export class DishesComponent implements OnInit {
 
   pagination: DishesListApiResponse = {
     pageIndex: 1,
-    pageSize: 6,
+    pageSize: 9,
     totalPages: 0,
     totalItems: 0,
     hasNextPage: false,
@@ -51,17 +55,19 @@ export class DishesComponent implements OnInit {
 
   constructor(
     private readonly dishesService: DishesService,
+    private readonly categoryService: CategoryService,
     private readonly toastr: ToastrService,
   ) {}
   ngOnInit() {
     this.loadDishes();
+    this.loadCategories();
   }
   loadDishes(): void {
     this.isLoading = true;
     let term = this.searchTerm.trim();
     let filter = this.selectedFilter;
     this.dishesService
-      .getPaginatedProducts(
+      .getPaginated(
         this.pagination.pageIndex,
         this.pagination.pageSize,
         term,
@@ -80,6 +86,14 @@ export class DishesComponent implements OnInit {
       });
   }
 
+  loadCategories() {
+    this.categoryService.getAllCats().subscribe({
+      next: (res) => {
+        this.categories = res;
+      },
+    });
+  }
+
   onPageChange(newPage: number): void {
     this.pagination.pageIndex = newPage;
     this.loadDishes();
@@ -90,12 +104,17 @@ export class DishesComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  trackDish(index: number, dishId: any): any {
-    return dishId?.Id ? dishId.Id : index;
+  trackDish(index: number, dish: DishWithId): any {
+    return dish?.productId ? dish.productId : index;
   }
 
-  addDish() {}
-  editDish(dishId: number, dish: DishWithId) {}
+  addDish() {
+    console.log('Clicked');
+  }
+  editDish(dishId: number, dish: DishWithId) {
+    console.log('DishId:', dishId);
+    console.log('Dish Data:', dish);
+  }
 
   async deleteDish(dishId: number) {
     const Swal = await import('sweetalert2');
@@ -111,12 +130,10 @@ export class DishesComponent implements OnInit {
     if (result.isConfirmed) {
       this.isLoading = true;
       this.dishesService
-        .deleteProduct(dishId)
+        .delete(dishId)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
           next: (res) => {
-            console.log(res);
-
             Swal.default.fire({
               title: 'Deleted!',
               text: res.message || 'dish deactivated successfully',
@@ -139,7 +156,9 @@ export class DishesComponent implements OnInit {
         });
     }
   }
-  viewDish(dishId: number) {}
+  viewDish(dishId: number) {
+    console.log('From View', dishId);
+  }
 
   applySearch(term: any) {
     this.searchTerm = String(term || '').trim();
@@ -151,6 +170,20 @@ export class DishesComponent implements OnInit {
     this.selectedFilter = filter;
     this.pagination.pageIndex = 1;
     this.loadDishes();
+  }
+
+  selectCategory(id: any) {
+    if (id == null) {
+      this.loadDishes();
+      this.selectedCategoryId = null;
+      return;
+    }
+    this.dishesService.getByCategory(id).subscribe({
+      next: (res) => {
+        this.dishes = res.data;
+        this.selectedCategoryId = id;
+      },
+    });
   }
 
   resetFilters() {

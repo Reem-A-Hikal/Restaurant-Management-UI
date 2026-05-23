@@ -12,7 +12,7 @@
   ></app-top-page>
 
   <!-- ── Category Nav ── -->
-  <!-- <div class="category-nav" *ngIf="categories.length > 0">
+  <div class="category-nav" *ngIf="categories">
     <button
       class="category-nav__tab"
       [class.category-nav__tab--active]="selectedCategoryId === null"
@@ -29,7 +29,7 @@
     >
       {{ cat.name }}
     </button>
-  </div> -->
+  </div>
 
   <!-- ── Loading ── -->
   <ng-container *ngIf="isLoading">
@@ -111,14 +111,14 @@
           <div class="product-card__actions">
             <button
               class="action-btn action-btn--edit"
-              (click)="editDish(dish.Id, dish)"
+              (click)="editDish(dish.productId, dish)"
               title="Edit"
             >
               <i class="bi bi-pencil"></i>
             </button>
             <button
               class="action-btn action-btn--delete"
-              (click)="deleteDish(dish.Id)"
+              (click)="deleteDish(dish.productId)"
               title="Delete"
             >
               <i class="bi bi-trash"></i>
