@@ -1,0 +1,32 @@
+<div class="assign-panel">
+  <div class="assign-panel__field">
+    <label class="assign-panel__label" for="deliveryPersonSelect">
+      Delivery Person
+    </label>
+    <select
+      id="deliveryPersonSelect"
+      class="assign-panel__select"
+      [(ngModel)]="selectedPersonId"
+      [disabled]="isLoadingPersons"
+    >
+      <option value="">Auto-assign (recommended)</option>
+      <option *ngFor="let person of availablePersons" [value]="person.id">
+        {{ person.fullName }} — {{ person.vehicleNumber }}
+      </option>
+    </select>
+  </div>
+
+  <div class="assign-panel__hint" *ngIf="!isLoadingPersons && availablePersons.length === 0">
+    No delivery persons are currently available. Auto-assign will fail until one becomes free.
+  </div>
+
+  <button
+    class="assign-panel__btn"
+    type="button"
+    [disabled]="isAssigning"
+    (click)="onAssign()"
+  >
+    <span *ngIf="isAssigning" class="spinner-border spinner-border-sm me-2"></span>
+    {{ isAssigning ? 'Assigning...' : 'Assign Delivery' }}
+  </button>
+</div>
