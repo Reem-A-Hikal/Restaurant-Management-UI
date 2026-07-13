@@ -3,7 +3,7 @@
     <div class="staff-card__avatar-wrapper">
       <img
         *ngIf="user.profileImageUrl; else initialsAvatar"
-        [src]="user.profileImageUrl"
+        [src]="toAssetUrl(user.profileImageUrl)"
         [alt]="user.fullName"
         class="staff-card__avatar"
       />

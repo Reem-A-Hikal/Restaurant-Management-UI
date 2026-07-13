@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../../Core/services/api.service';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { HttpParams } from '@angular/common/http';
-import { ApiResponse } from '../../../shared/models/api-response.model';
 import { PaginatedResponse } from '../../../shared/models/pagination.model';
-import { AdminUpdateRequest, CreateUserRequest, UpdateProfileRequest, User } from '../models/user.model';
+import {
+  AdminUpdateRequest,
+  CreateUserRequest,
+  UpdateProfileRequest,
+  User,
+} from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +20,7 @@ export class UserService {
   constructor(private readonly api: ApiService) {}
 
   getAllUsers(): Observable<User[]> {
-    return this.api
-      .get<ApiResponse<User[]>>(`${this.basePath}/GetAll`)
-      .pipe(map((res) => res.data));
+    return this.api.get<User[]>(`${this.basePath}/GetAll`);
   }
 
   getAllPaginatedUsers(
@@ -36,51 +38,29 @@ export class UserService {
     if (selectedRole?.trim())
       params = params.set('selectedRole', selectedRole.trim());
 
-    return this.api
-      .get<
-        ApiResponse<PaginatedResponse<User>>
-      >(`${this.basePath}/GetAllPaginated`, params)
-      .pipe(map((res) => res.data));
+    return this.api.get<PaginatedResponse<User>>(
+      `${this.basePath}/GetAllPaginated`,
+      params,
+    );
   }
 
   getUserById(userId: string): Observable<User> {
-    return this.api
-      .get<ApiResponse<User>>(`${this.basePath}/GetUserById/${userId}`)
-      .pipe(map((res) => res.data));
+    return this.api.get<User>(`${this.basePath}/GetUserById/${userId}`);
   }
 
-  adminUpdateUser(
-    userId: string,
-    data: AdminUpdateRequest,
-  ): Observable<ApiResponse<null>> {
-    return this.api.put<ApiResponse<null>>(
-      `${this.basePath}/AdminUpdate/${userId}`,
-      data,
-    );
+  adminUpdateUser(userId: string, data: AdminUpdateRequest): Observable<null> {
+    return this.api.put<null>(`${this.basePath}/AdminUpdate/${userId}`, data);
   }
 
-  updateProfile(
-    userId: string,
-    data: UpdateProfileRequest,
-  ): Observable<ApiResponse<null>> {
-    return this.api.put<ApiResponse<null>>(
-      `${this.basePath}/UpdateProfile/${userId}`,
-      data,
-    );
+  updateProfile(userId: string, data: UpdateProfileRequest): Observable<null> {
+    return this.api.put<null>(`${this.basePath}/UpdateProfile/${userId}`, data);
   }
 
-  deleteUser(userId: string): Observable<ApiResponse<string>> {
-    return this.api.delete<ApiResponse<string>>(
-      `${this.basePath}/DeleteUser/${userId}`,
-    );
+  deleteUser(userId: string): Observable<string> {
+    return this.api.delete<string>(`${this.basePath}/DeleteUser/${userId}`);
   }
 
-  addUser(
-    user: CreateUserRequest,
-  ): Observable<ApiResponse<{ userId: string }>> {
-    return this.api.post<ApiResponse<{ userId: string }>>(
-      `${this.basePath}`,
-      user,
-    );
+  addUser(user: CreateUserRequest): Observable<{ userId: string }> {
+    return this.api.post<{ userId: string }>(`${this.basePath}`, user);
   }
 }

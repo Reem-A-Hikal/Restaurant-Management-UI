@@ -1,19 +1,15 @@
-import { AuthService } from '../Core/Auth/services/auth.service';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { ApiService } from '../Core/services/api.service';
+import { UserProfile } from '../features/users/models/user.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private readonly api: ApiService) {}
 
-  getUserProfile() {
-    return this.http.get(environment.apiBaseUrl + '/account/GetCurrentUser', {
-      headers: {
-        Authorization: `Bearer ${this.authService.getToken()}`,
-      },
-    });
+  getUserProfile(): Observable<UserProfile> {
+    return this.api.get<UserProfile>('/account/GetCurrentUser');
   }
 }

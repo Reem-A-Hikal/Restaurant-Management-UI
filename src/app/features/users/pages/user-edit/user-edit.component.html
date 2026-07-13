@@ -1,190 +1,185 @@
-<div class="container mt-4" *ngIf="!isLoading; else loadingTpl">
-  <div class="row g-4">
-    <!-- Left: Profile Card (Read Only) -->
-    <div class="col-lg-3">
-      <div class="card border-0 shadow-sm">
-        <!-- Cover -->
-        <div class="card-cover"></div>
+<div class="user-edit-page" *ngIf="!isLoading; else loadingTpl">
+  <div class="profile-card">
+    <div class="profile-card__cover"></div>
 
-        <div class="card-body text-center pt-0">
-          <!-- Avatar -->
-          <div class="avatar mx-auto mt-n4 mb-3">
-            <img
-              [src]="user.profileImageUrl || 'assets/images/default-avatar.png'"
-              [alt]="user.fullName"
-              class="rounded-circle border border-3 border-white shadow-sm"
-            />
-          </div>
+    <div class="profile-card__body">
+      <!-- Avatar -->
+      <div class="profile-avatar-wrap">
+        <img
+          [src]="
+            imagePreviewUrl ||
+            toAssetUrl(user.profileImageUrl, 'assets/images/default-avatar.png')
+          "
+          [alt]="user.fullName"
+          class="profile-avatar"
+        />
+        <ng-container *ngIf="isImageEditable">
+          <label
+            class="profile-avatar__edit-btn"
+            for="profileImageEdit"
+            title="Change photo"
+            aria-label="Change photo"
+          >
+            <i class="bi bi-camera-fill"></i>
+          </label>
+          <input
+            id="profileImageEdit"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onFileSelected($event)"
+            hidden
+          />
+        </ng-container>
+      </div>
 
-          <h6 class="fw-500 mb-1">{{ user.fullName }}</h6>
-          <p class="text-muted small mb-2">{{ user.email }}</p>
+      <h5 class="profile-name">{{ user.fullName }}</h5>
+      <p class="profile-email">{{ user.email }}</p>
 
-          <!-- Role -->
-          <div class="d-flex flex-wrap gap-1 justify-content-center mb-3">
-            <span class="badge rounded-pill">
-              {{ user.role }}
-            </span>
-          </div>
+      <div class="profile-badges">
+        <span class="role-badge">{{ user.role }}</span>
+        <span class="status-badge" [ngClass]="statusBadgeClass">
+          <span class="status-badge__dot"></span>
+          {{ statusLabel }}
+        </span>
+      </div>
 
-          <div class="border-top pt-3 text-start">
-            <div class="d-flex justify-content-between mb-2">
-              <small class="text-muted">Joined</small>
-              <small>{{ user.joinDate | date }}</small>
-            </div>
-            <div class="d-flex justify-content-between mb-2">
-              <small class="text-muted">Phone</small>
-              <small>{{ user.phoneNumber || "-" }}</small>
-            </div>
-            <div class="d-flex justify-content-between">
-              <small class="text-muted">Status</small>
-              <span
-                class="badge rounded-pill"
-                style="font-size: 11px"
-                [style.background-color]="user.isActive ? '#e8f5ee' : '#fde8e8'"
-                [style.color]="user.isActive ? '#028052' : '#d33'"
-              >
-                {{ user.isActive ? "Active" : "Inactive" }}
-              </span>
-            </div>
-          </div>
+      <div class="profile-info">
+        <div class="profile-info__row">
+          <i class="bi bi-calendar3"></i>
+          <span>Joined {{ user.joinDate | date: "MMM d, y" }}</span>
+        </div>
+        <div class="profile-info__row" *ngIf="user.phoneNumber">
+          <i class="bi bi-telephone"></i>
+          <span>{{ user.phoneNumber }}</span>
+        </div>
+      </div>
+
+      <!-- Status Actions -->
+      <div class="status-actions">
+        <p class="status-actions__label">Account status</p>
+        <div class="status-actions__buttons">
+          <button
+            *ngFor="let action of statusActions"
+            type="button"
+            class="status-action-btn"
+            [ngClass]="'status-action-btn--' + action.variant"
+            [disabled]="user.status === action.status || isChangingStatus"
+            (click)="changeStatus(action)"
+          >
+            <i class="bi" [ngClass]="action.icon"></i>
+            {{ action.label }}
+          </button>
         </div>
       </div>
     </div>
-
-    <!-- Right: Edit Form -->
-    <div class="col-lg-9">
-      <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body p-4">
-            <!-- Section: Account Settings -->
-            <p
-              class="text-muted small text-uppercase fw-500 letter-spacing mb-3"
+  </div>
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <div class="edit-card">
+      <ng-container *ngIf="hasRoleSpecificFields; else noRoleFields">
+        <!-- Chef -->
+        <div class="edit-section" *ngIf="isChef">
+          <p class="edit-section__title">
+            <i class="bi bi-egg-fried"></i> Chef details
+          </p>
+          <div class="form-field">
+            <label class="form-field__label" for="specialization"
+              >Specialization</label
             >
-              Account settings
-            </p>
+            <input
+              id="specialization"
+              type="text"
+              class="form-field__input"
+              formControlName="specialization"
+              placeholder="e.g. Italian Cuisine"
+            />
+          </div>
+        </div>
 
-            <div class="row g-3 mb-4">
-              <!-- IsActive Toggle -->
-              <div class="col-md-6">
-                <label class="form-label small text-muted" for="isActive"
-                  >Account status</label
-                >
-                <div class="form-check form-switch mt-1">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="isActive"
-                    formControlName="isActive"
-                  />
-                  <label class="form-check-label" for="isActive">
-                    {{
-                      editForm.get("isActive")?.value ? "Active" : "Inactive"
-                    }}
-                  </label>
-                </div>
-              </div>
+        <!-- Delivery Person -->
+        <div class="edit-section" *ngIf="isDeliveryPerson">
+          <p class="edit-section__title">
+            <i class="bi bi-car-front"></i> Delivery person details
+          </p>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="vehicleNumber"
+                >Vehicle number</label
+              >
+              <input
+                id="vehicleNumber"
+                type="text"
+                class="form-field__input"
+                formControlName="vehicleNumber"
+                placeholder="e.g. ABC-1234"
+              />
             </div>
-
-            <!-- Section: Chef Details -->
-            <ng-container *ngIf="isChef">
-              <div class="border-top pt-4 mb-4">
-                <p
-                  class="text-muted small text-uppercase fw-500 letter-spacing mb-3"
-                >
-                  <i class="bi bi-egg-fried me-1"></i> Chef details
-                </p>
-                <div class="col-md-6">
-                  <label
-                    class="form-label small text-muted"
-                    for="specialization"
-                    >Specialization</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="specialization"
-                    placeholder="e.g. Italian Cuisine"
-                  />
-                </div>
-              </div>
-            </ng-container>
-
-            <!-- Section: Delivery Person Details -->
-            <ng-container *ngIf="isDeliveryPerson">
-              <div class="border-top pt-4 mb-4">
-                <p
-                  class="text-muted small text-uppercase fw-500 letter-spacing mb-3"
-                >
-                  <i class="bi bi-car-front me-1"></i> Delivery person details
-                </p>
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label
-                      class="form-label small text-muted"
-                      for="vehicleNumber"
-                      >Vehicle number</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control form-control-sm"
-                      formControlName="vehicleNumber"
-                      placeholder="e.g. ABC-1234"
-                    />
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label small text-muted" for="isAvailable"
-                      >Availability</label
-                    >
-                    <div class="form-check form-switch mt-1">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="isAvailable"
-                        formControlName="isAvailable"
-                      />
-                      <label class="form-check-label" for="isAvailable">
-                        {{
-                          editForm.get("isAvailable")?.value
-                            ? "Available"
-                            : "Unavailable"
-                        }}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-
-            <!-- Actions -->
-            <div class="border-top pt-4 d-flex justify-content-end gap-2">
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary px-4"
-                (click)="goBack()"
-                [disabled]="isSaving"
+            <div class="form-field form-field--switch">
+              <label class="form-field__label" for="isAvailable"
+                >Availability</label
               >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                class="btn btn-sm btn-success px-4"
-                [disabled]="isSaving"
-              >
-                <span
-                  *ngIf="isSaving"
-                  class="spinner-border spinner-border-sm me-1"
-                ></span>
-                {{ isSaving ? "Saving..." : "Save changes" }}
-              </button>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isAvailable"
+                  formControlName="isAvailable"
+                />
+                <label class="form-check-label" for="isAvailable">
+                  {{
+                    editForm.get("isAvailable")?.value
+                      ? "Available"
+                      : "Unavailable"
+                  }}
+                </label>
+              </div>
             </div>
           </div>
         </div>
-      </form>
+      </ng-container>
+
+      <ng-template #noRoleFields>
+        <div class="edit-empty-note" *ngIf="!isImageEditable">
+          <i class="bi bi-info-circle"></i>
+          This account has no administrative details to edit. Customers manage
+          their own profile.
+        </div>
+        <div class="edit-empty-note" *ngIf="isImageEditable">
+          <i class="bi bi-info-circle"></i>
+          No additional role-specific details for this account. You can still
+          update the profile photo.
+        </div>
+      </ng-template>
+
+      <!-- Actions -->
+      <div class="edit-card__actions">
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="goBack()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-save"
+          [disabled]="isSaving || (!hasRoleSpecificFields && !selectedFile)"
+        >
+          <span *ngIf="isSaving" class="spinner"></span>
+          <i *ngIf="!isSaving" class="bi bi-check-lg"></i>
+          {{
+            isUploadingImage
+              ? "Uploading image..."
+              : isSaving
+                ? "Saving..."
+                : "Save changes"
+          }}
+        </button>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 
-<!-- Loading -->
 <ng-template #loadingTpl>
   <div
     class="d-flex justify-content-center align-items-center"

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.model';
+import { toAssetUrl } from '../../../../shared/helpers/url.helpers';
 
 @Component({
   selector: 'app-card',
@@ -13,6 +14,8 @@ export class CardComponent {
   @Input() user!: User;
   @Output() edit = new EventEmitter<User>();
   @Output() delete = new EventEmitter<User>();
+
+  toAssetUrl = toAssetUrl;
 
   get displayName(): string {
     return this.user.fullName;

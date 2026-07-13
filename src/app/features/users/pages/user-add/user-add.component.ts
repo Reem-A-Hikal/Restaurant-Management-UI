@@ -17,6 +17,8 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import { CreateUserRequest, UserRole } from '../../models/user.model';
+import { ImageUploadService } from '../../../../shared/services/image-upload.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-user-add',
@@ -34,7 +36,11 @@ export class AddUserComponent implements OnInit {
   userForm!: FormGroup;
   UserRole = UserRole;
   isSubmitting: boolean = false;
+  isUploadingImage: boolean = false;
   showPassword: boolean = false;
+
+  selectedFile: File | null = null;
+  imagePreviewUrl: string | null = null;
 
   roles = [
     { value: UserRole.Admin, label: 'Admin' },
@@ -46,6 +52,7 @@ export class AddUserComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly userService: UserService,
+    private readonly imageUploadService: ImageUploadService,
     private readonly router: Router,
     private readonly toastr: ToastrService,
   ) {}
@@ -115,6 +122,30 @@ export class AddUserComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      this.toastr.error(
+        'Only JPG, PNG, or WEBP images are allowed',
+        'Invalid file',
+      );
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      this.toastr.error('Image size cannot exceed 5MB', 'File too large');
+      return;
+    }
+
+    this.selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = () => (this.imagePreviewUrl = reader.result as string);
+    reader.readAsDataURL(file);
+  }
+
   get f() {
     return this.userForm.controls;
   }
@@ -127,20 +158,43 @@ export class AddUserComponent implements OnInit {
 
     this.isSubmitting = true;
 
+    if (this.selectedFile) {
+      this.isUploadingImage = true;
+      this.imageUploadService
+        .upload(this.selectedFile, 'users')
+        .pipe(finalize(() => (this.isUploadingImage = false)))
+        .subscribe({
+          next: (res) => this.createUser(res.imageUrl, res.imageUrl),
+          error: () => {
+            this.isSubmitting = false;
+            this.toastr.error('Failed to upload image', 'Error');
+          },
+        });
+    } else {
+      this.createUser(undefined, null);
+    }
+  }
+
+  private createUser(
+    profileImageUrl: string | undefined,
+    uploadedImageUrl: string | null,
+  ): void {
     const { confirmPassword, ...formData } = this.userForm.value;
-    const request = formData as CreateUserRequest;
+    const request: CreateUserRequest = { ...formData, profileImageUrl };
 
     this.userService.addUser(request).subscribe({
-      next: (res) => {
+      next: () => {
         this.isSubmitting = false;
-        this.toastr.success(
-          res.message || 'User created successfully',
-          'Success',
-        );
+        this.toastr.success('User created successfully', 'Success');
         this.router.navigateByUrl('/Dashboard/Staff');
       },
       error: (err) => {
         this.isSubmitting = false;
+        if (uploadedImageUrl) {
+          this.imageUploadService
+            .delete(uploadedImageUrl)
+            .subscribe({ error: () => {} });
+        }
         this.toastr.error(
           err.error?.message ||
             err.error?.errors?.[0] ||

@@ -16,6 +16,7 @@ import { CardComponent } from '../../components/card/card.component';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { User } from '../../models/user.model';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
 
 @Component({
   selector: 'app-user-list',
@@ -28,7 +29,7 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     TopPageComponent,
     CardComponent,
     AddCardComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
@@ -52,7 +53,7 @@ export class UserListComponent implements OnInit {
   searchTerm = '';
   selectedRole = '';
   filterOptions: FilterOption[] = [];
-  roles: string[] = ['Admin', 'Customer', 'Chef', 'DeliveryPerson'];
+  roles: string[] = ['Customer', 'Chef', 'DeliveryPerson'];
 
   // Inputs for sidebar and responsive design
   @Input() isCollapsed = false;
@@ -97,8 +98,11 @@ export class UserListComponent implements OnInit {
           this.pagination.totalPages = response.totalPages;
           this.isLoading = false;
         },
-        error: () => {
-          this.toastr.error('Failed to load users', 'Error');
+        error: (err) => {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load users'),
+            'Error',
+          );
           this.isLoading = false;
         },
       });
@@ -134,10 +138,10 @@ export class UserListComponent implements OnInit {
         .deleteUser(userId)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
-          next: (res) => {
+          next: () => {
             Swal.default.fire({
               title: 'Deleted!',
-              text: res.message || 'User deleted successfully.',
+              text: 'User deleted successfully.',
               icon: 'success',
               timer: 2000,
               showConfirmButton: false,
@@ -148,7 +152,7 @@ export class UserListComponent implements OnInit {
           error: (err) => {
             Swal.default.fire({
               title: 'Error!',
-              text: err.error?.message || 'Failed to delete user',
+              text: extractErrorResponse(err, 'Failed to delete user'),
               icon: 'error',
               showConfirmButton: true,
               confirmButtonText: 'OK',
