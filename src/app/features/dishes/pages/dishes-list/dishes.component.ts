@@ -1,16 +1,28 @@
 import { CategoryService } from './../../../categories/services/category.service';
-import { DishesListApiResponse, DishWithId } from '../../models/dish';
+import {
+  DishesListApiResponse,
+  DishWithId,
+  ProductStatus,
+} from '../../models/dish.model';
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { TopPageComponent } from '../../../../shared/components/top-page/top-page.component';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DishesService } from '../../services/dishes.service';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { Category } from '../../../categories/models/category.model';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
+import {
+  MdbModalModule,
+  MdbModalRef,
+  MdbModalService,
+} from 'mdb-angular-ui-kit/modal';
+import { ManageDishModalComponent } from '../../components/manage-dish-modal/manage-dish-modal.component';
+import { toAssetUrl } from '../../../../shared/helpers/url.helpers';
 
 @Component({
   selector: 'app-dishes',
@@ -22,6 +34,7 @@ import { Category } from '../../../categories/models/category.model';
     TopPageComponent,
     AddCardComponent,
     EmptyStateComponent,
+    MdbModalModule,
   ],
   templateUrl: './dishes.component.html',
   styleUrls: ['./dishes.component.css'],
@@ -33,6 +46,10 @@ export class DishesComponent implements OnInit {
   searchTerm: string = '';
   selectedFilter: string = 'All';
   selectedCategoryId: any = null;
+  readonly ProductStatus = ProductStatus;
+  toAssetUrl = toAssetUrl;
+
+  modalRef: MdbModalRef<ManageDishModalComponent> | null = null;
 
   get isEmpty(): boolean {
     return !this.isLoading && (this.dishes?.length ?? 0) === 0;
@@ -57,6 +74,7 @@ export class DishesComponent implements OnInit {
     private readonly dishesService: DishesService,
     private readonly categoryService: CategoryService,
     private readonly toastr: ToastrService,
+    private readonly modalService: MdbModalService,
   ) {}
   ngOnInit() {
     this.loadDishes();
@@ -75,12 +93,15 @@ export class DishesComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.dishes = res.data.items;
-          this.pagination = res.data;
+          this.dishes = res.items;
+          this.pagination = res;
           this.isLoading = false;
         },
-        error: (err) => {
-          this.toastr.error('Failed to load dishes', 'Error');
+        error: (err: HttpErrorResponse) => {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load dishes'),
+            'Error',
+          );
           this.isLoading = false;
         },
       });
@@ -108,12 +129,29 @@ export class DishesComponent implements OnInit {
     return dish?.productId ? dish.productId : index;
   }
 
-  addDish() {
-    console.log('Clicked');
+  openDishModal(dish?: DishWithId): void {
+    this.modalRef = this.modalService.open(ManageDishModalComponent, {
+      modalClass: 'modal-dialog-centered',
+      data: {
+        dishToEdit: dish,
+        categories: this.categories,
+        title: dish ? 'Edit Dish' : 'Add New Dish',
+      },
+    });
+
+    this.modalRef.onClose.pipe(take(1)).subscribe((result) => {
+      if (result === 'success') {
+        this.refreshCurrentView();
+      }
+    });
   }
+
+  addDish() {
+    this.openDishModal();
+  }
+
   editDish(dishId: number, dish: DishWithId) {
-    console.log('DishId:', dishId);
-    console.log('Dish Data:', dish);
+    this.openDishModal(dish);
   }
 
   async deleteDish(dishId: number) {
@@ -133,21 +171,21 @@ export class DishesComponent implements OnInit {
         .delete(dishId)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
-          next: (res) => {
+          next: () => {
             Swal.default.fire({
               title: 'Deleted!',
-              text: res.message || 'dish deactivated successfully',
+              text: 'Dish deactivated successfully',
               icon: 'success',
               timer: 2000,
               showConfirmButton: false,
               timerProgressBar: true,
             });
-            this.loadDishes();
+            this.refreshCurrentView();
           },
           error: (err: HttpErrorResponse) => {
             Swal.default.fire({
               title: 'Error!',
-              text: err.message || 'Failed to deactivate this dish',
+              text: extractErrorResponse(err, 'Failed to deactivate this dish'),
               icon: 'error',
               showConfirmButton: true,
               confirmButtonText: 'OK',
@@ -180,7 +218,7 @@ export class DishesComponent implements OnInit {
     }
     this.dishesService.getByCategory(id).subscribe({
       next: (res) => {
-        this.dishes = res.data;
+        this.dishes = res;
         this.selectedCategoryId = id;
       },
     });
@@ -191,5 +229,13 @@ export class DishesComponent implements OnInit {
     this.selectedFilter = 'All';
     this.pagination.pageIndex = 1;
     this.loadDishes();
+  }
+
+  private refreshCurrentView(): void {
+    if (this.selectedCategoryId != null) {
+      this.selectCategory(this.selectedCategoryId);
+    } else {
+      this.loadDishes();
+    }
   }
 }

@@ -67,7 +67,7 @@
         <!-- Image -->
         <div class="product-card__img-wrap">
           <img
-            [src]="dish.image || 'assets/images/placeholder.png'"
+            [src]="toAssetUrl(dish.imageUrl, 'assets/images/placeholder.png')"
             [alt]="dish.name"
             class="product-card__img"
             loading="lazy"
@@ -77,11 +77,19 @@
         <!-- Availability -->
         <span
           class="product-card__status"
-          [class.product-card__status--available]="dish.isAvailable"
-          [class.product-card__status--unavailable]="!dish.isAvailable"
+          [class.product-card__status--available]="
+            dish.status === ProductStatus.Available
+          "
+          [class.product-card__status--unavailable]="
+            dish.status === ProductStatus.Unavailable
+          "
         >
           <span class="badge__dot"></span>
-          {{ dish.isAvailable ? "Available" : "Unavailable" }}
+          {{
+            dish.status === ProductStatus.Available
+              ? "Available"
+              : "Unavailable"
+          }}
         </span>
 
         <!-- Info -->

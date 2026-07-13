@@ -1,3 +1,331 @@
-<p>
-  ManageProductModal works!
-</p>
+<div class="manage-modal">
+  <div class="manage-modal__header">
+    <div class="manage-modal__title-block">
+      <div class="manage-modal__icon">
+        <i class="bi bi-egg-fried"></i>
+      </div>
+      <h5 class="manage-modal__title">
+        {{ title || (editMode ? "Edit Dish" : "Add New Dish") }}
+      </h5>
+    </div>
+    <button
+      class="manage-modal__close"
+      (click)="modalRef.close()"
+      type="button"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="manage-modal__body">
+    <form
+      class="manage-modal__form"
+      [formGroup]="dishForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <!-- Image -->
+      <div class="form-field">
+        <label class="form-field__label" for="dishImage">Dish Image</label>
+        <div class="dish-image-upload">
+          <div class="dish-image-preview" *ngIf="imagePreviewUrl; else noImage">
+            <img [src]="imagePreviewUrl" alt="Preview" />
+            <button
+              type="button"
+              class="dish-image-remove"
+              (click)="removeImage()"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <ng-template #noImage>
+            <label class="dish-image-placeholder" for="dishImage">
+              <i class="bi bi-image"></i>
+              <span>Upload image</span>
+            </label>
+          </ng-template>
+          <input
+            id="dishImage"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onFileSelected($event)"
+            hidden
+          />
+          <label
+            *ngIf="imagePreviewUrl"
+            class="dish-image-change"
+            for="dishImage"
+          >
+            Change image
+          </label>
+        </div>
+      </div>
+
+      <!-- Name -->
+      <div
+        class="form-field"
+        [class.form-field--error]="f['name'].touched && f['name'].invalid"
+      >
+        <label class="form-field__label" for="name">Dish Name</label>
+        <div class="form-field__input-wrap">
+          <i class="bi bi-card-text form-field__icon"></i>
+          <input
+            class="form-field__input"
+            type="text"
+            id="name"
+            formControlName="name"
+            placeholder="e.g. Grilled Chicken"
+          />
+        </div>
+        <div
+          class="form-field__error"
+          *ngIf="f['name'].touched && f['name'].invalid"
+        >
+          <i class="bi bi-exclamation-circle"></i>
+          <span *ngIf="f['name'].errors?.['required']">Name is required</span>
+          <span *ngIf="f['name'].errors?.['minlength']"
+            >Minimum 2 characters</span
+          >
+          <span *ngIf="f['name'].errors?.['maxlength']"
+            >Max 100 characters</span
+          >
+        </div>
+      </div>
+
+      <!-- Category + Price -->
+      <div class="form-row">
+        <div
+          class="form-field"
+          [class.form-field--error]="
+            f['categoryId'].touched && f['categoryId'].invalid
+          "
+        >
+          <label class="form-field__label" for="categoryId">Category</label>
+          <div class="form-field__input-wrap">
+            <i class="bi bi-list-nested form-field__icon"></i>
+            <select
+              class="form-field__input form-field__select"
+              id="categoryId"
+              formControlName="categoryId"
+            >
+              <option value="" disabled>Select category</option>
+              <option *ngFor="let cat of categories" [value]="cat.categoryId">
+                {{ cat.name }}
+              </option>
+            </select>
+            <i class="bi bi-chevron-down form-field__chevron"></i>
+          </div>
+          <div
+            class="form-field__error"
+            *ngIf="f['categoryId'].touched && f['categoryId'].invalid"
+          >
+            <i class="bi bi-exclamation-circle"></i>
+            <span>Category is required</span>
+          </div>
+        </div>
+
+        <div
+          class="form-field"
+          [class.form-field--error]="f['price'].touched && f['price'].invalid"
+        >
+          <label class="form-field__label" for="price">Price</label>
+          <div class="form-field__input-wrap">
+            <i class="bi bi-currency-dollar form-field__icon"></i>
+            <input
+              class="form-field__input"
+              type="number"
+              step="0.01"
+              id="price"
+              formControlName="price"
+              placeholder="0.00"
+            />
+          </div>
+          <div
+            class="form-field__error"
+            *ngIf="f['price'].touched && f['price'].invalid"
+          >
+            <i class="bi bi-exclamation-circle"></i>
+            <span>Price must be greater than 0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-field">
+        <label class="form-field__label" for="description">Description</label>
+        <div class="form-field__input-wrap">
+          <i class="bi bi-text-paragraph form-field__icon"></i>
+          <textarea
+            class="form-field__input"
+            id="description"
+            formControlName="description"
+            rows="3"
+            placeholder="Ingredients, preparation notes..."
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Prep time + Calories -->
+      <div class="form-row">
+        <div
+          class="form-field"
+          [class.form-field--error]="
+            f['preparationTime'].touched && f['preparationTime'].invalid
+          "
+        >
+          <label class="form-field__label" for="preparationTime"
+            >Prep Time (min)</label
+          >
+          <div class="form-field__input-wrap">
+            <i class="bi bi-clock form-field__icon"></i>
+            <input
+              class="form-field__input"
+              type="number"
+              id="preparationTime"
+              formControlName="preparationTime"
+            />
+          </div>
+          <div
+            class="form-field__error"
+            *ngIf="f['preparationTime'].touched && f['preparationTime'].invalid"
+          >
+            <i class="bi bi-exclamation-circle"></i>
+            <span>Must be at least 1 minute</span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label" for="calories">Calories</label>
+          <div class="form-field__input-wrap">
+            <i class="bi bi-fire form-field__icon"></i>
+            <input
+              class="form-field__input"
+              type="number"
+              id="calories"
+              formControlName="calories"
+              placeholder="Optional"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Discount + Allowed Discount -->
+      <div class="form-row">
+        <div
+          class="form-field"
+          [class.form-field--error]="
+            f['discountPercent'].touched &&
+            (f['discountPercent'].invalid ||
+              dishForm.errors?.['discountExceedsAllowed'])
+          "
+        >
+          <label class="form-field__label" for="discountPercent"
+            >Discount %</label
+          >
+          <div class="form-field__input-wrap">
+            <i class="bi bi-percent form-field__icon"></i>
+            <input
+              class="form-field__input"
+              type="number"
+              id="discountPercent"
+              formControlName="discountPercent"
+            />
+          </div>
+          <div
+            class="form-field__error"
+            *ngIf="
+              f['discountPercent'].touched &&
+              dishForm.errors?.['discountExceedsAllowed']
+            "
+          >
+            <i class="bi bi-exclamation-circle"></i>
+            <span>Discount cannot exceed allowed discount</span>
+          </div>
+        </div>
+
+        <div
+          class="form-field"
+          [class.form-field--error]="
+            f['allowedDiscountPercent'].touched &&
+            f['allowedDiscountPercent'].invalid
+          "
+        >
+          <label class="form-field__label" for="allowedDiscountPercent"
+            >Max Allowed Discount %</label
+          >
+          <div class="form-field__input-wrap">
+            <i class="bi bi-percent form-field__icon"></i>
+            <input
+              class="form-field__input"
+              type="number"
+              id="allowedDiscountPercent"
+              formControlName="allowedDiscountPercent"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Status (edit mode only) -->
+      <div class="form-field form-field--switch" *ngIf="editMode">
+        <label class="form-check-label" for="isAvailableStatus">
+          Availability
+          <small class="form-field__hint d-block">
+            {{
+              isAvailable
+                ? "Visible to customers and orderable"
+                : "Hidden from customers"
+            }}
+          </small>
+        </label>
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="isAvailableStatus"
+            [checked]="isAvailable"
+            (change)="onAvailabilityToggle($event)"
+          />
+        </div>
+      </div>
+
+      <!-- Promoted toggle -->
+      <div class="form-field form-field--switch">
+        <label class="form-check-label" for="isPromoted"
+          >Featured / Promoted</label
+        >
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="isPromoted"
+            formControlName="isPromoted"
+          />
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="manage-modal__actions">
+        <button type="button" class="btn-cancel" (click)="modalRef.close()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-save"
+          [disabled]="dishForm.invalid || isSubmitting"
+        >
+          <span *ngIf="isSubmitting || isUploadingImage" class="spinner"></span>
+          <i
+            *ngIf="!isSubmitting && !isUploadingImage"
+            class="bi bi-check-lg"
+          ></i>
+          {{
+            isUploadingImage
+              ? "Uploading image..."
+              : isSubmitting
+                ? "Saving..."
+                : "Save Dish"
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
