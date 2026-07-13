@@ -21,6 +21,8 @@ import {
 import { ManageCategoryComponent } from '../../components/manage-category-modal/manage-category-modal.component';
 import { CategoryListComponent } from '../../components/category-list/category-list.component';
 import { CategoryService } from '../../services/category.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
 
 @Component({
   selector: 'app-category',
@@ -163,10 +165,10 @@ export class CategoryComponent implements OnInit {
         .archive(catId)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
-          next: (res) => {
+          next: () => {
             Swal.default.fire({
               title: 'Archived!',
-              text: res.message || 'Category deactivated successfully',
+              text: 'Category deactivated successfully',
               icon: 'success',
               timer: 2000,
               showConfirmButton: false,
@@ -174,10 +176,13 @@ export class CategoryComponent implements OnInit {
             });
             this.loadCategories();
           },
-          error: (err) => {
+          error: (err: HttpErrorResponse) => {
             Swal.default.fire({
               title: 'Error!',
-              text: err.error?.title || 'Failed to deactivate this Category',
+              text: extractErrorResponse(
+                err,
+                'Failed to deactivate this Category',
+              ),
               icon: 'error',
               showConfirmButton: true,
               confirmButtonText: 'OK',

@@ -1,5 +1,5 @@
 import { PaginatedResponse } from '../../../shared/models/pagination.model';
-import { SimpleDish } from '../../dishes/models/dish';
+import { SimpleDish } from '../../dishes/models/dish.model';
 
 export enum CategoryStatus {
   Active = 0,

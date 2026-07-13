@@ -96,10 +96,10 @@ export class ManageCategoryComponent implements OnInit {
     }
   }
 
-  private saveCategory(request$: Observable<any>) {
+  private saveCategory(request$: Observable<Category | null>) {
     request$.pipe(take(1)).subscribe({
-      next: (res) => {
-        this.toastr.success(res.message || 'Saved successfully', 'Success');
+      next: () => {
+        this.toastr.success('Saved successfully', 'Success');
         this.modalRef.close('success');
         this.isSubmitting = false;
       },
