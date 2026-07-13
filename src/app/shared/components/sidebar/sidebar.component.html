@@ -1,71 +1,72 @@
 <div class="sidenav" [ngClass]="isCollapsed ? 'sidenav-collapsed' : ''">
   <div class="logo-container">
-    <button
-      class="logo"
-      (click)="toggleSidebar()"
-      aria-label="Toggle sidebar"
-    >
-      <img
-        class="logo-img"
-        width="50"
-        height="50"
-        src="favicon.png"
-        alt="Logo"
-      />
+    <button class="logo" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+      <span class="logo-img-wrap">
+        <img class="logo-img" src="favicon.png" alt="Logo" />
+      </span>
     </button>
     <div class="logo-text" @fadeInOut *ngIf="isCollapsed">Restro</div>
-    <button
-      class="button-close"
-      @rotate
-      *ngIf="isCollapsed"
-      (click)="closeSidenav()"
-    >
-      <i class="fa-solid fa-x close"></i>
+    <button class="button-close" *ngIf="isCollapsed" (click)="closeSidenav()" aria-label="Close sidebar">
+      <span class="material-symbols-outlined">close</span>
     </button>
   </div>
+
   <ul class="sidenav-nav">
-    <li class="sidenav-nav-item">
-      <a
+    <li class="sidenav-nav-item"
         class="sidenav-nav-link"
         routerLink="/Dashboard"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <i class="sidenav-link-icon bi bi-speedometer2"></i>
-        <span class="sidenav-link-text" @fadeInOut *ngIf="isCollapsed">
-          Dashboard
-        </span>
-      </a>
+        <span class="sidenav-link-icon material-symbols-outlined">dashboard</span>
+        <span class="sidenav-link-text" @fadeInOut *ngIf="isCollapsed">Dashboard</span>
     </li>
-    <li class="sidenav-nav-item" *ngFor="let data of navData">
-      <a
+    <li class="sidenav-nav-item" *ngFor="let data of navData"
+      
         class="sidenav-nav-link"
         [routerLink]="[data.routeLink]"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: false }"
       >
-        <i class="sidenav-link-icon" [class]="data.icon"></i>
-        <span class="sidenav-link-text" @fadeInOut *ngIf="isCollapsed">{{
-          data.label
-        }}</span>
-      </a>
-    </li>
-    <li
-      class="sidenav-nav-item logout-item"
-    >
-      <a
-        class="sidenav-nav-link"
-        (click)="onLogout()"
-      >
-        <i class="sidenav-link-icon bi bi-box-arrow-left"></i>
-        <span
-          @fadeInOut
-          class="sidenav-link-text"
-          @fadeInOut
-          *ngIf="isCollapsed"
-          >Logout</span
-        >
-      </a>
+        <span class="sidenav-link-icon material-symbols-outlined">{{ data.icon }}</span>
+        <span class="sidenav-link-text" @fadeInOut *ngIf="isCollapsed">{{ data.label }}</span>
     </li>
   </ul>
+
+  <!-- ══ Profile Footer ══ -->
+  <div class="sidenav-footer">
+    <!-- Popup Menu -->
+    <div class="profile-menu" *ngIf="isProfileMenuOpen">
+      <a class="profile-menu__item" routerLink="/Dashboard/Profile" (click)="closeProfileMenu()">
+        <span class="material-symbols-outlined">account_circle</span>
+        My Profile
+      </a>
+      <a class="profile-menu__item profile-menu__item--danger" (click)="onLogout()">
+        <span class="material-symbols-outlined">logout</span>
+        Logout
+      </a>
+    </div>
+
+    <!-- Trigger Button -->
+    <button class="sidenav-profile-btn" type="button" (click)="toggleProfileMenu()">
+      <img
+        *ngIf="currentUser?.profileImageUrl; else initialsAvatar"
+        [src]="toAssetUrl(currentUser?.profileImageUrl)"
+        alt="Profile"
+        class="sidenav-profile-avatar"
+      />
+      <ng-template #initialsAvatar>
+        <div class="sidenav-profile-avatar sidenav-profile-avatar--initials">
+          {{ (currentUser?.fullName || 'U').charAt(0) }}
+        </div>
+      </ng-template>
+
+      <span class="sidenav-profile-name" @fadeInOut *ngIf="isCollapsed">
+        {{ currentUser?.fullName || 'User' }}
+      </span>
+      <span class="material-symbols-outlined sidenav-profile-chevron" @fadeInOut *ngIf="isCollapsed">
+        expand_more
+      </span>
+    </button>
+  </div>
 </div>
