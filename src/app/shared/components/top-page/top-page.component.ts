@@ -26,6 +26,9 @@ export class TopPageComponent {
 
   @Input() role: string = '';
 
+  @Input() showAddButton: boolean = true;
+  @Input() showSearch: boolean = true;
+
   @Output() searchEvent = new EventEmitter<string>();
   @Output() filterChange = new EventEmitter<any>();
   @Output() addEvent = new EventEmitter<void>();

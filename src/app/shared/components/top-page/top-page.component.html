@@ -9,7 +9,7 @@
     </div>
 
     <!-- Search Wrapper: input + clear + search btn + reset btn -->
-    <div class="top-page__search-wrapper">
+    <div class="top-page__search-wrapper" *ngIf="showSearch">
       <span class="material-symbols-outlined top-page__search-icon"
         >search</span
       >
@@ -56,7 +56,10 @@
     </div>
 
     <!-- Actions: Filter + Add -->
-    <div class="top-page__actions">
+    <div
+      class="top-page__actions"
+      *ngIf="filterOptions.length > 0 || showAddButton"
+    >
       <div class="top-page__filter-wrapper" *ngIf="filterOptions.length > 0">
         <span class="material-symbols-outlined top-page__filter-icon"
           >tune</span
@@ -78,6 +81,7 @@
       </div>
 
       <button
+        *ngIf="showAddButton"
         class="top-page__btn top-page__btn--primary"
         type="button"
         (click)="onAdd()"
