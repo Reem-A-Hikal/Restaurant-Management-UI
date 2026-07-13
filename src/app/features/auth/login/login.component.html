@@ -3,9 +3,11 @@
 </div>
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <div class="mb-3">
+    <label for="email" class="form-label visually-hidden">E-mail</label>
     <div class="input-group">
       <span class="input-group-text"><i class="bi bi-person"></i></span>
       <input
+        id="email"
         type="email"
         class="form-control bg-body-secondary"
         placeholder="E-mail"
@@ -19,34 +21,46 @@
     </div>
   </div>
 
-  <div class="mb-3 input-group">
-    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-    <input
-      [type]="showPassword ? 'text' : 'password'"
-      class="form-control bg-body-secondary"
-      placeholder="Password"
-      formControlName="password"
-    />
-    <button
-      class="btn btn-outline-secondary rounded-end-3 border"
-      type="button"
-      (click)="togglePasswordVisibility()"
-    >
-      <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-    </button>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-lock"></i></span>
+      <input
+        id="password"
+        [type]="showPassword ? 'text' : 'password'"
+        class="form-control bg-body-secondary"
+        placeholder="Password"
+        formControlName="password"
+      />
+      <button
+        class="btn btn-outline-secondary rounded-end-3 border"
+        type="button"
+        (click)="togglePasswordVisibility()"
+      >
+        <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+      </button>
 
-    <div class="invalid-feedback" *ngIf="hasDisplayableError('password')">
-      Please enter your Password.
+      <div class="invalid-feedback" *ngIf="hasDisplayableError('password')">
+        Please enter your Password.
+      </div>
     </div>
   </div>
 
   <div class="mb-3">
     <button
       type="submit"
-      class="btn btn-success w-100 rounded-3 py-2"
-      [disabled]="loginForm.invalid"
+      class="btn btn-success w-100 rounded-3 py-2 d-flex justify-content-center align-items-center"
+      [disabled]="loginForm.invalid || isLoading"
     >
-      Login
+      @if (isLoading) {
+        <output
+          class="spinner-border spinner-border-sm me-2"
+          aria-hidden="true"
+        ></output>
+        Signing in...
+      } @else {
+        Login
+      }
     </button>
   </div>
   <!-- Sign up Link -->

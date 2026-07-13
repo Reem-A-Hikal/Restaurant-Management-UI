@@ -51,25 +51,40 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) return;
 
     this.isLoading = true;
+    const requestStartTime = Date.now();
+    const minimumLoadingDuration = 400; // ms
+
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-        this.isLoading = false;
-        if (this.authService.isAdmin()) {
-          this.router.navigate(['/Dashboard']);
-        } else if (this.authService.hasRole('Chef')) {
-          this.router.navigate(['/Dashboard']);
-        } else {
-          // Customer or DeliveryPerson
-          this.router.navigate(['/main']);
-        }
+        const elapsed = Date.now() - requestStartTime;
+        const remainingDelay = Math.max(minimumLoadingDuration - elapsed, 0);
+
+        setTimeout(() => {
+          this.isLoading = false;
+          if (this.authService.isAdmin()) {
+            this.router.navigate(['/Dashboard']);
+          } else if (this.authService.hasRole('Chef')) {
+            this.router.navigate(['/Dashboard']);
+          } else {
+            this.router.navigate(['/main']);
+          }
+        }, remainingDelay);
       },
       error: (err) => {
-        this.isLoading = false;
-        if (err.status === 400) {
-          this.toastr.error('Invalid email or password', 'Login failed');
-        } else {
-          this.toastr.error('Something went wrong, please try again', 'Error');
-        }
+        const elapsed = Date.now() - requestStartTime;
+        const remainingDelay = Math.max(minimumLoadingDuration - elapsed, 0);
+
+        setTimeout(() => {
+          this.isLoading = false;
+          if (err.status === 400) {
+            this.toastr.error('Invalid email or password', 'Login failed');
+          } else {
+            this.toastr.error(
+              'Something went wrong, please try again',
+              'Error',
+            );
+          }
+        }, remainingDelay);
       },
     });
   }

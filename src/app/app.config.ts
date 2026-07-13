@@ -7,12 +7,20 @@ import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AuthInterceptor } from './Core/Auth/interceptors/auth.interceptor';
+import { UnwrapResponseInterceptor } from './Core/Auth/interceptors/unwrap-response.interceptor';
+import { ErrorHandlingInterceptor } from './Core/Auth/interceptors/error-handling.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([AuthInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        AuthInterceptor,
+        ErrorHandlingInterceptor,
+        UnwrapResponseInterceptor,
+      ]),
+    ),
     provideAnimations(),
     provideAnimationsAsync(),
     provideToastr({

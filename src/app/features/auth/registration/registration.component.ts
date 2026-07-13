@@ -14,6 +14,8 @@ import {
   fullNameValidator,
   passwordValidator,
 } from '../../../shared/helpers/validators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { extractErrorResponse } from '../../../shared/helpers/error.helpers';
 
 @Component({
   selector: 'app-registration',
@@ -114,29 +116,30 @@ export class RegistrationComponent implements OnInit {
 
   onSubmit(): void {
     this.isSubmitted = true;
-    this.isSubmitting = true;
 
     if (this.registerForm.invalid) {
+      this.isSubmitting = false;
       console.log('Form Invalid', this.registerForm.errors);
       return;
     }
 
+    this.isSubmitting = true;
+
     this.service.createUser(this.registerForm.value).subscribe({
-      next: (res: any) => {
-        if (res.message?.includes('success')) {
-          this.registerForm.reset();
-          this.isSubmitting = false;
-          this.isSubmitted = false;
-          this.toastr.success(res.message, 'Registration Successful');
-        } else {
-          console.log('response: ', res);
-        }
+      next: () => {
+        this.registerForm.reset();
+        this.isSubmitting = false;
+        this.isSubmitted = false;
+        this.toastr.success(
+          'Registration successful! You can now sign in.',
+          'Success',
+        );
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.isSubmitting = false;
         this.isSubmitted = false;
         this.toastr.error(
-          err.error?.message || 'Registration failed',
+          extractErrorResponse(err, 'Registration failed'),
           'Registration failed',
         );
       },

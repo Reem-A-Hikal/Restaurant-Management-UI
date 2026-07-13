@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -9,22 +9,22 @@ import { environment } from '../../../environments/environment';
 export class ApiService {
   constructor(private readonly http: HttpClient) {}
 
-  //get
-  get<T>(url: string, params?: any): Observable<T> {
+  get<T>(url: string, params?: HttpParams): Observable<T> {
     return this.http.get<T>(`${environment.apiBaseUrl}${url}`, { params });
   }
 
-  //post
-  post<T>(url: string, body: any): Observable<T> {
+  post<T>(url: string, body: unknown): Observable<T> {
     return this.http.post<T>(`${environment.apiBaseUrl}${url}`, body);
   }
 
-  //put
-  put<T>(url: string, body: any): Observable<T> {
+  put<T>(url: string, body: unknown): Observable<T> {
     return this.http.put<T>(`${environment.apiBaseUrl}${url}`, body);
   }
 
-  //delete
+  patch<T>(url: string, body: unknown): Observable<T> {
+    return this.http.patch<T>(`${environment.apiBaseUrl}${url}`, body);
+  }
+
   delete<T>(url: string): Observable<T> {
     return this.http.delete<T>(`${environment.apiBaseUrl}${url}`);
   }

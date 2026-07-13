@@ -1,10 +1,10 @@
 import { AuthResponse } from '../models/auth-response.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { UserProfile } from '../../../features/users/models/user.model';
+import { ApiService } from '../../services/api.service';
+import { RegisterModel } from '../models/register.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,31 +13,20 @@ export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_profile';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly api: ApiService) {}
 
-  createUser(formData: any): Observable<any> {
-    return this.http
-      .post<any>(environment.apiBaseUrl + `/account/register`, formData, {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-        }),
-      })
-      .pipe(map((res) => res?.data ?? res));
+  createUser(model: RegisterModel): Observable<null> {
+    return this.api.post<null>('/account/register', model);
   }
 
   login(credentials: any): Observable<AuthResponse> {
-    return this.http
-      .post<any>(environment.apiBaseUrl + `/account/login`, credentials)
-      .pipe(
-        map((res) => {
-          return (res?.data ?? res) as AuthResponse;
-        }),
-        tap((response) => {
-          if (response?.token) {
-            this.saveAuhData(response);
-          }
-        }),
-      );
+    return this.api.post<AuthResponse>('/account/login', credentials).pipe(
+      tap((response) => {
+        if (response?.token) {
+          this.saveAuhData(response);
+        }
+      }),
+    );
   }
 
   logout(): void {
