@@ -40,11 +40,17 @@ export const dashboardRoutes: Routes = [
       },
       {
         path: 'Orders',
-        loadComponent: () =>
-          import('../orders/pages/order/order.component').then(
-            (m) => m.OrderComponent,
-          ),
+        loadChildren: () =>
+          import('../orders/orders.routes').then((m) => m.ordersRoutes),
         title: 'Orders',
+      },
+      {
+        path: 'Profile',
+        loadComponent: () =>
+          import('../profile/pages/my-profile/my-profile.component').then(
+            (m) => m.MyProfileComponent,
+          ),
+        title: 'My Profile',
       },
     ],
   },
