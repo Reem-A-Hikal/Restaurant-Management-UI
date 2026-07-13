@@ -8,10 +8,12 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
   styleUrls: ['./empty-state.component.css'],
 })
 export class EmptyStateComponent {
-  @Input() icon: string = ''; // اسم الأيقونة أو مسارها
+  @Input() icon: string = '';
   @Input() title: string = '';
   @Input() description: string = '';
   @Input() buttonText: string = '';
+
+  @Input() showButton: boolean = false;
 
   @Output() add = new EventEmitter<void>();
 

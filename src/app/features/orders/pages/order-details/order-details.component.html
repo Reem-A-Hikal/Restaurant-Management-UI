@@ -1,0 +1,350 @@
+<div class="order-page" *ngIf="!isLoading && order; else loadingTpl">
+  <!-- Top bar -->
+  <div class="order-page__topbar">
+    <button class="back-link" type="button" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Back to Orders
+    </button>
+
+    <div class="order-page__actions">
+      <button
+        class="btn-pill btn-pill--outline"
+        type="button"
+        (click)="onPrintReceipt()"
+      >
+        Print Receipt
+      </button>
+      <button
+        class="btn-pill btn-pill--filled"
+        type="button"
+        (click)="onTrackDelivery()"
+      >
+        Track Delivery
+      </button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="order-page__header">
+    <div class="order-page__title-row">
+      <h1 class="order-page__title">Order Details</h1>
+      <app-order-status-badge [status]="order.status"></app-order-status-badge>
+    </div>
+    <p class="order-page__meta">
+      {{ order.orderNumber }} ·
+      {{ order.orderDate | date: "MMM d, y, h:mm:ss a" }}
+    </p>
+  </div>
+
+  <div class="order-page__grid">
+    <!-- ============ LEFT COLUMN ============ -->
+    <div class="order-page__col-main">
+      <!-- Order Summary -->
+      <div class="panel">
+        <div class="panel__header">
+          <span class="panel__title">Order Summary</span>
+          <span class="panel__count"
+            >{{ order.orderDetails.length }} Items</span
+          >
+        </div>
+
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th class="text-center">Qty</th>
+              <th class="text-end">Unit Price</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.orderDetails">
+              <td class="order-table__product">
+                <span class="order-table__thumb">{{
+                  item.productName.charAt(0)
+                }}</span>
+                {{ item.productName }}
+              </td>
+              <td class="text-center">{{ item.quantity }}</td>
+              <td class="text-end">{{ item.unitPrice | currency: "USD" }}</td>
+              <td class="text-end fw-bold">
+                {{ item.totalPrice | currency: "USD" }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="order-totals">
+          <div class="order-totals__row">
+            <span>Subtotal</span
+            ><span>{{ order.subTotal | currency: "USD" }}</span>
+          </div>
+          <div class="order-totals__row">
+            <span>Delivery Fee</span
+            ><span>{{ order.deliveryFee | currency: "USD" }}</span>
+          </div>
+          <div class="order-totals__row">
+            <span>Tax</span><span>{{ order.tax | currency: "USD" }}</span>
+          </div>
+          <div class="order-totals__row" *ngIf="order.discount > 0">
+            <span>Discount</span
+            ><span>-{{ order.discount | currency: "USD" }}</span>
+          </div>
+          <div class="order-totals__row order-totals__row--total">
+            <span>Total</span
+            ><span>{{ order.totalAmount | currency: "USD" }}</span>
+          </div>
+        </div>
+
+        <div
+          class="order-notes"
+          *ngIf="order.customerNotes || order.staffNotes"
+        >
+          <div class="order-notes__block" *ngIf="order.customerNotes">
+            <p class="order-notes__label">Customer Notes</p>
+            <p class="order-notes__text">{{ order.customerNotes }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logistics Tracking -->
+      <div class="panel logistics-panel mt-4">
+        <div class="panel__header">
+          <span class="panel__title">Logistics Tracking</span>
+        </div>
+
+        <div
+          class="timeline"
+          *ngIf="
+            !isLoadingHistory && !isLoadingDelivery;
+            else timelineLoadingTpl
+          "
+        >
+          <div class="timeline__item" *ngFor="let step of timelineSteps">
+            <div
+              class="timeline__marker"
+              [class.timeline__marker--done]="step.done"
+            >
+              <i class="fas" [ngClass]="step.icon"></i>
+            </div>
+            <div class="timeline__content">
+              <p class="timeline__label">{{ step.label }}</p>
+              <p class="timeline__sub" *ngIf="step.sub">{{ step.sub }}</p>
+            </div>
+            <span class="timeline__time" *ngIf="step.time">{{
+              step.time
+            }}</span>
+          </div>
+
+          <p class="text-muted small mb-0" *ngIf="timelineSteps.length === 0">
+            No delivery activity yet for this order.
+          </p>
+        </div>
+
+        <ng-template #timelineLoadingTpl>
+          <div class="text-center py-2">
+            <div class="spinner-border spinner-border-sm text-success"></div>
+          </div>
+        </ng-template>
+
+        <!-- Active courier contact card -->
+        <div
+          class="courier-card"
+          *ngIf="delivery && delivery.deliveryPersonName"
+        >
+          <div class="courier-card__icon"><i class="fas fa-user"></i></div>
+          <div class="courier-card__info">
+            <span class="courier-card__name">{{
+              delivery.deliveryPersonName
+            }}</span>
+            <span class="courier-card__link">Contact Delivery Agent</span>
+          </div>
+          <i class="fas fa-comment courier-card__chat"></i>
+        </div>
+
+        <!-- Assign delivery / waiting state -->
+        <ng-container *ngIf="!delivery && !isLoadingDelivery">
+          <ng-container
+            *ngIf="
+              ![OrderStatus.Delivered, OrderStatus.Cancelled].includes(
+                order.status
+              )
+            "
+          >
+            <app-assign-delivery-panel
+              *ngIf="order.status === OrderStatus.Ready"
+              [orderId]="orderId"
+              (assigned)="onDeliveryAssigned($event)"
+            ></app-assign-delivery-panel>
+
+            <p
+              *ngIf="order.status !== OrderStatus.Ready"
+              class="text-muted small mb-0 text-center"
+            >
+              ⏳ Delivery can be assigned once the order is Ready.
+            </p>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- ============ RIGHT COLUMN ============ -->
+    <div class="order-page__col-side">
+      <!-- Customer Info -->
+      <div class="panel">
+        <div class="panel__header">
+          <span class="panel__title">Customer Info</span>
+        </div>
+
+        <div class="customer-block">
+          <div class="customer-block__avatar">{{ customerInitials }}</div>
+          <div>
+            <p class="customer-block__name">{{ order.customerName }}</p>
+            <p class="customer-block__id">
+              Customer ID: {{ order.customerId }}
+            </p>
+          </div>
+        </div>
+
+        <div class="customer-detail-row" *ngIf="order.customerAddress">
+          <i class="fas fa-location-dot"></i>
+          <div>
+            <p class="customer-detail-row__label">Delivery Address</p>
+            <p class="customer-detail-row__value">
+              {{ order.customerAddress }}
+            </p>
+          </div>
+        </div>
+
+        <button
+          class="panel__link"
+          type="button"
+          (click)="onViewOrderHistory()"
+        >
+          View Order History
+        </button>
+      </div>
+
+      <!-- Payment Details -->
+      <div class="panel mt-4">
+        <div class="panel__header">
+          <span class="panel__title">Payment Details</span>
+          <button
+            *ngIf="hasCompletedPayment"
+            class="refund-pill"
+            type="button"
+            [disabled]="isRefunding"
+            (click)="onRefund()"
+          >
+            {{ isRefunding ? "Refunding..." : "Refund" }}
+          </button>
+        </div>
+
+        <ng-container *ngIf="!isLoadingPayments; else paymentsLoadingTpl">
+          <ng-container *ngIf="payments.length > 0; else noPaymentsTpl">
+            <div class="payment-line" *ngFor="let payment of payments">
+              <span class="payment-line__label">
+                <i class="fas fa-money-bill"></i>
+                {{ PaymentMethodLabels[payment.method] }} Payment
+              </span>
+              <span class="payment-line__value">{{
+                payment.amount | currency: "USD"
+              }}</span>
+            </div>
+
+            <div class="payment-line" *ngFor="let payment of payments">
+              <span class="payment-line__label">Transaction Status</span>
+              <span
+                class="status-pill"
+                [ngClass]="{
+                  'status-pill--completed':
+                    payment.status === PaymentStatus.Completed,
+                  'status-pill--pending':
+                    payment.status === PaymentStatus.Pending,
+                  'status-pill--failed':
+                    payment.status === PaymentStatus.Failed,
+                  'status-pill--refunded':
+                    payment.status === PaymentStatus.Refunded,
+                }"
+              >
+                {{ PaymentStatusLabels[payment.status] }}
+              </span>
+            </div>
+          </ng-container>
+
+          <ng-template #noPaymentsTpl>
+            <p class="text-muted small mb-0 text-center">
+              No payment attempts recorded yet.
+            </p>
+          </ng-template>
+        </ng-container>
+
+        <ng-template #paymentsLoadingTpl>
+          <div class="text-center py-2">
+            <div class="spinner-border spinner-border-sm text-success"></div>
+          </div>
+        </ng-template>
+
+        <div class="internal-note" *ngIf="order.staffNotes">
+          <p class="internal-note__label">Internal Note</p>
+          <p class="internal-note__text">"{{ order.staffNotes }}"</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="panel mt-4" *ngIf="visibleActions.length > 0">
+        <div class="panel__header">
+          <span class="panel__title">Actions</span>
+        </div>
+        <div class="d-flex flex-column gap-2">
+          <button
+            *ngIf="visibleActions.includes('confirm')"
+            class="btn btn-success"
+            [disabled]="isProcessingAction"
+            (click)="onConfirm()"
+          >
+            Confirm Order
+          </button>
+          <button
+            *ngIf="visibleActions.includes('preparing')"
+            class="btn btn-warning"
+            [disabled]="isProcessingAction"
+            (click)="onMarkPreparing()"
+          >
+            Start Preparing
+          </button>
+          <button
+            *ngIf="visibleActions.includes('prepared')"
+            class="btn btn-info"
+            [disabled]="isProcessingAction"
+            (click)="onMarkPrepared()"
+          >
+            Mark Ready
+          </button>
+          <button
+            *ngIf="visibleActions.includes('cancel')"
+            class="btn btn-outline-danger"
+            [disabled]="isProcessingAction"
+            (click)="onCancel()"
+          >
+            Cancel Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div
+    class="d-flex justify-content-center align-items-center"
+    style="min-height: 300px"
+  >
+    <div class="text-center">
+      <div
+        class="spinner-border text-success mb-2"
+        style="width: 2.5rem; height: 2.5rem"
+      ></div>
+      <div><small class="text-muted">Loading order...</small></div>
+    </div>
+  </div>
+</ng-template>

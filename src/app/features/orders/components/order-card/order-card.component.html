@@ -1,0 +1,67 @@
+<div class="order-card">
+  <div class="order-card__header">
+    <div>
+      <h3 class="order-card__number">{{ order.orderNumber }}</h3>
+      <p class="order-card__customer">{{ order.customerName }}</p>
+    </div>
+    <app-order-status-badge [status]="order.status"></app-order-status-badge>
+  </div>
+
+  <div class="order-card__body">
+    <div class="order-card__row">
+      <span class="order-card__label">Items</span>
+      <span>{{ order.orderDetails.length }}</span>
+    </div>
+    <div class="order-card__row">
+      <span class="order-card__label">Total</span>
+      <span class="order-card__total">{{
+        order.totalAmount | currency: "USD"
+      }}</span>
+    </div>
+    <div class="order-card__row" *ngIf="order.customerAddress">
+      <span class="order-card__label">Address</span>
+      <span class="text-truncate">{{ order.customerAddress }}</span>
+    </div>
+  </div>
+
+  <div class="order-card__footer">
+    <button class="btn-link" (click)="onViewDetails()" type="button">
+      View details
+    </button>
+
+    <div class="order-card__actions" *ngIf="visibleActions.length > 0">
+      <button
+        *ngIf="visibleActions.includes('confirm')"
+        class="action-btn action-btn--confirm"
+        (click)="onConfirm()"
+        type="button"
+      >
+        Confirm
+      </button>
+      <button
+        *ngIf="visibleActions.includes('preparing')"
+        class="action-btn action-btn--preparing"
+        (click)="onMarkPreparing()"
+        type="button"
+      >
+        Start Preparing
+      </button>
+      <button
+        *ngIf="visibleActions.includes('prepared')"
+        class="action-btn action-btn--prepared"
+        (click)="onMarkPrepared()"
+        type="button"
+      >
+        Mark Ready
+      </button>
+      <button
+        *ngIf="visibleActions.includes('cancel')"
+        class="action-btn action-btn--cancel"
+        (click)="onCancelOrder()"
+        type="button"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

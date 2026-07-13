@@ -2,7 +2,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function confirmPasswordValidator(
   passwordControlName: string,
-  confirmPasswordControlName: string
+  confirmPasswordControlName: string,
 ): ValidatorFn {
   return (formGroup: AbstractControl): ValidationErrors | null => {
     const passwordControl = formGroup.get(passwordControlName);
@@ -22,7 +22,7 @@ export function confirmPasswordValidator(
 }
 
 export function passwordValidator(
-  control: AbstractControl
+  control: AbstractControl,
 ): ValidationErrors | null {
   const value = control.value || '';
   const errors: Record<string, string> = {};
@@ -45,15 +45,15 @@ export function passwordValidator(
 }
 
 export function fullNameValidator(
-  control: AbstractControl
+  control: AbstractControl,
 ): ValidationErrors | null {
   const value = (control.value || '').trim();
   if (!value) return null;
 
   const words = value.split(/\s+/).filter((w: string) => w.length > 0);
-if (value.length < 6) {
+  if (value.length < 6) {
     return { fullName: 'Full name must be at least 6 characters long' };
-}
+  }
 
   if (words.length < 2) {
     return { fullName: 'Please enter first and last name' };
@@ -64,4 +64,15 @@ if (value.length < 6) {
   }
 
   return null;
+}
+
+export function discountRangeValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const discount = control.get('discountPercent')?.value;
+  const allowed = control.get('allowedDiscountPercent')?.value;
+  if (discount == null || allowed == null) return null;
+  return Number(discount) > Number(allowed)
+    ? { discountExceedsAllowed: true }
+    : null;
 }

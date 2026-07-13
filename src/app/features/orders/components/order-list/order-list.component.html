@@ -1,0 +1,31 @@
+<section class="order-list-page">
+  <ng-container *ngIf="isLoading">
+    <div class="orders-grid">
+      <div class="skeleton-card" *ngFor="let s of [1, 2, 3, 4, 5, 6]"></div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && orders.length === 0">
+    <app-empty-state
+      icon="receipt_long"
+      title="orders"
+      description="Orders will appear here once customers start placing them."
+      [showButton]="false"
+    ></app-empty-state>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && orders.length > 0">
+    <div class="orders-grid">
+      <app-order-card
+        *ngFor="let order of orders; trackBy: trackByOrderId"
+        [order]="order"
+        [allowedRoleActions]="allowedRoleActions"
+        (confirm)="confirm.emit($event)"
+        (markPreparing)="markPreparing.emit($event)"
+        (markPrepared)="markPrepared.emit($event)"
+        (cancelOrder)="cancelOrder.emit($event)"
+        (viewDetails)="viewDetails.emit($event)"
+      ></app-order-card>
+    </div>
+  </ng-container>
+</section>

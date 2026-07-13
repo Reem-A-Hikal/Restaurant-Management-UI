@@ -1,5 +1,12 @@
 import { Address } from "../../../models/Address";
 
+export enum UserStatus {
+  Active = 0,
+  Inactive = 1,
+  Suspended = 2,
+  Deleted = 3,
+}
+
 export interface User {
   id: string;
   email: string;
@@ -9,12 +16,13 @@ export interface User {
   profileImageUrl: string;
   isActive: boolean;
   role: string;
+  status: UserStatus;
   phoneNumber: string;
   specialization?: string;
   vehicleNumber?: string;
   isAvailable?: boolean;
   addresses?: Address[];
-  orders?: any[]; // Replace 'any' with the actual Order type if available
+  orders?: any[]; 
 }
 
 export interface UserProfile {
@@ -32,7 +40,7 @@ export enum UserRole {
 }
 
 export interface AdminUpdateRequest {
-  isActive?: boolean;
+  status?: UserStatus;
   specialization?: string;
   vehicleNumber?: string;
   isAvailable?: boolean;
