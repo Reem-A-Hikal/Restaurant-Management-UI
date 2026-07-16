@@ -61,9 +61,7 @@ export class LoginComponent implements OnInit {
 
         setTimeout(() => {
           this.isLoading = false;
-          if (this.authService.isAdmin()) {
-            this.router.navigate(['/Dashboard']);
-          } else if (this.authService.hasRole('Chef')) {
+          if (this.authService.isAdmin() || this.authService.isChef()) {
             this.router.navigate(['/Dashboard']);
           } else {
             this.router.navigate(['/main']);

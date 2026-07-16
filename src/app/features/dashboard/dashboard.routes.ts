@@ -1,34 +1,41 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from '../../Core/Auth/Guards/admin.guard';
 import { DashboardComponent } from '../../layouts/dashboard/dashboard.component';
+import { rolesGuard } from '../../Core/Auth/Guards/roles.guard';
 
 export const dashboardRoutes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-    canActivate: [adminGuard],
+    canActivate: [rolesGuard],
+    data: { roles: ['Admin', 'Chef'] },
     children: [
       {
         path: '',
         loadComponent: () =>
-          import('./overview/overview.component').then(
-            (m) => m.OverviewComponent,
+          import('./overview/overview-router.component').then(
+            (m) => m.OverviewRouterComponent,
           ),
         title: 'Dashboard',
+        canActivate: [rolesGuard],
+        data: { roles: ['Admin', 'Chef'] },
       },
       {
         path: 'Staff',
         loadChildren: () =>
           import('../users/users.routes').then((m) => m.usersRoutes),
         title: 'Staff',
+        canActivate: [rolesGuard],
+        data: { roles: ['Admin'] },
       },
       {
         path: 'Dishes',
         loadComponent: () =>
-          import('../dishes/pages/dishes-list/dishes.component').then(
+          import('../dishes/pages/dishes/dishes.component').then(
             (m) => m.DishesComponent,
           ),
         title: 'Dishes',
+        canActivate: [rolesGuard],
+        data: { roles: ['Admin'] },
       },
       {
         path: 'Categories',
@@ -37,12 +44,16 @@ export const dashboardRoutes: Routes = [
             (m) => m.categoriesRoutes,
           ),
         title: 'Categories',
+        canActivate: [rolesGuard],
+        data: { roles: ['Admin'] },
       },
       {
         path: 'Orders',
         loadChildren: () =>
           import('../orders/orders.routes').then((m) => m.ordersRoutes),
         title: 'Orders',
+        canActivate: [rolesGuard],
+        data: { roles: ['Admin', 'Chef'] },
       },
       {
         path: 'Profile',
@@ -51,6 +62,8 @@ export const dashboardRoutes: Routes = [
             (m) => m.MyProfileComponent,
           ),
         title: 'My Profile',
+        canActivate: [rolesGuard],
+        data: { roles: ['Admin', 'Chef'] },
       },
     ],
   },
