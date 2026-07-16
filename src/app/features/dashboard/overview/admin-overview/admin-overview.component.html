@@ -4,7 +4,7 @@
       <h2 class="fw-bold">Restro Dashboard Overview</h2>
     </div>
     <div class="col-auto">
-      <span class="text-muted">{{ date | date:'fullDate' }}</span>
+      <span class="text-muted">{{ date | date: "fullDate" }}</span>
     </div>
   </div>
   <div class="row g-4 mb-4">
@@ -40,15 +40,21 @@
     <div class="card-body">
       <h4 class="card-title mb-3">Recent Activity</h4>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
           <span class="text-muted">10:15 AM</span>
           <span>Order #1234 placed</span>
         </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
           <span class="text-muted">11:00 AM</span>
           <span>Reservation for 2 confirmed</span>
         </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
           <span class="text-muted">11:30 AM</span>
           <span>New feedback received</span>
         </li>

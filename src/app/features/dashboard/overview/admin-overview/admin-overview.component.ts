@@ -2,14 +2,12 @@ import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-overview',
-  standalone: true,
+  selector: 'app-admin-overview',
   imports: [DatePipe],
-  templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.css'],
+  templateUrl: './admin-overview.component.html',
+  styleUrls: ['./admin-overview.component.css'],
 })
-export class OverviewComponent {
+export class AdminOverviewComponent {
   date: Date = new Date();
   constructor() {}
-
 }
