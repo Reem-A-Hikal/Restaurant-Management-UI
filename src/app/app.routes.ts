@@ -24,6 +24,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./layouts/main/main.component').then((m) => m.MainComponent),
       },
+      {
+        path: 'access-denied',
+        loadComponent: () =>
+          import('./shared/components/access-denied/access-denied.component').then(
+            (m) => m.AccessDeniedComponent,
+          ),
+      },
     ],
   },
   {
