@@ -12,7 +12,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import { AuthService } from '../../../Core/Auth/services/auth.service';
 import { UserService } from '../../../features/users/services/user.service';
-import { toAssetUrl } from '../../helpers/url.helpers';
+import { toAssetUrl } from '../../helpers/url.helper';
 import { navbarData } from './navData';
 
 interface SideNavToggle {
@@ -73,6 +73,11 @@ export class SidebarComponent implements OnInit {
         error: () => {},
       });
     }
+  }
+
+  get visibleNavData() {
+    const role = this.authService.getRole();
+    return this.navData.filter((item) => item.roles.includes(role));
   }
 
   @HostListener('window:resize', ['$event'])
