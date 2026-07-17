@@ -4,10 +4,19 @@ import { UserService } from '../../services/user.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule, DatePipe } from '@angular/common';
-import { AdminUpdateRequest, User, UserRole, UserStatus } from '../../models/user.model';
+import {
+  AdminUpdateRequest,
+  User,
+  UserRole,
+  UserStatus,
+} from '../../models/user.model';
 import { ImageUploadService } from '../../../../shared/services/image-upload.service';
-import { toAssetUrl } from '../../../../shared/helpers/url.helpers';
+import { toAssetUrl } from '../../../../shared/helpers/url.helper';
 import { finalize } from 'rxjs/operators';
+import {
+  readFileAsDataUrl,
+  validateImageFile,
+} from '../../../../shared/helpers/file-validation.helper';
 
 interface StatusAction {
   status: UserStatus;
@@ -82,19 +91,27 @@ export class UserEditComponent implements OnInit {
 
   get statusLabel(): string {
     switch (this.user?.status) {
-      case UserStatus.Active: return 'Active';
-      case UserStatus.Inactive: return 'Inactive';
-      case UserStatus.Suspended: return 'Suspended';
-      default: return 'Unknown';
+      case UserStatus.Active:
+        return 'Active';
+      case UserStatus.Inactive:
+        return 'Inactive';
+      case UserStatus.Suspended:
+        return 'Suspended';
+      default:
+        return 'Unknown';
     }
   }
 
   get statusBadgeClass(): string {
     switch (this.user?.status) {
-      case UserStatus.Active: return 'status-badge--active';
-      case UserStatus.Inactive: return 'status-badge--inactive';
-      case UserStatus.Suspended: return 'status-badge--suspended';
-      default: return '';
+      case UserStatus.Active:
+        return 'status-badge--active';
+      case UserStatus.Inactive:
+        return 'status-badge--inactive';
+      case UserStatus.Suspended:
+        return 'status-badge--suspended';
+      default:
+        return '';
     }
   }
 
@@ -139,30 +156,29 @@ export class UserEditComponent implements OnInit {
   }
 
   // ── Image handling ──
-  onFileSelected(event: Event): void {
+  async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      this.toastr.error('Only JPG, PNG, or WEBP images are allowed', 'Invalid file');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      this.toastr.error('Image size cannot exceed 5MB', 'File too large');
+    const result = validateImageFile(file);
+    if (!result.valid) {
+      this.toastr.error(result.error!, 'Invalid file');
       return;
     }
 
     this.selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = () => (this.imagePreviewUrl = reader.result as string);
-    reader.readAsDataURL(file);
+    this.imagePreviewUrl = await readFileAsDataUrl(file);
   }
 
   // ── Status change (immediate action, separate from the role-data form) ──
   async changeStatus(action: StatusAction) {
-    if (!this.user || this.user.status === action.status || this.isChangingStatus) return;
+    if (
+      !this.user ||
+      this.user.status === action.status ||
+      this.isChangingStatus
+    )
+      return;
 
     const Swal = await import('sweetalert2');
     const result = await Swal.default.fire({
@@ -184,11 +200,21 @@ export class UserEditComponent implements OnInit {
       .pipe(finalize(() => (this.isChangingStatus = false)))
       .subscribe({
         next: () => {
-          this.user = { ...this.user, status: action.status, isActive: action.status === UserStatus.Active };
-          this.toastr.success(`User ${action.label.toLowerCase()}d successfully`, 'Success');
+          this.user = {
+            ...this.user,
+            status: action.status,
+            isActive: action.status === UserStatus.Active,
+          };
+          this.toastr.success(
+            `User ${action.label.toLowerCase()}d successfully`,
+            'Success',
+          );
         },
         error: (err) => {
-          this.toastr.error(err.error?.message || 'Failed to update status', 'Error');
+          this.toastr.error(
+            err.error?.message || 'Failed to update status',
+            'Error',
+          );
         },
       });
   }
@@ -215,11 +241,18 @@ export class UserEditComponent implements OnInit {
     }
   }
 
-  private saveChanges(profileImageUrl: string | undefined, uploadedImageUrl: string | null): void {
+  private saveChanges(
+    profileImageUrl: string | undefined,
+    uploadedImageUrl: string | null,
+  ): void {
     const formValue = this.editForm.value;
     const roleUpdate: AdminUpdateRequest = {
-      specialization: this.isChef ? formValue.specialization || undefined : undefined,
-      vehicleNumber: this.isDeliveryPerson ? formValue.vehicleNumber || undefined : undefined,
+      specialization: this.isChef
+        ? formValue.specialization || undefined
+        : undefined,
+      vehicleNumber: this.isDeliveryPerson
+        ? formValue.vehicleNumber || undefined
+        : undefined,
       isAvailable: this.isDeliveryPerson ? formValue.isAvailable : undefined,
     };
 
@@ -249,7 +282,9 @@ export class UserEditComponent implements OnInit {
   private handleSaveError(err: any, uploadedImageUrl: string | null): void {
     this.isSaving = false;
     if (uploadedImageUrl) {
-      this.imageUploadService.delete(uploadedImageUrl).subscribe({ error: () => {} });
+      this.imageUploadService
+        .delete(uploadedImageUrl)
+        .subscribe({ error: () => {} });
     }
     this.toastr.error(err.error?.message || 'Failed to save changes', 'Error');
   }

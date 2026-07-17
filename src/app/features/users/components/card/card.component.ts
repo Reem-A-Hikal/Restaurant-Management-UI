@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.model';
-import { toAssetUrl } from '../../../../shared/helpers/url.helpers';
+import { toAssetUrl } from '../../../../shared/helpers/url.helper';
 
 @Component({
   selector: 'app-card',

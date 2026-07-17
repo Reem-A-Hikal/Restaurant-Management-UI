@@ -22,7 +22,12 @@ import { ManageCategoryComponent } from '../../components/manage-category-modal/
 import { CategoryListComponent } from '../../components/category-list/category-list.component';
 import { CategoryService } from '../../services/category.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  confirmDestructiveAction,
+  showErrorDialog,
+  showSuccessDialog,
+} from '../../../../shared/helpers/confirm-dialog.helper';
 
 @Component({
   selector: 'app-category',
@@ -149,47 +154,27 @@ export class CategoryComponent implements OnInit {
   }
 
   async archiveCategory(catId: number) {
-    const Swal = await import('sweetalert2');
-    const result = await Swal.default.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#6c757d',
+    const confirmed = await confirmDestructiveAction({
       confirmButtonText: 'Yes, archive it!',
     });
-    if (result.isConfirmed) {
-      this.isLoading = true;
-      this.catService
-        .archive(catId)
-        .pipe(finalize(() => (this.isLoading = false)))
-        .subscribe({
-          next: () => {
-            Swal.default.fire({
-              title: 'Archived!',
-              text: 'Category deactivated successfully',
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false,
-              timerProgressBar: true,
-            });
-            this.loadCategories();
-          },
-          error: (err: HttpErrorResponse) => {
-            Swal.default.fire({
-              title: 'Error!',
-              text: extractErrorResponse(
-                err,
-                'Failed to deactivate this Category',
-              ),
-              icon: 'error',
-              showConfirmButton: true,
-              confirmButtonText: 'OK',
-            });
-          },
-        });
-    }
+
+    if (!confirmed) return;
+
+    this.isLoading = true;
+    this.catService
+      .archive(catId)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: () => {
+          showSuccessDialog('Archived!', 'Category deactivated successfully');
+          this.loadCategories();
+        },
+        error: (err: HttpErrorResponse) => {
+          showErrorDialog(
+            extractErrorResponse(err, 'Failed to deactivate this Category'),
+          );
+        },
+      });
   }
 
   searchCategories(term: string): void {

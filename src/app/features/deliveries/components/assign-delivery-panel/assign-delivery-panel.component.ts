@@ -7,8 +7,8 @@ import { DeliveriesService } from '../../services/deliveries.service';
 import {
   AvailableDeliveryPersonDto,
   DeliveryDto,
-} from '../../models/delivery-model';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
+} from '../../models/delivery.model';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-assign-delivery-panel',

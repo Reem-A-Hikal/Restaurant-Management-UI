@@ -16,7 +16,12 @@ import { CardComponent } from '../../components/card/card.component';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { User } from '../../models/user.model';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  confirmDestructiveAction,
+  showErrorDialog,
+  showSuccessDialog,
+} from '../../../../shared/helpers/confirm-dialog.helper';
 
 @Component({
   selector: 'app-user-list',
@@ -121,45 +126,26 @@ export class UserListComponent implements OnInit {
   }
 
   async deleteUser(userId: string) {
-    const Swal = await import('sweetalert2');
-    const result = await Swal.default.fire({
-      title: 'Are you sure?',
+    const confirmed = await confirmDestructiveAction({
       text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Yes, delete it!',
     });
 
-    if (result.isConfirmed) {
-      this.isLoading = true;
-      this.userService
-        .deleteUser(userId)
-        .pipe(finalize(() => (this.isLoading = false)))
-        .subscribe({
-          next: () => {
-            Swal.default.fire({
-              title: 'Deleted!',
-              text: 'User deleted successfully.',
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false,
-              timerProgressBar: true,
-            });
-            this.loadUsers();
-          },
-          error: (err) => {
-            Swal.default.fire({
-              title: 'Error!',
-              text: extractErrorResponse(err, 'Failed to delete user'),
-              icon: 'error',
-              showConfirmButton: true,
-              confirmButtonText: 'OK',
-            });
-          },
-        });
-    }
+    if (!confirmed) return;
+
+    this.isLoading = true;
+    this.userService
+      .deleteUser(userId)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: () => {
+          showSuccessDialog('Deleted!', 'User deleted successfully.');
+          this.loadUsers();
+        },
+        error: (err) => {
+          showErrorDialog(extractErrorResponse(err, 'Failed to delete user'));
+        },
+      });
   }
 
   applyFilter(event: { searchTerm: string; selectedRole: string }): void {

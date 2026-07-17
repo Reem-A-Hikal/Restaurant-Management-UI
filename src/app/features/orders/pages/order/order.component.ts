@@ -12,7 +12,7 @@ import { OrderAction } from '../../helpers/order-actions.helper';
 import { OrderStatus } from '../../models/order-enums';
 import { OrderDto } from '../../models/order.model';
 import { getActionForRole } from '../../helpers/order-role-actions.helper';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 

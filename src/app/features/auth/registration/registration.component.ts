@@ -15,7 +15,7 @@ import {
   passwordValidator,
 } from '../../../shared/helpers/validators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { extractErrorResponse } from '../../../shared/helpers/error.helpers';
+import { extractErrorResponse } from '../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-registration',

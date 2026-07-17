@@ -19,7 +19,11 @@ import { ToastrService } from 'ngx-toastr';
 import { discountRangeValidator } from '../../../../shared/helpers/validators';
 import { finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { toAssetUrl } from '../../../../shared/helpers/url.helpers';
+import { toAssetUrl } from '../../../../shared/helpers/url.helper';
+import {
+  readFileAsDataUrl,
+  validateImageFile,
+} from '../../../../shared/helpers/file-validation.helper';
 
 @Component({
   selector: 'app-manage-dish',
@@ -118,28 +122,19 @@ export class ManageDishModalComponent implements OnInit {
     return this.dishForm.controls;
   }
 
-  onFileSelected(event: Event): void {
+  async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      this.toastr.error(
-        'Only JPG, PNG, or WEBP images are allowed',
-        'Invalid file',
-      );
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      this.toastr.error('Image size cannot exceed 5MB', 'File too large');
+    const result = validateImageFile(file);
+    if (!result.valid) {
+      this.toastr.error(result.error!, 'Invalid file');
       return;
     }
 
     this.selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = () => (this.imagePreviewUrl = reader.result as string);
-    reader.readAsDataURL(file);
+    this.imagePreviewUrl = await readFileAsDataUrl(file);
   }
 
   removeImage(): void {

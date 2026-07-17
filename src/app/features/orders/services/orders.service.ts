@@ -7,7 +7,6 @@ import {
   CancelOrderDto,
   ConfirmOrderDto,
   CreateOrderDetailDto,
-  CreateOrderDto,
 } from '../models/order-requests.model';
 import { HttpParams } from '@angular/common/http';
 

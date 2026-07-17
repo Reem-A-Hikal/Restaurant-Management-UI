@@ -19,6 +19,10 @@ import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import { CreateUserRequest, UserRole } from '../../models/user.model';
 import { ImageUploadService } from '../../../../shared/services/image-upload.service';
 import { finalize } from 'rxjs';
+import {
+  readFileAsDataUrl,
+  validateImageFile,
+} from '../../../../shared/helpers/file-validation.helper';
 
 @Component({
   selector: 'app-user-add',
@@ -122,28 +126,19 @@ export class AddUserComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  onFileSelected(event: Event): void {
+  async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      this.toastr.error(
-        'Only JPG, PNG, or WEBP images are allowed',
-        'Invalid file',
-      );
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      this.toastr.error('Image size cannot exceed 5MB', 'File too large');
+    const result = validateImageFile(file);
+    if (!result.valid) {
+      this.toastr.error(result.error!, 'Invalid file');
       return;
     }
 
     this.selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = () => (this.imagePreviewUrl = reader.result as string);
-    reader.readAsDataURL(file);
+    this.imagePreviewUrl = await readFileAsDataUrl(file);
   }
 
   get f() {

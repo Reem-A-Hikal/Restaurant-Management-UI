@@ -11,8 +11,9 @@ import { finalize } from 'rxjs/operators';
 import { UserService } from '../../../users/services/user.service';
 import { AuthService } from '../../../../Core/Auth/services/auth.service';
 import { ImageUploadService } from '../../../../shared/services/image-upload.service';
-import { toAssetUrl } from '../../../../shared/helpers/url.helpers';
+import { toAssetUrl } from '../../../../shared/helpers/url.helper';
 import { User } from '../../../users/models/user.model';
+import { readFileAsDataUrl, validateImageFile } from '../../../../shared/helpers/file-validation.helper';
 
 @Component({
   selector: 'app-my-profile',
@@ -81,29 +82,20 @@ export class MyProfileComponent implements OnInit {
     return this.profileForm.controls;
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
+  async onFileSelected(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      this.toastr.error(
-        'Only JPG, PNG, or WEBP images are allowed',
-        'Invalid file',
-      );
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      this.toastr.error('Image size cannot exceed 5MB', 'File too large');
-      return;
-    }
-
-    this.selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = () => (this.imagePreviewUrl = reader.result as string);
-    reader.readAsDataURL(file);
+  const result = validateImageFile(file);
+  if (!result.valid) {
+    this.toastr.error(result.error!, 'Invalid file');
+    return;
   }
+
+  this.selectedFile = file;
+  this.imagePreviewUrl = await readFileAsDataUrl(file);
+}
 
   onSubmit(): void {
     if (this.profileForm.invalid) {

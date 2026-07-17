@@ -1,4 +1,4 @@
-import { Address } from "../../../models/Address";
+import { Address } from '../../profile/models/address.model';
 
 export enum UserStatus {
   Active = 0,
@@ -22,7 +22,7 @@ export interface User {
   vehicleNumber?: string;
   isAvailable?: boolean;
   addresses?: Address[];
-  orders?: any[]; 
+  orders?: any[];
 }
 
 export interface UserProfile {
