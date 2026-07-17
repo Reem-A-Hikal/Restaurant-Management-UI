@@ -57,7 +57,7 @@ export class UserService {
   }
 
   deleteUser(userId: string): Observable<string> {
-    return this.api.delete<string>(`${this.basePath}/DeleteUser/${userId}`);
+    return this.api.delete<string>(`${this.basePath}/${userId}`);
   }
 
   addUser(user: CreateUserRequest): Observable<{ userId: string }> {
