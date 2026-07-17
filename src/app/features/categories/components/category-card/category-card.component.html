@@ -1,4 +1,4 @@
-<div class="category-card" *ngIf="category">
+<div class="category-card card-hover-lift" *ngIf="category">
   <!-- Status Badge -->
   <span class="category-card__badge" [ngClass]="statusClass">
     <span class="badge__dot"></span>
@@ -18,11 +18,11 @@
 
   <!-- Actions -->
   <div class="category-card__actions">
-    <button class="action-btn action-btn--edit" (click)="onEdit()" title="Edit">
+    <button class="icon-btn icon-btn--edit" (click)="onEdit()" title="Edit">
       <i class="bi bi-pencil"></i>
     </button>
     <button
-      class="action-btn action-btn--delete"
+      class="icon-btn icon-btn--delete"
       (click)="onDelete()"
       title="Delete"
     >

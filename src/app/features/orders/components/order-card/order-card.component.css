@@ -1,20 +1,10 @@
 .order-card {
-  background: var(--color-surface);
   border: 1.5px solid var(--color-outline);
   border-radius: 16px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.15s ease;
-}
-
-.order-card:hover {
-  box-shadow: 0 6px 24px var(--color-primary-shadow);
-  transform: translateY(-2px);
 }
 
 .order-card__header {

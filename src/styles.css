@@ -55,6 +55,47 @@
   color: var(--color-primary) !important;
 }
 
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.icon-btn--edit {
+  color: var(--color-text-muted);
+}
+.icon-btn--edit:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+.icon-btn--delete {
+  color: var(--color-text-muted);
+}
+.icon-btn--delete:hover {
+  background: var(--color-error-container);
+  color: var(--color-error);
+}
+
+.btn-primary {
+  height: 42px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .btn-success {
   background-color: var(--color-primary);
 
@@ -67,15 +108,6 @@
   background-color: var(--color-primary) !important;
 }
 
-.hover-shadow:hover {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  transform: translateY(-2px) scale(1.02);
-}
-.transition {
-  transition:
-    box-shadow 0.2s,
-    transform 0.2s;
-}
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -88,4 +120,59 @@
     "wght" 400,
     "GRAD" 0,
     "opsz" 24;
+}
+
+.skeleton-card {
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-container) 25%,
+    var(--color-surface-high) 50%,
+    var(--color-surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.card-hover-lift {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px var(--color-primary-shadow);
 }

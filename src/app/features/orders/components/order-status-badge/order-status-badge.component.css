@@ -9,13 +9,6 @@
   border-radius: 100px;
 }
 
-.badge__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 .status--new {
   background: var(--color-surface-container);
   color: var(--color-text-secondary);
