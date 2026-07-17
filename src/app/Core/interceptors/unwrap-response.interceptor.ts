@@ -4,7 +4,7 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
-import { ApiResponse } from '../../../shared/models/api-response.model';
+import { ApiResponse } from '../../shared/models/api-response.model';
 import { map, Observable } from 'rxjs';
 
 function isApiResponseShape(body: unknown): body is ApiResponse<unknown> {

@@ -6,9 +6,9 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { AuthInterceptor } from './Core/Auth/interceptors/auth.interceptor';
-import { UnwrapResponseInterceptor } from './Core/Auth/interceptors/unwrap-response.interceptor';
-import { ErrorHandlingInterceptor } from './Core/Auth/interceptors/error-handling.interceptor';
+import { AuthInterceptor } from './Core/interceptors/auth.interceptor';
+import { UnwrapResponseInterceptor } from './Core/interceptors/unwrap-response.interceptor';
+import { ErrorHandlingInterceptor } from './Core/interceptors/error-handling.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
