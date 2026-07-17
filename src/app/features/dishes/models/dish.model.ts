@@ -16,6 +16,7 @@ export interface DishWithId {
   productId: number;
   name: string;
   price: number;
+  discountedPrice: number;
   description?: string;
   imageUrl?: string;
   preparationTime: number;
@@ -39,7 +40,6 @@ export interface CreateDishRequest {
   allowedDiscountPercent: number;
   categoryId: number;
 }
-
 
 export interface UpdateDishRequest {
   name?: string;

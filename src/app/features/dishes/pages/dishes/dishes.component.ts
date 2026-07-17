@@ -1,4 +1,4 @@
-import { CategoryService } from './../../../categories/services/category.service';
+import { CategoryService } from '../../../categories/services/category.service';
 import {
   DishesListApiResponse,
   DishWithId,
@@ -15,14 +15,19 @@ import { DishesService } from '../../services/dishes.service';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { Category } from '../../../categories/models/category.model';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 import {
   MdbModalModule,
   MdbModalRef,
   MdbModalService,
 } from 'mdb-angular-ui-kit/modal';
 import { ManageDishModalComponent } from '../../components/manage-dish-modal/manage-dish-modal.component';
-import { toAssetUrl } from '../../../../shared/helpers/url.helpers';
+import { toAssetUrl } from '../../../../shared/helpers/url.helper';
+import {
+  confirmDestructiveAction,
+  showErrorDialog,
+  showSuccessDialog,
+} from '../../../../shared/helpers/confirm-dialog.helper';
 
 @Component({
   selector: 'app-dishes',
@@ -155,45 +160,29 @@ export class DishesComponent implements OnInit {
   }
 
   async deleteDish(dishId: number) {
-    const Swal = await import('sweetalert2');
-    const result = await Swal.default.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#6c757d',
+    const confirmed = await confirmDestructiveAction({
       confirmButtonText: 'Yes, delete it!',
     });
-    if (result.isConfirmed) {
-      this.isLoading = true;
-      this.dishesService
-        .delete(dishId)
-        .pipe(finalize(() => (this.isLoading = false)))
-        .subscribe({
-          next: () => {
-            Swal.default.fire({
-              title: 'Deleted!',
-              text: 'Dish deactivated successfully',
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false,
-              timerProgressBar: true,
-            });
-            this.refreshCurrentView();
-          },
-          error: (err: HttpErrorResponse) => {
-            Swal.default.fire({
-              title: 'Error!',
-              text: extractErrorResponse(err, 'Failed to deactivate this dish'),
-              icon: 'error',
-              showConfirmButton: true,
-              confirmButtonText: 'OK',
-            });
-          },
-        });
-    }
+
+    if (!confirmed) return;
+
+    this.isLoading = true;
+    this.dishesService
+      .delete(dishId)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: () => {
+          showSuccessDialog('Deleted!', 'Dish deactivated successfully');
+          this.refreshCurrentView();
+        },
+        error: (err: HttpErrorResponse) => {
+          showErrorDialog(
+            extractErrorResponse(err, 'Failed to deactivate this dish'),
+          );
+        },
+      });
   }
+
   viewDish(dishId: number) {
     console.log('From View', dishId);
   }

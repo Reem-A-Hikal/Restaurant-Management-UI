@@ -53,7 +53,10 @@
   <!-- ── Products Grid ── -->
   <ng-container *ngIf="!isLoading && !isEmpty">
     <div class="products-grid">
-      <div class="product-card" *ngFor="let dish of dishes; trackBy: trackDish">
+      <div
+        class="product-card card-hover-lift"
+        *ngFor="let dish of dishes; trackBy: trackDish"
+      >
         <!-- Badges -->
         <div class="product-card__badges">
           <span class="badge badge--promoted" *ngIf="dish.isPromoted">
@@ -104,28 +107,25 @@
         <div class="product-card__footer">
           <div class="product-card__price-wrap">
             <span class="product-card__price">
-              {{ dish.price | currency: "USD" : "symbol" : "1.2-2" }}
+              {{ dish.discountedPrice | currency: "USD" : "symbol" : "1.2-2" }}
             </span>
             <span
               class="product-card__price-old"
               *ngIf="dish.discountPercent > 0"
             >
-              {{
-                dish.price / (1 - dish.discountPercent / 100)
-                  | currency: "USD" : "symbol" : "1.2-2"
-              }}
+              {{ dish.price | currency: "USD" : "symbol" : "1.2-2" }}
             </span>
           </div>
           <div class="product-card__actions">
             <button
-              class="action-btn action-btn--edit"
+              class="icon-btn icon-btn--edit"
               (click)="editDish(dish.productId, dish)"
               title="Edit"
             >
               <i class="bi bi-pencil"></i>
             </button>
             <button
-              class="action-btn action-btn--delete"
+              class="icon-btn icon-btn--delete"
               (click)="deleteDish(dish.productId)"
               title="Delete"
             >
