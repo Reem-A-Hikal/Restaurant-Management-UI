@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrdersService } from '../../services/orders.service';
 import { AuthService } from '../../../../Core/Auth/services/auth.service';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helpers';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 import {
   getAvailableActions,
   OrderAction,
@@ -13,7 +13,7 @@ import { getActionForRole } from '../../helpers/order-role-actions.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { OrderStatusBadgeComponent } from '../../components/order-status-badge/order-status-badge.component';
-import { DeliveryDto } from '../../../deliveries/models/delivery-model';
+import { DeliveryDto } from '../../../deliveries/models/delivery.model';
 import { DeliveriesService } from '../../../deliveries/services/deliveries.service';
 import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import { AssignDeliveryPanelComponent } from '../../../deliveries/components/assign-delivery-panel/assign-delivery-panel.component';

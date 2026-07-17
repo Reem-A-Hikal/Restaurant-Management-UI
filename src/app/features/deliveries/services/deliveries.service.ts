@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../../../Core/services/api.service';
 import { AssignDeliveryDto } from '../models/delivery-requests.model';
 import { Observable } from 'rxjs';
-import { AvailableDeliveryPersonDto, DeliveryDto } from '../models/delivery-model';
+import {
+  AvailableDeliveryPersonDto,
+  DeliveryDto,
+} from '../models/delivery.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +39,8 @@ export class DeliveriesService {
   }
 
   getAvailablePersons(): Observable<AvailableDeliveryPersonDto[]> {
-    return this.api.get<AvailableDeliveryPersonDto[]>(`${this.basePath}/available-persons`);
+    return this.api.get<AvailableDeliveryPersonDto[]>(
+      `${this.basePath}/available-persons`,
+    );
   }
 }
