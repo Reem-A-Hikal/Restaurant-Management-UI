@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../services/auth.service';
-import { extractErrorResponse } from '../../../shared/helpers/error.helpers';
+import { AuthService } from '../Auth/services/auth.service';
+import { extractErrorResponse } from '../../shared/helpers/error.helper';
 
 let isHandlingUnauthorized = false;
 
