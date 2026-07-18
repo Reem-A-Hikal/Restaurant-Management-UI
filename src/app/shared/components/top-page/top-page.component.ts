@@ -1,11 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FilterOption } from '../../models/filter-options.model';
 
-export interface FilterOption {
-  label: string;
-  value: string;
-}
 @Component({
   selector: 'app-top-page',
   imports: [CommonModule, FormsModule],

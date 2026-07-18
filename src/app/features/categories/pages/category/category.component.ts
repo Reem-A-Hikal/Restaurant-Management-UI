@@ -8,7 +8,6 @@ import {
 } from '../../models/category.model';
 import { CommonModule } from '@angular/common';
 import {
-  FilterOption,
   TopPageComponent,
 } from '../../../../shared/components/top-page/top-page.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
@@ -28,6 +27,7 @@ import {
   showErrorDialog,
   showSuccessDialog,
 } from '../../../../shared/helpers/confirm-dialog.helper';
+import { FilterOption } from '../../../../shared/models/filter-options.model';
 
 @Component({
   selector: 'app-category',

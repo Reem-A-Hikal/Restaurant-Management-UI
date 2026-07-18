@@ -7,10 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
-import {
-  FilterOption,
-  TopPageComponent,
-} from '../../../../shared/components/top-page/top-page.component';
+import { TopPageComponent } from '../../../../shared/components/top-page/top-page.component';
 import { PaginatedResponse } from '../../../../shared/models/pagination.model';
 import { CardComponent } from '../../components/card/card.component';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
@@ -22,6 +19,7 @@ import {
   showErrorDialog,
   showSuccessDialog,
 } from '../../../../shared/helpers/confirm-dialog.helper';
+import { FilterOption } from '../../../../shared/models/filter-options.model';
 
 @Component({
   selector: 'app-user-list',

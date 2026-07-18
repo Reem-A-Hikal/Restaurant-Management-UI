@@ -28,6 +28,7 @@ import {
   showErrorDialog,
   showSuccessDialog,
 } from '../../../../shared/helpers/confirm-dialog.helper';
+import { FilterOption } from '../../../../shared/models/filter-options.model';
 
 @Component({
   selector: 'app-dishes',
@@ -60,7 +61,7 @@ export class DishesComponent implements OnInit {
     return !this.isLoading && (this.dishes?.length ?? 0) === 0;
   }
 
-  filterOptions = [
+  filterOptions: FilterOption[] = [
     { value: 'Available', label: 'Available' },
     { value: 'Unavailable', label: 'Unavailable' },
   ];

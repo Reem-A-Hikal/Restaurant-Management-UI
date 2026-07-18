@@ -15,15 +15,22 @@ import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CategoryCardComponent } from '../category-card/category-card.component';
 import { FormsModule } from '@angular/forms';
-import { AddCardComponent } from "../../../../shared/components/add-card/add-card.component";
-import { EmptyStateComponent } from "../../../../shared/components/empty-state/empty-state.component";
+import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { FilterOption } from '../../../../shared/models/filter-options.model';
 
 export type ViewMode = 'grid' | 'list';
 
 @Component({
   selector: 'app-category-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, CategoryCardComponent, AddCardComponent, EmptyStateComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CategoryCardComponent,
+    AddCardComponent,
+    EmptyStateComponent,
+  ],
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.css'],
 })
@@ -47,7 +54,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   readonly CategoryStatus = CategoryStatus;
   readonly CategoryStatusLabels = CategoryStatusLabels;
 
-  filterOptions = [
+  filterOptions: FilterOption[] = [
     { label: 'All', value: 'All' },
     { label: 'Active', value: 'Active' },
     { label: 'Inactive', value: 'Inactive' },
