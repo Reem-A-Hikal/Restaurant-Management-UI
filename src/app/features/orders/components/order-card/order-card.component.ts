@@ -29,9 +29,8 @@ export class OrderCardComponent {
   @Output() viewDetails = new EventEmitter<number>();
 
   get visibleActions(): OrderAction[] {
-    const statusActions = getAvailableActions(this.order.status);
-    return statusActions.filter((action) =>
-      this.allowedRoleActions.includes(action),
+    return getAvailableActions(this.order.status).filter((a) =>
+      this.allowedRoleActions.includes(a),
     );
   }
 
