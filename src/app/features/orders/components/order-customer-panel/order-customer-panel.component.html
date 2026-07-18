@@ -1,0 +1,25 @@
+<div class="panel">
+  <div class="panel__header">
+    <span class="panel__title">Customer Info</span>
+  </div>
+
+  <div class="customer-block">
+    <div class="customer-block__avatar">{{ customerInitials }}</div>
+    <div>
+      <p class="customer-block__name">{{ order.customerName }}</p>
+      <p class="customer-block__id">Customer ID: {{ order.customerId }}</p>
+    </div>
+  </div>
+
+  <div class="customer-detail-row" *ngIf="order.customerAddress">
+    <i class="fas fa-location-dot"></i>
+    <div>
+      <p class="customer-detail-row__label">Delivery Address</p>
+      <p class="customer-detail-row__value">{{ order.customerAddress }}</p>
+    </div>
+  </div>
+
+  <button class="panel__link" type="button" (click)="viewHistory.emit()">
+    View Order History
+  </button>
+</div>

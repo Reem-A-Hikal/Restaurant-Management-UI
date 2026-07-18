@@ -108,12 +108,6 @@
   background-color: var(--color-primary) !important;
 }
 
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .material-symbols-outlined {
   font-variation-settings:
     "FILL" 0,
@@ -175,4 +169,52 @@
 .card-hover-lift:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px var(--color-primary-shadow);
+}
+
+/* ══════════════════════════════════════
+  Shared Panel Card (used by order-details sub-panels)
+   ══════════════════════════════════════ */
+.panel {
+  background: var(--color-surface);
+  border-radius: 16px;
+  padding: 20px 24px 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.panel__title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.panel__count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.panel__link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-outline);
+}
+.panel__link:hover {
+  color: var(--color-primary-dark);
 }

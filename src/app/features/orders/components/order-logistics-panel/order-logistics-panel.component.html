@@ -1,0 +1,60 @@
+<div class="panel logistics-panel mt-4">
+  <div class="panel__header">
+    <span class="panel__title">Logistics Tracking</span>
+  </div>
+
+  <div class="timeline" *ngIf="!isLoading; else timelineLoadingTpl">
+    <div class="timeline__item" *ngFor="let step of timelineSteps">
+      <div class="timeline__marker" [class.timeline__marker--done]="step.done">
+        <i class="fas" [ngClass]="step.icon"></i>
+      </div>
+      <div class="timeline__content">
+        <p class="timeline__label">{{ step.label }}</p>
+        <p class="timeline__sub" *ngIf="step.sub">{{ step.sub }}</p>
+      </div>
+      <span class="timeline__time" *ngIf="step.time">{{ step.time }}</span>
+    </div>
+
+    <p class="text-muted small mb-0" *ngIf="timelineSteps.length === 0">
+      No delivery activity yet for this order.
+    </p>
+  </div>
+
+  <ng-template #timelineLoadingTpl>
+    <div class="text-center py-2">
+      <div class="spinner-border spinner-border-sm text-success"></div>
+    </div>
+  </ng-template>
+
+  <!-- Active courier contact card -->
+  <div class="courier-card" *ngIf="delivery && delivery.deliveryPersonName">
+    <div class="courier-card__icon"><i class="fas fa-user"></i></div>
+    <div class="courier-card__info">
+      <span class="courier-card__name">{{ delivery.deliveryPersonName }}</span>
+      <span class="courier-card__link">Contact Delivery Agent</span>
+    </div>
+    <i class="fas fa-comment courier-card__chat"></i>
+  </div>
+
+  <!-- Assign delivery / waiting state -->
+  <ng-container *ngIf="!delivery && !isLoading">
+    <ng-container
+      *ngIf="
+        ![OrderStatus.Delivered, OrderStatus.Cancelled].includes(order.status)
+      "
+    >
+      <app-assign-delivery-panel
+        *ngIf="order.status === OrderStatus.Ready"
+        [orderId]="orderId"
+        (assigned)="onDeliveryAssigned($event)"
+      ></app-assign-delivery-panel>
+
+      <p
+        *ngIf="order.status !== OrderStatus.Ready"
+        class="text-muted small mb-0 text-center"
+      >
+        ⏳ Delivery can be assigned once the order is Ready.
+      </p>
+    </ng-container>
+  </ng-container>
+</div>

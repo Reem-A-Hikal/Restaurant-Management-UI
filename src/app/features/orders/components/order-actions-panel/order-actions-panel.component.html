@@ -1,0 +1,39 @@
+<div class="panel mt-4">
+  <div class="panel__header">
+    <span class="panel__title">Actions</span>
+  </div>
+  <div class="d-flex flex-column gap-2">
+    <button
+      *ngIf="visibleActions.includes('confirm')"
+      class="btn btn-success"
+      [disabled]="isProcessing"
+      (click)="confirm.emit()"
+    >
+      Confirm Order
+    </button>
+    <button
+      *ngIf="visibleActions.includes('preparing')"
+      class="btn btn-warning"
+      [disabled]="isProcessing"
+      (click)="markPreparing.emit()"
+    >
+      Start Preparing
+    </button>
+    <button
+      *ngIf="visibleActions.includes('prepared')"
+      class="btn btn-info"
+      [disabled]="isProcessing"
+      (click)="markPrepared.emit()"
+    >
+      Mark Ready
+    </button>
+    <button
+      *ngIf="visibleActions.includes('cancel')"
+      class="btn btn-outline-danger"
+      [disabled]="isProcessing"
+      (click)="cancelOrder.emit()"
+    >
+      Cancel Order
+    </button>
+  </div>
+</div>

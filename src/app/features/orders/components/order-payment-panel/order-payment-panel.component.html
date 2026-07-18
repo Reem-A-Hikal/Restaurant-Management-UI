@@ -1,0 +1,61 @@
+<div class="panel mt-4">
+  <div class="panel__header">
+    <span class="panel__title">Payment Details</span>
+    <button
+      *ngIf="hasCompletedPayment"
+      class="refund-pill"
+      type="button"
+      [disabled]="isRefunding"
+      (click)="refund.emit()"
+    >
+      {{ isRefunding ? "Refunding..." : "Refund" }}
+    </button>
+  </div>
+
+  <ng-container *ngIf="!isLoading; else paymentsLoadingTpl">
+    <ng-container *ngIf="payments.length > 0; else noPaymentsTpl">
+      <div class="payment-line" *ngFor="let payment of payments">
+        <span class="payment-line__label">
+          <i class="fas fa-money-bill"></i>
+          {{ PaymentMethodLabels[payment.method] }} Payment
+        </span>
+        <span class="payment-line__value">{{
+          payment.amount | currency: "USD"
+        }}</span>
+      </div>
+
+      <div class="payment-line" *ngFor="let payment of payments">
+        <span class="payment-line__label">Transaction Status</span>
+        <span
+          class="status-pill"
+          [ngClass]="{
+            'status-pill--completed':
+              payment.status === PaymentStatus.Completed,
+            'status-pill--pending': payment.status === PaymentStatus.Pending,
+            'status-pill--failed': payment.status === PaymentStatus.Failed,
+            'status-pill--refunded': payment.status === PaymentStatus.Refunded,
+          }"
+        >
+          {{ PaymentStatusLabels[payment.status] }}
+        </span>
+      </div>
+    </ng-container>
+
+    <ng-template #noPaymentsTpl>
+      <p class="text-muted small mb-0 text-center">
+        No payment attempts recorded yet.
+      </p>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #paymentsLoadingTpl>
+    <div class="text-center py-2">
+      <div class="spinner-border spinner-border-sm text-success"></div>
+    </div>
+  </ng-template>
+
+  <div class="internal-note" *ngIf="staffNotes">
+    <p class="internal-note__label">Internal Note</p>
+    <p class="internal-note__text">"{{ staffNotes }}"</p>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="panel">
+  <div class="panel__header">
+    <span class="panel__title">Order Summary</span>
+    <span class="panel__count">{{ order.orderDetails.length }} Items</span>
+  </div>
+
+  <table class="order-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th class="text-center">Qty</th>
+        <th class="text-end">Unit Price</th>
+        <th class="text-end">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of order.orderDetails">
+        <td class="order-table__product">
+          <span class="order-table__thumb">{{
+            item.productName.charAt(0)
+          }}</span>
+          {{ item.productName }}
+        </td>
+        <td class="text-center">{{ item.quantity }}</td>
+        <td class="text-end">{{ item.unitPrice | currency: "USD" }}</td>
+        <td class="text-end fw-bold">
+          {{ item.totalPrice | currency: "USD" }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="order-totals">
+    <div class="order-totals__row">
+      <span>Subtotal</span><span>{{ order.subTotal | currency: "USD" }}</span>
+    </div>
+    <div class="order-totals__row">
+      <span>Delivery Fee</span
+      ><span>{{ order.deliveryFee | currency: "USD" }}</span>
+    </div>
+    <div class="order-totals__row">
+      <span>Tax</span><span>{{ order.tax | currency: "USD" }}</span>
+    </div>
+    <div class="order-totals__row" *ngIf="order.discount > 0">
+      <span>Discount</span><span>-{{ order.discount | currency: "USD" }}</span>
+    </div>
+    <div class="order-totals__row order-totals__row--total">
+      <span>Total</span><span>{{ order.totalAmount | currency: "USD" }}</span>
+    </div>
+  </div>
+
+  <div class="order-notes" *ngIf="order.customerNotes">
+    <div class="order-notes__block">
+      <p class="order-notes__label">Customer Notes</p>
+      <p class="order-notes__text">{{ order.customerNotes }}</p>
+    </div>
+  </div>
+</div>
