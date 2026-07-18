@@ -1,20 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FilterOption,
-  TopPageComponent,
-} from '../../../../shared/components/top-page/top-page.component';
+import { TopPageComponent } from '../../../../shared/components/top-page/top-page.component';
 import { OrderListComponent } from '../../components/order-list/order-list.component';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { OrdersService } from '../../services/orders.service';
 import { AuthService } from '../../../../Core/Auth/services/auth.service';
 import { OrderAction } from '../../helpers/order-actions.helper';
-import { OrderStatus } from '../../models/order-enums';
+import { OrderStatus, OrderStatusLabels } from '../../models/order-enums';
 import { OrderDto } from '../../models/order.model';
 import { getActionForRole } from '../../helpers/order-role-actions.helper';
 import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { FilterOption } from '../../../../shared/models/filter-options.model';
 
 @Component({
   selector: 'app-order',
@@ -30,15 +28,7 @@ export class OrderComponent implements OnInit {
 
   allowedRoleActions: OrderAction[] = [];
 
-  filterOptions: FilterOption[] = [
-    { label: 'New', value: OrderStatus.New.toString() },
-    { label: 'Confirmed', value: OrderStatus.Confirmed.toString() },
-    { label: 'Preparing', value: OrderStatus.Preparing.toString() },
-    { label: 'Ready', value: OrderStatus.Ready.toString() },
-    { label: 'Out For Delivery', value: OrderStatus.OutForDelivery.toString() },
-    { label: 'Delivered', value: OrderStatus.Delivered.toString() },
-    { label: 'Cancelled', value: OrderStatus.Cancelled.toString() },
-  ];
+  filterOptions: FilterOption[] = [];
 
   constructor(
     private readonly ordersService: OrdersService,
@@ -49,7 +39,22 @@ export class OrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.allowedRoleActions = getActionForRole(this.authService.getRole());
+    this.loadFilterOptions();
     this.loadOrders();
+  }
+
+  loadFilterOptions(): void {
+    this.ordersService.getAllowedStatuses().subscribe({
+      next: (statuses) => {
+        this.filterOptions = statuses.map((status) => ({
+          label: OrderStatusLabels[status],
+          value: status.toString(),
+        }));
+      },
+      error: () => {
+        this.filterOptions = [];
+      },
+    });
   }
 
   loadOrders(): void {

@@ -36,6 +36,10 @@ export class OrdersService {
     return this.api.get<OrderDto[]>(`${this.basePath}/my-orders`);
   }
 
+  getAllowedStatuses(): Observable<OrderStatus[]> {
+  return this.api.get<OrderStatus[]>(`${this.basePath}/allowed-statuses`);
+}
+
   getByStatus(status: OrderStatus): Observable<OrderDto[]> {
     return this.api.get<OrderDto[]>(`${this.basePath}/status/${status}`);
   }
