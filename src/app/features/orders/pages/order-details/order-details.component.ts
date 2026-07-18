@@ -6,33 +6,37 @@ import { OrdersService } from '../../services/orders.service';
 import { AuthService } from '../../../../Core/Auth/services/auth.service';
 import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 import {
-  getAvailableActions,
+  getVisibleActions,
   OrderAction,
 } from '../../helpers/order-actions.helper';
-import { getActionForRole } from '../../helpers/order-role-actions.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { OrderStatusBadgeComponent } from '../../components/order-status-badge/order-status-badge.component';
 import { DeliveryDto } from '../../../deliveries/models/delivery.model';
 import { DeliveriesService } from '../../../deliveries/services/deliveries.service';
-import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
-import { AssignDeliveryPanelComponent } from '../../../deliveries/components/assign-delivery-panel/assign-delivery-panel.component';
-import { OrderStatus } from '../../models/order-enums';
 import { PaymentDto } from '../../../payments/models/payment.model';
-import {
-  PaymentMethodLabels,
-  PaymentStatus,
-  PaymentStatusLabels,
-} from '../../../payments/models/payment-enums';
 import { PaymentsService } from '../../../payments/services/payments.service';
+import {
+  canViewDeliveryLogistics,
+  canViewPayments,
+} from '../../helpers/order-permissions.helper';
+import { Observable } from 'rxjs';
+import { OrderSummaryPanelComponent } from '../../components/order-summary-panel/order-summary-panel.component';
+import { OrderLogisticsPanelComponent } from '../../components/order-logistics-panel/order-logistics-panel.component';
+import { OrderCustomerPanelComponent } from '../../components/order-customer-panel/order-customer-panel.component';
+import { OrderPaymentPanelComponent } from '../../components/order-payment-panel/order-payment-panel.component';
+import { OrderActionsPanelComponent } from '../../components/order-actions-panel/order-actions-panel.component';
 
 @Component({
   selector: 'app-order-details',
   imports: [
     CommonModule,
     OrderStatusBadgeComponent,
-    MdbTooltipModule,
-    AssignDeliveryPanelComponent,
+    OrderSummaryPanelComponent,
+    OrderLogisticsPanelComponent,
+    OrderCustomerPanelComponent,
+    OrderPaymentPanelComponent,
+    OrderActionsPanelComponent,
   ],
   templateUrl: './order-details.component.html',
   styleUrls: ['./order-details.component.css'],
@@ -51,164 +55,10 @@ export class OrderDetailsComponent implements OnInit {
   isLoadingPayments = false;
   isRefunding = false;
 
+  canSeeDeliveryLogistics = false;
+  canSeePayments = false;
+
   orderId!: number;
-
-  readonly OrderStatus = OrderStatus;
-  readonly PaymentStatus = PaymentStatus;
-  readonly PaymentMethodLabels = PaymentMethodLabels;
-  readonly PaymentStatusLabels = PaymentStatusLabels;
-
-  get customerInitials(): string {
-    if (!this.order?.customerName) return '?';
-    return this.order.customerName
-      .trim()
-      .split(/\s+/)
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join('')
-      .toUpperCase();
-  }
-
-  get timelineSteps(): {
-    label: string;
-    sub?: string;
-    time?: string;
-    done: boolean;
-    icon: string;
-  }[] {
-    const all = [...this.deliveriesHistory];
-    if (
-      this.delivery &&
-      !all.some((d) => d.deliveryId === this.delivery!.deliveryId)
-    ) {
-      all.unshift(this.delivery);
-    }
-
-    // ترتيب المحاولات حسب الـ ID (تصاعدي) لتحديد رقم المحاولة
-    const sortedByCreation = [...all].sort(
-      (a, b) => a.deliveryId - b.deliveryId,
-    );
-    const showAttemptLabel = sortedByCreation.length > 1;
-
-    const isValidDate = (value: string | null | undefined): value is string =>
-      !!value && new Date(value).getFullYear() > 1970;
-
-    // تجميع كل الخطوات مع بيانات إضافية للترتيب
-    const steps: {
-      label: string;
-      sub?: string;
-      time: string;
-      done: boolean;
-      icon: string;
-      priority: number; // 3=Delivered, 2=PickedUp, 1=Assigned, 0=Cancelled
-      attemptNumber: number; // رقم المحاولة (1-based)
-    }[] = [];
-
-    sortedByCreation.forEach((d, index) => {
-      const attemptNumber = index + 1;
-      const attemptPrefix = showAttemptLabel
-        ? `Attempt ${attemptNumber} · `
-        : '';
-      const courier = d.deliveryPersonName
-        ? `${attemptPrefix}Courier: ${d.deliveryPersonName}`
-        : attemptPrefix || undefined;
-
-      // 1. Courier Assigned (priority = 1)
-      if (isValidDate(d.assignedAt)) {
-        steps.push({
-          label: 'Courier Assigned',
-          sub: courier,
-          time: d.assignedAt,
-          done: true,
-          icon: 'fa-truck',
-          priority: 1,
-          attemptNumber,
-        });
-      }
-
-      // 2. Picked Up (priority = 2)
-      if (isValidDate(d.deliveryStartTime)) {
-        steps.push({
-          label: 'Picked Up by Courier',
-          sub: courier,
-          time: d.deliveryStartTime,
-          done: true,
-          icon: 'fa-box',
-          priority: 2,
-          attemptNumber,
-        });
-      }
-
-      // 3. Delivered (priority = 3)
-      if (isValidDate(d.deliveryEndTime)) {
-        steps.push({
-          label: 'Delivered Successfully',
-          sub: courier,
-          time: d.deliveryEndTime,
-          done: true,
-          icon: 'fa-check',
-          priority: 3,
-          attemptNumber,
-        });
-      }
-
-      // 4. Cancelled (priority = 0، ولكن سيظهر حسب وقته)
-      if (isValidDate(d.cancelledAt)) {
-        steps.push({
-          label: 'Delivery Cancelled',
-          sub: d.notes ?? courier,
-          time: d.cancelledAt,
-          done: false,
-          icon: 'fa-xmark',
-          priority: 0,
-          attemptNumber,
-        });
-      }
-    });
-
-    // الترتيب النهائي:
-    // 1. تنازلي حسب الوقت (الأحدث أولاً)
-    // 2. إذا تساوى الوقت، تنازلي حسب الأولوية (Delivered > PickedUp > Assigned)
-    // 3. إذا تساوت الأولوية والوقت، تنازلي حسب رقم المحاولة
-    return steps
-      .filter((s) => s.time)
-      .sort((a, b) => {
-        const timeA = new Date(a.time).getTime();
-        const timeB = new Date(b.time).getTime();
-        if (timeA !== timeB) {
-          return timeB - timeA; // تنازلي حسب الوقت
-        }
-        if (a.priority !== b.priority) {
-          return b.priority - a.priority; // تنازلي حسب الأولوية
-        }
-        return b.attemptNumber - a.attemptNumber; // تنازلي حسب رقم المحاولة
-      })
-      .map((s) => ({
-        ...s,
-        time: new Date(s.time).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      }));
-  }
-
-  onPrintReceipt(): void {
-    globalThis.print();
-  }
-
-  onTrackDelivery(): void {
-    document
-      .querySelector('.logistics-panel')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  onViewOrderHistory(): void {
-    if (this.order?.customerId) {
-      this.router.navigate(['/Dashboard/Orders'], {
-        queryParams: { customerId: this.order.customerId },
-      });
-    }
-  }
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -227,13 +77,32 @@ export class OrderDetailsComponent implements OnInit {
       return;
     }
     this.orderId = Number(idParam);
+
+    this.setupPermissions();
     this.loadOrder();
-    this.loadDelivery();
-    this.loadPayments();
-    this.loadDeliveryHistory();
+    this.loadPermittedData();
   }
 
-  // ---- Order ----
+  private setupPermissions(): void {
+    const role = this.authService.getRole();
+    this.canSeeDeliveryLogistics = canViewDeliveryLogistics(role);
+    this.canSeePayments = canViewPayments(role);
+  }
+
+  private loadPermittedData(): void {
+    if (this.canSeeDeliveryLogistics) {
+      this.loadDelivery();
+      this.loadDeliveryHistory();
+    }
+    if (this.canSeePayments) {
+      this.loadPayments();
+    }
+  }
+
+  get visibleActions(): OrderAction[] {
+    if (!this.order) return [];
+    return getVisibleActions(this.order.status, this.authService.getRole());
+  }
 
   loadOrder(): void {
     this.isLoading = true;
@@ -253,56 +122,43 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
-  get visibleActions(): OrderAction[] {
-    if (!this.order) return [];
-    const statusActions = getAvailableActions(this.order.status);
-    const roleActions = getActionForRole(this.authService.getRole());
-    return statusActions.filter((a) => roleActions.includes(a));
+  private runOrderAction(
+    action$: Observable<OrderDto>,
+    successMessage: string,
+  ): void {
+    this.isProcessingAction = true;
+    action$.subscribe({
+      next: (updatedOrder) => {
+        this.order = updatedOrder;
+        this.toastr.success(successMessage, 'Success');
+        this.isProcessingAction = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.toastr.error(extractErrorResponse(err, 'Action failed'), 'Error');
+        this.isProcessingAction = false;
+      },
+    });
   }
 
   onConfirm(): void {
-    this.isProcessingAction = true;
-    this.ordersService.confirm(this.orderId, {}).subscribe({
-      next: (updatedOrder) => {
-        this.order = updatedOrder;
-        this.toastr.success('Order confirmed', 'Success');
-        this.isProcessingAction = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        this.toastr.error(extractErrorResponse(err, 'Action failed'), 'Error');
-        this.isProcessingAction = false;
-      },
-    });
+    this.runOrderAction(
+      this.ordersService.confirm(this.orderId, {}),
+      'Order confirmed',
+    );
   }
 
   onMarkPreparing(): void {
-    this.isProcessingAction = true;
-    this.ordersService.markAsPreparing(this.orderId).subscribe({
-      next: (updatedOrder) => {
-        this.order = updatedOrder;
-        this.toastr.success('Order is now being prepared', 'Success');
-        this.isProcessingAction = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        this.toastr.error(extractErrorResponse(err, 'Action failed'), 'Error');
-        this.isProcessingAction = false;
-      },
-    });
+    this.runOrderAction(
+      this.ordersService.markAsPreparing(this.orderId),
+      'Order is now being prepared',
+    );
   }
 
   onMarkPrepared(): void {
-    this.isProcessingAction = true;
-    this.ordersService.markAsPrepared(this.orderId).subscribe({
-      next: (updatedOrder) => {
-        this.order = updatedOrder;
-        this.toastr.success('Order is ready', 'Success');
-        this.isProcessingAction = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        this.toastr.error(extractErrorResponse(err, 'Action failed'), 'Error');
-        this.isProcessingAction = false;
-      },
-    });
+    this.runOrderAction(
+      this.ordersService.markAsPrepared(this.orderId),
+      'Order is ready',
+    );
   }
 
   async onCancel(): Promise<void> {
@@ -340,8 +196,6 @@ export class OrderDetailsComponent implements OnInit {
     }
   }
 
-  // ---- Delivery ----
-
   loadDelivery(): void {
     this.isLoadingDelivery = true;
     this.deliveriesService.getActiveForOrder(this.orderId).subscribe({
@@ -377,8 +231,6 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
-  // ---- Payment ----
-
   loadPayments(): void {
     this.isLoadingPayments = true;
     this.paymentsService.getHistory(this.orderId).subscribe({
@@ -394,10 +246,6 @@ export class OrderDetailsComponent implements OnInit {
         this.isLoadingPayments = false;
       },
     });
-  }
-
-  get hasCompletedPayment(): boolean {
-    return this.payments.some((p) => p.status === PaymentStatus.Completed);
   }
 
   async onRefund(): Promise<void> {
@@ -430,7 +278,23 @@ export class OrderDetailsComponent implements OnInit {
     }
   }
 
-  // ---- Navigation ----
+  onPrintReceipt(): void {
+    globalThis.print();
+  }
+
+  onTrackDelivery(): void {
+    document
+      .querySelector('.logistics-panel')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  onViewOrderHistory(): void {
+    if (this.order?.customerId) {
+      this.router.navigate(['/Dashboard/Orders'], {
+        queryParams: { customerId: this.order.customerId },
+      });
+    }
+  }
 
   goBack(): void {
     this.router.navigateByUrl('/Dashboard/Orders');
