@@ -1,0 +1,10 @@
+<div class="chart-card">
+  <div class="chart-card__header" *ngIf="title">
+    <span class="chart-card__title">{{ title }}</span>
+    <span class="chart-card__subtitle" *ngIf="subtitle">{{ subtitle }}</span>
+  </div>
+  <div class="chart-card__body" [style.height.px]="height">
+    <div class="skeleton-card" style="height: 100%" *ngIf="isLoading"></div>
+    <canvas #canvasRef *ngIf="!isLoading"></canvas>
+  </div>
+</div>

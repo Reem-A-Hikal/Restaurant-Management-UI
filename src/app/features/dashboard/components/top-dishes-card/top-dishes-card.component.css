@@ -1,0 +1,125 @@
+.chart-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-outline);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  height: 100%;
+  min-width: 0;
+}
+
+.chart-card__header {
+  margin-bottom: 20px;
+}
+
+.chart-card__title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.chart-card__subtitle {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* ---------- Dish list ---------- */
+.dish-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dish-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dish-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--color-outline);
+  flex-shrink: 0;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dish-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dish-thumb__fallback {
+  color: var(--color-primary);
+  font-size: 24px;
+}
+
+.dish-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dish-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dish-sold {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 2px 0 0;
+}
+
+.dish-revenue {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.dish-empty {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 12px 0;
+}
+
+.dish-skeleton {
+  height: 56px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.dish-skeleton:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .chart-card {
+    padding: 14px 16px 18px;
+  }
+  .dish-thumb {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+  }
+  .dish-name {
+    font-size: 13px;
+  }
+}

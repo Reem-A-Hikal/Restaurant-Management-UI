@@ -1,0 +1,50 @@
+<div class="chart-card">
+  <div class="chart-card__header" *ngIf="title">
+    <div class="chart-card__title">
+      <span>{{ title }}</span>
+      <span class="chart-card__subtitle" *ngIf="subtitle">{{ subtitle }}</span>
+    </div>
+    <button class="chart-card__viewAll" (click)="viewAll()">
+      View All Orders
+    </button>
+  </div>
+
+  <div class="orders-table" *ngIf="!isLoading; else loadingState">
+    <div class="orders-table__row orders-table__row--head">
+      <span>Order</span>
+      <span>Customer</span>
+      <span class="text-center">Status</span>
+      <span class="text-right">Amount</span>
+    </div>
+
+    <div class="orders-table__row" *ngFor="let order of visibleOrders">
+      <span class="order-id">{{ order.orderNumber }}</span>
+      <span class="order-customer">
+        <span class="order-avatar">{{ initials(order.customerName) }}</span>
+        <span class="order-customer__name">{{ order.customerName }}</span>
+      </span>
+      <span class="text-center">
+        <span
+          class="status-badge"
+          [style.background]="statusStyle(order.statusDisplay).bg"
+          [style.color]="statusStyle(order.statusDisplay).color"
+          >{{ formatStatus(order.statusDisplay) }}</span
+        >
+      </span>
+      <span class="order-amount text-right">{{
+        order.totalAmount | currency
+      }}</span>
+    </div>
+
+    <p class="orders-empty" *ngIf="!visibleOrders.length">
+      No recent orders yet.
+    </p>
+  </div>
+
+  <ng-template #loadingState>
+    <div
+      class="skeleton-card orders-skeleton"
+      *ngFor="let s of skeletonRows"
+    ></div>
+  </ng-template>
+</div>

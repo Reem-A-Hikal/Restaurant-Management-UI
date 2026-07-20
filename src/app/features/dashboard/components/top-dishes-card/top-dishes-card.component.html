@@ -1,0 +1,43 @@
+<div class="chart-card">
+  <div class="chart-card__header" *ngIf="title">
+    <span class="chart-card__title">{{ title }}</span>
+    <span class="chart-card__subtitle" *ngIf="subtitle">{{ subtitle }}</span>
+  </div>
+
+  <div class="dish-list" *ngIf="!isLoading; else loadingState">
+    <div class="dish-row" *ngFor="let dish of visibleDishes">
+      <div class="dish-thumb">
+        <img
+          *ngIf="hasImage(dish)"
+          [src]="toAssetUrl(dish.imageUrl, 'assets/images/placeholder.png')"
+          [attr.alt]="dish.name"
+          (error)="onImageError(dish)"
+        />
+        <span
+          *ngIf="!hasImage(dish)"
+          class="dish-thumb__fallback material-symbols-outlined"
+        >
+          restaurant
+        </span>
+      </div>
+
+      <div class="dish-info">
+        <p class="dish-name">{{ dish.name }}</p>
+        <p class="dish-sold">{{ dish.quantitySold }} sold</p>
+      </div>
+
+      <p class="dish-revenue">+{{ dish.revenue | currency }}</p>
+    </div>
+
+    <p class="dish-empty" *ngIf="!visibleDishes.length">
+      No sales recorded for this period yet.
+    </p>
+  </div>
+
+  <ng-template #loadingState>
+    <div
+      class="skeleton-card dish-skeleton"
+      *ngFor="let s of skeletonRows"
+    ></div>
+  </ng-template>
+</div>

@@ -1,64 +1,74 @@
-<div class="container my-4">
-  <div class="row align-items-center mb-4">
+<div class="container my-4 dashboard-overview">
+  <div class="mb-4 dashboard-header">
     <div class="col">
-      <h2 class="fw-bold">Restro Dashboard Overview</h2>
+      <h2 class="fw-bold mb-1">Restro Dashboard Overview</h2>
+      <p class="text-muted mb-0">
+        Welcome back! Here's what's happening today.
+      </p>
     </div>
     <div class="col-auto">
-      <span class="text-muted">{{ date | date: "fullDate" }}</span>
+      <span class="date-pill">
+        <span class="material-symbols-outlined">calendar_month</span>
+        {{ today | date: "fullDate" }}
+      </span>
     </div>
   </div>
-  <div class="row g-4 mb-4">
-    <div class="col-md-4">
-      <div class="card text-center shadow-sm">
-        <div class="card-body">
-          <h3 class="card-title">Today's Orders</h3>
-          <p class="display-5 fw-bold text-primary mb-1">42</p>
-          <span class="text-secondary">Total Orders</span>
-        </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid mb-4">
+    <ng-container *ngIf="isLoading">
+      <div
+        class="skeleton-card kpi-skeleton"
+        *ngFor="let s of [1, 2, 3, 4]"
+      ></div>
+    </ng-container>
+    <div class="kpi-card" *ngFor="let kpi of kpis">
+      <div class="kpi-card__icon">
+        <span class="material-symbols-outlined">{{ kpi.icon }}</span>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center shadow-sm">
-        <div class="card-body">
-          <h3 class="card-title">Reservations</h3>
-          <p class="display-5 fw-bold text-success mb-1">15</p>
-          <span class="text-secondary">Upcoming Reservations</span>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-center shadow-sm">
-        <div class="card-body">
-          <h3 class="card-title">Customer Feedback</h3>
-          <p class="display-5 fw-bold text-warning mb-1">8</p>
-          <span class="text-secondary">New Reviews</span>
-        </div>
-      </div>
+      <p class="kpi-card__value">{{ kpi.value }}</p>
+      <p class="kpi-card__label">{{ kpi.label }}</p>
     </div>
   </div>
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h4 class="card-title mb-3">Recent Activity</h4>
-      <ul class="list-group list-group-flush">
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span class="text-muted">10:15 AM</span>
-          <span>Order #1234 placed</span>
-        </li>
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span class="text-muted">11:00 AM</span>
-          <span>Reservation for 2 confirmed</span>
-        </li>
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span class="text-muted">11:30 AM</span>
-          <span>New feedback received</span>
-        </li>
-      </ul>
-    </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <app-chart-card
+      class="charts-grid__trend"
+      title="Revenue Trend"
+      subtitle="Last 7 days performance"
+      type="line"
+      [labels]="trendLabels"
+      [datasets]="trendDatasets"
+      [isLoading]="isLoading"
+    ></app-chart-card>
+
+    <app-chart-card
+      class="charts-grid__status"
+      title="Orders by Status"
+      subtitle="Live breakdown of current orders"
+      type="doughnut"
+      [labels]="statusLabels"
+      [datasets]="statusDatasets"
+      [isLoading]="isLoading"
+    ></app-chart-card>
+
+    <app-recent-orders-card
+      class="charts-grid__recent-orders"
+      title="Recent Orders"
+      subtitle="Live order stream"
+      [orders]="recentOrders"
+      [maxItems]="5"
+      [isLoading]="isLoading"
+    ></app-recent-orders-card>
+
+    <app-top-dishes-card
+      class="charts-grid__top-dishes"
+      title="Top 4 Best-Selling Dishes"
+      subtitle="Best performers this week"
+      [dishes]="topDishes"
+      [maxItems]="4"
+      [isLoading]="isLoading"
+    ></app-top-dishes-card>
   </div>
 </div>
