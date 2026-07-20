@@ -9,20 +9,20 @@
 
 Actively developed. Backend integration, role-based routing, and the core
 Staff/Categories/Dishes/Orders modules are functionally complete, including a custom
-Power BI-style analytics dashboard for Admins. See [Roadmap](#-roadmap--known-issues)
+Power BI-style analytics dashboard for Admins. See [Roadmap](#roadmap--known-issues)
 for what's next.
 
 ## 🧱 Tech Stack
 
-| Area | Technology |
-|---|---|
-| Framework | Angular 19 (standalone components — no NgModules) |
+| Area               | Technology                                                                                            |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| Framework          | Angular 19 (standalone components — no NgModules)                                                     |
 | Reactive data flow | RxJS (Observables, operators: `debounceTime`, `distinctUntilChanged`, `takeUntil`, `finalize`, `tap`) |
-| UI Kit | MDB UI Kit (Material Design Bootstrap) |
-| Charts | Chart.js |
-| Notifications | ngx-toastr |
-| Confirmations | SweetAlert2 |
-| HTTP | Angular `HttpClient` + custom interceptor pipeline |
+| UI Kit             | MDB UI Kit (Material Design Bootstrap)                                                                |
+| Charts             | Chart.js                                                                                              |
+| Notifications      | ngx-toastr                                                                                            |
+| Confirmations      | SweetAlert2                                                                                           |
+| HTTP               | Angular `HttpClient` + custom interceptor pipeline                                                    |
 
 ## 🏗️ Architecture
 
@@ -56,7 +56,7 @@ Every request passes through three chained interceptors, in this order:
 
 A generic `rolesGuard` reads allowed roles straight from route metadata, so adding a
 new role to an existing route is a one-line change rather than a new guard. The Admin
-dashboard Overview page is split at the *component* level per role
+dashboard Overview page is split at the _component_ level per role
 (`AdminOverviewComponent` / `ChefOverviewComponent`) rather than one component
 branching internally — better bundle size, testability, and separation of concerns.
 
@@ -90,7 +90,7 @@ branching internally — better bundle size, testability, and separation of conc
 - A single design-token system (CSS custom properties) drives color, spacing, and
   status-badge styling across every feature
 
-## 🗺️ Roadmap / Known Issues
+## Roadmap / Known Issues
 
 - [ ] No refresh-token flow yet — any 401 forces a full re-login
 - [ ] Dedicated mobile-first layout for the DeliveryPerson role (deliberately
