@@ -6,11 +6,16 @@ export const publicGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
+  const hasSession =
+    authService.isAuthenticated() || !!authService.getRefreshToken();
+
+  if (hasSession) {
     if (authService.isAdmin() || authService.isChef()) {
       router.navigate(['/Dashboard']);
     } else {
-      router.navigate(['/main']);
+      router.navigate(['/main'], {
+        queryParams: { error: 'unauthorized' },
+      });
     }
     return false;
   }

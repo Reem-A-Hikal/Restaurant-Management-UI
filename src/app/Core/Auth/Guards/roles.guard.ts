@@ -6,7 +6,10 @@ export const rolesGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.isAuthenticated()) {
+  const hasSession =
+    authService.isAuthenticated() || !!authService.getRefreshToken();
+
+  if (!hasSession) {
     authService.logout();
     router.navigate(['/signin'], {
       queryParams: { returnUrl: state.url },

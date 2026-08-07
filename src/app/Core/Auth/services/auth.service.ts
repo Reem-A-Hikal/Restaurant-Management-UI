@@ -11,6 +11,7 @@ import { RegisterModel } from '../models/register.model';
 })
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
+  private readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private readonly USER_KEY = 'user_profile';
 
   constructor(private readonly api: ApiService) {}
@@ -23,19 +24,41 @@ export class AuthService {
     return this.api.post<AuthResponse>('/account/login', credentials).pipe(
       tap((response) => {
         if (response?.token) {
-          this.saveAuhData(response);
+          this.saveAuthData(response);
         }
       }),
     );
   }
 
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = this.getRefreshToken();
+    return this.api
+      .post<AuthResponse>('/account/refresh-token', { refreshToken })
+      .pipe(
+        tap((response) => {
+          if (response?.token) this.saveAuthData(response);
+        }),
+      );
+  }
+
   logout(): void {
+    const refreshToken = this.getRefreshToken();
+    if (refreshToken) {
+      this.api
+        .post<void>('/account/logout', { refreshToken })
+        .subscribe({ error: () => {} });
+    }
     localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
   }
 
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
 
   isAuthenticated(): boolean {
@@ -86,8 +109,9 @@ export class AuthService {
     return this.getRole() === role;
   }
 
-  private saveAuhData(authResponse: AuthResponse): void {
+  private saveAuthData(authResponse: AuthResponse): void {
     localStorage.setItem(this.TOKEN_KEY, authResponse.token);
+    localStorage.setItem(this.REFRESH_TOKEN_KEY, authResponse.refreshToken)
 
     const userProfile: UserProfile = {
       id: authResponse.userId,
