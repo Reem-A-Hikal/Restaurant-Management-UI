@@ -17,10 +17,12 @@ import {
   readFileAsDataUrl,
   validateImageFile,
 } from '../../../../shared/helpers/file-validation.helper';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 
 interface StatusAction {
   status: UserStatus;
   label: string;
+  pastTense: string;
   icon: string;
   variant: 'success' | 'muted' | 'danger';
   confirmText: string;
@@ -52,6 +54,7 @@ export class UserEditComponent implements OnInit {
     {
       status: UserStatus.Active,
       label: 'Activate',
+      pastTense: 'activated',
       icon: 'bi-check-circle',
       variant: 'success',
       confirmText: 'This will restore full account access.',
@@ -59,6 +62,7 @@ export class UserEditComponent implements OnInit {
     {
       status: UserStatus.Inactive,
       label: 'Deactivate',
+      pastTense: 'deactivated',
       icon: 'bi-pause-circle',
       variant: 'muted',
       confirmText: 'The user will not be able to log in until reactivated.',
@@ -66,6 +70,7 @@ export class UserEditComponent implements OnInit {
     {
       status: UserStatus.Suspended,
       label: 'Suspend',
+      pastTense: 'suspended',
       icon: 'bi-slash-circle',
       variant: 'danger',
       confirmText: 'This restricts account access due to a policy violation.',
@@ -206,13 +211,13 @@ export class UserEditComponent implements OnInit {
             isActive: action.status === UserStatus.Active,
           };
           this.toastr.success(
-            `User ${action.label.toLowerCase()}d successfully`,
+            `User ${action.pastTense} successfully`,
             'Success',
           );
         },
         error: (err) => {
           this.toastr.error(
-            err.error?.message || 'Failed to update status',
+            extractErrorResponse(err, 'Failed to update status'),
             'Error',
           );
         },
@@ -286,7 +291,10 @@ export class UserEditComponent implements OnInit {
         .delete(uploadedImageUrl)
         .subscribe({ error: () => {} });
     }
-    this.toastr.error(err.error?.message || 'Failed to save changes', 'Error');
+    this.toastr.error(
+      extractErrorResponse(err, 'Failed to save changes'),
+      'Error',
+    );
   }
 
   goBack(): void {

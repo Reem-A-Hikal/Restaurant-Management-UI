@@ -23,6 +23,7 @@ import {
   readFileAsDataUrl,
   validateImageFile,
 } from '../../../../shared/helpers/file-validation.helper';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-user-add',
@@ -191,9 +192,7 @@ export class AddUserComponent implements OnInit {
             .subscribe({ error: () => {} });
         }
         this.toastr.error(
-          err.error?.message ||
-            err.error?.errors?.[0] ||
-            'Failed to create user',
+          extractErrorResponse(err, 'Failed to create user'),
           'Error',
         );
       },

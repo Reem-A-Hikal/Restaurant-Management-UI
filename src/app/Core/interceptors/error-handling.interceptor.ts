@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, EMPTY } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { extractErrorResponse } from '../../shared/helpers/error.helper';
@@ -51,7 +51,7 @@ function handleUnauthorized(
   );
   if (!authService.getRefreshToken()) {
     forceLogout(router, authService, toastr);
-    return throwError(() => new Error('No refresh token available'));
+    return EMPTY;
   }
 
   if (!isRefreshing) {
@@ -67,7 +67,7 @@ function handleUnauthorized(
       catchError((err) => {
         isRefreshing = false;
         forceLogout(router, authService, toastr);
-        return throwError(() => err);
+        return EMPTY;
       }),
     );
   }
@@ -102,12 +102,15 @@ function handleHttpError(
   authService: AuthService,
 ): Observable<HttpEvent<unknown>> {
   const serverErrorCodes = [500, 502, 503];
+  const componentHandledCodes = [400, 404];
 
   if (error.status === 401) {
     if (isAuthEndpoint(req.url)) {
       if (isRefreshTokenEndpoint(req.url)) {
         forceLogout(router, authService, toastr);
       }
+      // If we forced logout due to refresh failure, complete the stream to avoid duplicate error handling in components
+      if (isRefreshTokenEndpoint(req.url)) return EMPTY;
       return throwError(() => error);
     }
 
@@ -115,6 +118,10 @@ function handleHttpError(
   }
 
   if (isAuthEndpoint(req.url)) {
+    return throwError(() => error);
+  }
+
+  if (componentHandledCodes.includes(error.status)) {
     return throwError(() => error);
   }
 

@@ -7,9 +7,7 @@ import {
   CategoryStatusLabels,
 } from '../../models/category.model';
 import { CommonModule } from '@angular/common';
-import {
-  TopPageComponent,
-} from '../../../../shared/components/top-page/top-page.component';
+import { TopPageComponent } from '../../../../shared/components/top-page/top-page.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { finalize, take } from 'rxjs';
 import {
@@ -127,7 +125,10 @@ export class CategoryComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.toastr.error('Failed to load categories', 'Error');
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load categories'),
+            'Error',
+          );
           this.isLoading = false;
         },
       });

@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 export const rolesGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -22,6 +23,11 @@ export const rolesGuard: CanActivateFn = (route, state) => {
   if (!allowedRoles || allowedRoles.length === 0) return true;
 
   if (!allowedRoles.includes(authService.getRole())) {
+    const toastr = inject(ToastrService);
+    toastr.error(
+      'You do not have permission to perform this action',
+      'Access Denied',
+    );
     router.navigateByUrl('/access-denied');
     return false;
   }

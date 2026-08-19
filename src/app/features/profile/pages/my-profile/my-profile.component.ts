@@ -13,7 +13,11 @@ import { AuthService } from '../../../../Core/Auth/services/auth.service';
 import { ImageUploadService } from '../../../../shared/services/image-upload.service';
 import { toAssetUrl } from '../../../../shared/helpers/url.helper';
 import { User } from '../../../users/models/user.model';
-import { readFileAsDataUrl, validateImageFile } from '../../../../shared/helpers/file-validation.helper';
+import {
+  readFileAsDataUrl,
+  validateImageFile,
+} from '../../../../shared/helpers/file-validation.helper';
+import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-my-profile',
@@ -71,9 +75,12 @@ export class MyProfileComponent implements OnInit {
         });
         this.isLoading = false;
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = false;
-        this.toastr.error('Failed to load your profile', 'Error');
+        this.toastr.error(
+          extractErrorResponse(err, 'Failed to load your profile'),
+          'Error',
+        );
       },
     });
   }
@@ -83,19 +90,19 @@ export class MyProfileComponent implements OnInit {
   }
 
   async onFileSelected(event: Event): Promise<void> {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
 
-  const result = validateImageFile(file);
-  if (!result.valid) {
-    this.toastr.error(result.error!, 'Invalid file');
-    return;
+    const result = validateImageFile(file);
+    if (!result.valid) {
+      this.toastr.error(result.error!, 'Invalid file');
+      return;
+    }
+
+    this.selectedFile = file;
+    this.imagePreviewUrl = await readFileAsDataUrl(file);
   }
-
-  this.selectedFile = file;
-  this.imagePreviewUrl = await readFileAsDataUrl(file);
-}
 
   onSubmit(): void {
     if (this.profileForm.invalid) {
@@ -139,7 +146,7 @@ export class MyProfileComponent implements OnInit {
         next: () => {
           this.toastr.success('Profile updated successfully', 'Success');
           this.selectedFile = null;
-          this.loadOwnProfile(); // نعيد التحميل عشان نتأكد إن كل حاجة متزامنة
+          this.loadOwnProfile();
         },
         error: (err) => {
           if (uploadedImageUrl) {
@@ -148,7 +155,7 @@ export class MyProfileComponent implements OnInit {
               .subscribe({ error: () => {} });
           }
           this.toastr.error(
-            err.error?.message || 'Failed to update profile',
+            extractErrorResponse(err, 'Failed to update profile'),
             'Error',
           );
         },
