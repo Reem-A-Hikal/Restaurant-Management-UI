@@ -17,7 +17,11 @@ import {
   readFileAsDataUrl,
   validateImageFile,
 } from '../../../../shared/helpers/file-validation.helper';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
+import { AddressManagerComponent } from '../../../address/components/address-manager/address-manager.component';
 
 interface StatusAction {
   status: UserStatus;
@@ -31,7 +35,12 @@ interface StatusAction {
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [DatePipe, CommonModule, ReactiveFormsModule],
+  imports: [
+    DatePipe,
+    CommonModule,
+    ReactiveFormsModule,
+    AddressManagerComponent,
+  ],
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.css'],
 })
@@ -79,6 +88,10 @@ export class UserEditComponent implements OnInit {
 
   get isChef(): boolean {
     return this.user?.role?.includes('Chef');
+  }
+
+  get isCustomer(): boolean {
+    return this.user?.role === 'Customer';
   }
 
   get isDeliveryPerson(): boolean {
@@ -152,9 +165,11 @@ export class UserEditComponent implements OnInit {
         });
         this.isLoading = false;
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = false;
-        this.toastr.error('Failed to load user', 'Error');
+        if (shouldComponentShowError(err)) {
+          this.toastr.error('Failed to load user', 'Error');
+        }
         this.router.navigateByUrl('/Dashboard/Staff');
       },
     });
@@ -216,10 +231,12 @@ export class UserEditComponent implements OnInit {
           );
         },
         error: (err) => {
-          this.toastr.error(
-            extractErrorResponse(err, 'Failed to update status'),
-            'Error',
-          );
+          if (shouldComponentShowError(err)) {
+            this.toastr.error(
+              extractErrorResponse(err, 'Failed to update status'),
+              'Error',
+            );
+          }
         },
       });
   }
@@ -291,10 +308,12 @@ export class UserEditComponent implements OnInit {
         .delete(uploadedImageUrl)
         .subscribe({ error: () => {} });
     }
-    this.toastr.error(
-      extractErrorResponse(err, 'Failed to save changes'),
-      'Error',
-    );
+    if (shouldComponentShowError(err)) {
+      this.toastr.error(
+        extractErrorResponse(err, 'Failed to save changes'),
+        'Error',
+      );
+    }
   }
 
   goBack(): void {

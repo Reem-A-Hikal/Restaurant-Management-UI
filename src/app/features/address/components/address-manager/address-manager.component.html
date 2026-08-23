@@ -1,0 +1,99 @@
+<div class="address-manager">
+  <div class="address-manager__header">
+    <h6 class="address-manager__title">
+      <i class="bi bi-geo-alt-fill"></i>
+      Saved Addresses
+      <span class="address-manager__count" *ngIf="addresses.length > 0"
+        >({{ addresses.length }})</span
+      >
+    </h6>
+    <button class="btn-add-address" type="button" (click)="addAddress()">
+      <i class="bi bi-plus-lg"></i>
+      Add New
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="address-manager__loading" *ngIf="isLoading">
+    <div class="skeleton-card address-skeleton" *ngFor="let s of [1, 2]"></div>
+  </div>
+
+  <!-- Empty -->
+  <app-empty-state
+    *ngIf="!isLoading && isEmpty"
+    icon="location_off"
+    title="addresses"
+    description="This customer hasn't added any delivery addresses yet."
+    buttonText="Address"
+    [showButton]="true"
+    (add)="addAddress()"
+  ></app-empty-state>
+
+  <!-- List -->
+  <div class="address-list" *ngIf="!isLoading && !isEmpty">
+    <div
+      class="address-card"
+      *ngFor="let address of addresses; trackBy: trackByAddressId"
+    >
+      <div class="address-card__icon">
+        <i class="bi" [ngClass]="typeIcon(address.addressType)"></i>
+      </div>
+
+      <div class="address-card__body">
+        <div class="address-card__top">
+          <span class="address-card__type">{{
+            AddressTypeLabels[address.addressType]
+          }}</span>
+          <span class="address-card__default-badge" *ngIf="address.isDefault">
+            <i class="bi bi-star-fill"></i> Default
+          </span>
+        </div>
+        <p class="address-card__line">
+          {{ address.addressLine1
+          }}<span *ngIf="address.addressLine2"
+            >, {{ address.addressLine2 }}</span
+          >
+        </p>
+        <p class="address-card__city">
+          {{ address.city
+          }}<span *ngIf="address.governorate"
+            >, {{ address.governorate }}</span
+          >
+        </p>
+      </div>
+
+      <div class="address-card__actions">
+        <button
+          class="address-card__set-default"
+          type="button"
+          *ngIf="!address.isDefault"
+          [disabled]="settingDefaultId === address.addressId"
+          (click)="setDefault(address)"
+        >
+          {{
+            settingDefaultId === address.addressId
+              ? "Setting..."
+              : "Set Default"
+          }}
+        </button>
+        <button
+          class="icon-btn icon-btn--edit"
+          type="button"
+          (click)="editAddress(address)"
+          title="Edit"
+        >
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button
+          class="icon-btn icon-btn--delete"
+          type="button"
+          [disabled]="isDeleting"
+          (click)="deleteAddress(address)"
+          title="Delete"
+        >
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

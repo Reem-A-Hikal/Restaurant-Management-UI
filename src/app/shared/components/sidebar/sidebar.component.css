@@ -1,6 +1,5 @@
 .sidenav {
   background: var(--color-surface);
-  border-right: 1px solid var(--color-outline);
   transition: width 0.25s ease;
   position: fixed;
   z-index: 10;
@@ -10,6 +9,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .sidenav-collapsed {

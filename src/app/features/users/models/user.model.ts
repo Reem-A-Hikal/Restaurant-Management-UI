@@ -1,4 +1,4 @@
-import { Address } from '../../profile/models/address.model';
+import { Address } from '../../address/models/address.model';
 
 export enum UserStatus {
   Active = 0,
