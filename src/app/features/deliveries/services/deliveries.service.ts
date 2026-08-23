@@ -6,12 +6,15 @@ import {
   AvailableDeliveryPersonDto,
   DeliveryDto,
 } from '../models/delivery.model';
+import { SKIP_ERROR_TOAST } from '../../../shared/tokens/skip-error-toast.token';
+import { HttpContext } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeliveriesService {
   private readonly basePath = '/Delivery';
+  private readonly skip = new HttpContext().set(SKIP_ERROR_TOAST, true);
 
   constructor(private readonly api: ApiService) {}
 
@@ -19,12 +22,15 @@ export class DeliveriesService {
     return this.api.post<DeliveryDto>(
       `${this.basePath}/assign/${orderId}`,
       dto,
+      this.skip,
     );
   }
 
   getActiveForOrder(orderId: number): Observable<DeliveryDto | null> {
     return this.api.get<DeliveryDto | null>(
       `${this.basePath}/order/${orderId}/active`,
+      undefined,
+      this.skip,
     );
   }
 
@@ -35,12 +41,16 @@ export class DeliveriesService {
   getHistoryForOrder(orderId: number): Observable<DeliveryDto[]> {
     return this.api.get<DeliveryDto[]>(
       `${this.basePath}/order/${orderId}/history`,
+      undefined,
+      this.skip,
     );
   }
 
   getAvailablePersons(): Observable<AvailableDeliveryPersonDto[]> {
     return this.api.get<AvailableDeliveryPersonDto[]>(
       `${this.basePath}/available-persons`,
+      undefined,
+      this.skip,
     );
   }
 }

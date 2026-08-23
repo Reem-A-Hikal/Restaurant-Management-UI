@@ -23,7 +23,10 @@ import {
   readFileAsDataUrl,
   validateImageFile,
 } from '../../../../shared/helpers/file-validation.helper';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-user-add',
@@ -191,10 +194,12 @@ export class AddUserComponent implements OnInit {
             .delete(uploadedImageUrl)
             .subscribe({ error: () => {} });
         }
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to create user'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to create user'),
+            'Error',
+          );
+        }
       },
     });
   }

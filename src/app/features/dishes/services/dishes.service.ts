@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpParams } from '@angular/common/http';
+import { HttpContext, HttpParams } from '@angular/common/http';
 import { ApiService } from '../../../Core/services/api.service';
 import {
   CreateDishRequest,
@@ -8,6 +8,7 @@ import {
   DishWithId,
   UpdateDishRequest,
 } from '../models/dish.model';
+import { SKIP_ERROR_TOAST } from '../../../shared/tokens/skip-error-toast.token';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,7 @@ export class DishesService {
   constructor(private readonly api: ApiService) {}
 
   private readonly basePath = '/Product';
+  private readonly skip = new HttpContext().set(SKIP_ERROR_TOAST, true);
 
   getAll(): Observable<DishWithId[]> {
     return this.api.get<DishWithId[]>(`${this.basePath}/all`);
@@ -37,6 +39,7 @@ export class DishesService {
     return this.api.get<DishesListApiResponse>(
       `${this.basePath}/paginated`,
       params,
+      this.skip,
     );
   }
 
@@ -48,18 +51,23 @@ export class DishesService {
     return this.api.get<DishWithId[]>(`${this.basePath}/Category/${id}`);
   }
 
-  create(dish: CreateDishRequest): Observable<{ productId: number }> {
-    return this.api.post<{ productId: number }>(
+  create(dish: CreateDishRequest): Observable<DishWithId> {
+    return this.api.post<DishWithId>(
       `${this.basePath}/AddProduct`,
       dish,
+      this.skip,
     );
   }
 
   update(id: number, dish: UpdateDishRequest): Observable<void> {
-    return this.api.put<void>(`${this.basePath}/EditProduct/${id}`, dish);
+    return this.api.put<void>(
+      `${this.basePath}/EditProduct/${id}`,
+      dish,
+      this.skip,
+    );
   }
 
   delete(id: number): Observable<number> {
-    return this.api.delete<number>(`${this.basePath}/Delete/${id}`);
+    return this.api.delete<number>(`${this.basePath}/Delete/${id}`, this.skip);
   }
 }

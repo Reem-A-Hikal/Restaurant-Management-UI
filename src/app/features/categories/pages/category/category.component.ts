@@ -19,7 +19,10 @@ import { ManageCategoryComponent } from '../../components/manage-category-modal/
 import { CategoryListComponent } from '../../components/category-list/category-list.component';
 import { CategoryService } from '../../services/category.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 import {
   confirmDestructiveAction,
   showErrorDialog,
@@ -125,10 +128,12 @@ export class CategoryComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.toastr.error(
-            extractErrorResponse(err, 'Failed to load categories'),
-            'Error',
-          );
+          if (shouldComponentShowError(err)) {
+            this.toastr.error(
+              extractErrorResponse(err, 'Failed to load categories'),
+              'Error',
+            );
+          }
           this.isLoading = false;
         },
       });
@@ -171,9 +176,11 @@ export class CategoryComponent implements OnInit {
           this.loadCategories();
         },
         error: (err: HttpErrorResponse) => {
-          showErrorDialog(
-            extractErrorResponse(err, 'Failed to deactivate this Category'),
-          );
+          if (shouldComponentShowError(err)) {
+            showErrorDialog(
+              extractErrorResponse(err, 'Failed to deactivate this Category'),
+            );
+          }
         },
       });
   }

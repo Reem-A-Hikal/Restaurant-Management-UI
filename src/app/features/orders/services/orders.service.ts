@@ -8,24 +8,30 @@ import {
   ConfirmOrderDto,
   CreateOrderDetailDto,
 } from '../models/order-requests.model';
-import { HttpParams } from '@angular/common/http';
+import { HttpContext, HttpParams } from '@angular/common/http';
+import { SKIP_ERROR_TOAST } from '../../../shared/tokens/skip-error-toast.token';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrdersService {
   private readonly basePath = '/Order';
+  private readonly skip = new HttpContext().set(SKIP_ERROR_TOAST, true);
 
   constructor(private readonly api: ApiService) {}
 
   // ---- Reads ----
 
   getById(id: number): Observable<OrderDto> {
-    return this.api.get<OrderDto>(`${this.basePath}/${id}`);
+    return this.api.get<OrderDto>(
+      `${this.basePath}/${id}`,
+      undefined,
+      this.skip,
+    );
   }
 
   getAll(): Observable<OrderDto[]> {
-    return this.api.get<OrderDto[]>(this.basePath);
+    return this.api.get<OrderDto[]>(this.basePath, undefined, this.skip);
   }
 
   getByCustomer(customerId: string): Observable<OrderDto[]> {
@@ -37,15 +43,27 @@ export class OrdersService {
   }
 
   getAllowedStatuses(): Observable<OrderStatus[]> {
-  return this.api.get<OrderStatus[]>(`${this.basePath}/allowed-statuses`);
-}
+    return this.api.get<OrderStatus[]>(
+      `${this.basePath}/allowed-statuses`,
+      undefined,
+      this.skip,
+    );
+  }
 
   getByStatus(status: OrderStatus): Observable<OrderDto[]> {
-    return this.api.get<OrderDto[]>(`${this.basePath}/status/${status}`);
+    return this.api.get<OrderDto[]>(
+      `${this.basePath}/status/${status}`,
+      undefined,
+      this.skip,
+    );
   }
 
   getKitchenQueue(): Observable<OrderDto[]> {
-    return this.api.get<OrderDto[]>(`${this.basePath}/kitchen-queue`);
+    return this.api.get<OrderDto[]>(
+      `${this.basePath}/kitchen-queue`,
+      undefined,
+      this.skip,
+    );
   }
 
   getByDateRange(startDate: string, endDate: string): Observable<OrderDto[]> {
@@ -68,19 +86,35 @@ export class OrdersService {
   // ---- Writes / State transitions ----
 
   confirm(id: number, dto: ConfirmOrderDto): Observable<OrderDto> {
-    return this.api.patch<OrderDto>(`${this.basePath}/${id}/confirm`, dto);
+    return this.api.patch<OrderDto>(
+      `${this.basePath}/${id}/confirm`,
+      dto,
+      this.skip,
+    );
   }
 
   cancel(id: number, dto: CancelOrderDto): Observable<OrderDto> {
-    return this.api.patch<OrderDto>(`${this.basePath}/${id}/cancel`, dto);
+    return this.api.patch<OrderDto>(
+      `${this.basePath}/${id}/cancel`,
+      dto,
+      this.skip,
+    );
   }
 
   markAsPreparing(id: number): Observable<OrderDto> {
-    return this.api.patch<OrderDto>(`${this.basePath}/${id}/preparing`, {});
+    return this.api.patch<OrderDto>(
+      `${this.basePath}/${id}/preparing`,
+      {},
+      this.skip,
+    );
   }
 
   markAsPrepared(id: number): Observable<OrderDto> {
-    return this.api.patch<OrderDto>(`${this.basePath}/${id}/prepared`, {});
+    return this.api.patch<OrderDto>(
+      `${this.basePath}/${id}/prepared`,
+      {},
+      this.skip,
+    );
   }
 
   // ---- Items ----

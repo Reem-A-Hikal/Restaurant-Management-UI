@@ -8,7 +8,7 @@ import {
   AvailableDeliveryPersonDto,
   DeliveryDto,
 } from '../../models/delivery.model';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import { extractErrorResponse, shouldComponentShowError } from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-assign-delivery-panel',
@@ -43,13 +43,15 @@ export class AssignDeliveryPanelComponent implements OnInit {
         this.isLoadingPersons = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(
-            err,
-            'Failed to load available delivery persons',
-          ),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(
+              err,
+              'Failed to load available delivery persons',
+            ),
+            'Error',
+          );
+        }
         this.isLoadingPersons = false;
       },
     });
@@ -68,10 +70,12 @@ export class AssignDeliveryPanelComponent implements OnInit {
         this.assigned.emit(delivery);
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to assign delivery'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to assign delivery'),
+            'Error',
+          );
+        }
         this.isAssigning = false;
       },
     });

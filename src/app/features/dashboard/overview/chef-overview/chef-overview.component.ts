@@ -4,7 +4,10 @@ import { OrdersService } from '../../../orders/services/orders.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -35,10 +38,12 @@ export class ChefOverviewComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to load kitchen queue'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load kitchen queue'),
+            'Error',
+          );
+        }
         this.isLoading = false;
       },
     });

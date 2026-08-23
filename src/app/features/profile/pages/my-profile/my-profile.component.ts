@@ -17,7 +17,10 @@ import {
   readFileAsDataUrl,
   validateImageFile,
 } from '../../../../shared/helpers/file-validation.helper';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-my-profile',
@@ -77,10 +80,12 @@ export class MyProfileComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to load your profile'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load your profile'),
+            'Error',
+          );
+        }
       },
     });
   }
@@ -154,10 +159,12 @@ export class MyProfileComponent implements OnInit {
               .delete(uploadedImageUrl)
               .subscribe({ error: () => {} });
           }
-          this.toastr.error(
-            extractErrorResponse(err, 'Failed to update profile'),
-            'Error',
-          );
+          if (shouldComponentShowError(err)) {
+            this.toastr.error(
+              extractErrorResponse(err, 'Failed to update profile'),
+              'Error',
+            );
+          }
         },
       });
   }

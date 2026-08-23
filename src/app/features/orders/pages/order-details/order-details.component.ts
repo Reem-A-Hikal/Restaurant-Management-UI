@@ -4,7 +4,10 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrdersService } from '../../services/orders.service';
 import { AuthService } from '../../../../Core/Auth/services/auth.service';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 import {
   getVisibleActions,
   OrderAction,
@@ -112,10 +115,12 @@ export class OrderDetailsComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to load order'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load order'),
+            'Error',
+          );
+        }
         this.isLoading = false;
         this.goBack();
       },
@@ -134,7 +139,12 @@ export class OrderDetailsComponent implements OnInit {
         this.isProcessingAction = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(extractErrorResponse(err, 'Action failed'), 'Error');
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Action failed'),
+            'Error',
+          );
+        }
         this.isProcessingAction = false;
       },
     });
@@ -186,10 +196,12 @@ export class OrderDetailsComponent implements OnInit {
             this.isProcessingAction = false;
           },
           error: (err: HttpErrorResponse) => {
-            this.toastr.error(
-              extractErrorResponse(err, 'Action failed'),
-              'Error',
-            );
+            if (shouldComponentShowError(err)) {
+              this.toastr.error(
+                extractErrorResponse(err, 'Action failed'),
+                'Error',
+              );
+            }
             this.isProcessingAction = false;
           },
         });
@@ -239,10 +251,12 @@ export class OrderDetailsComponent implements OnInit {
         this.isLoadingPayments = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to load payment history'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load payment history'),
+            'Error',
+          );
+        }
         this.isLoadingPayments = false;
       },
     });
@@ -268,10 +282,12 @@ export class OrderDetailsComponent implements OnInit {
           this.loadPayments();
         },
         error: (err: HttpErrorResponse) => {
-          this.toastr.error(
-            extractErrorResponse(err, 'Failed to refund payment'),
-            'Error',
-          );
+          if (shouldComponentShowError(err)) {
+            this.toastr.error(
+              extractErrorResponse(err, 'Failed to refund payment'),
+              'Error',
+            );
+          }
           this.isRefunding = false;
         },
       });

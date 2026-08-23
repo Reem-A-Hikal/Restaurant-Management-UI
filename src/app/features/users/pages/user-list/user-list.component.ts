@@ -13,7 +13,10 @@ import { CardComponent } from '../../components/card/card.component';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { User } from '../../models/user.model';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 import {
   confirmDestructiveAction,
   showErrorDialog,
@@ -102,10 +105,12 @@ export class UserListComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.toastr.error(
-            extractErrorResponse(err, 'Failed to load users'),
-            'Error',
-          );
+          if (shouldComponentShowError(err)) {
+            this.toastr.error(
+              extractErrorResponse(err, 'Failed to load users'),
+              'Error',
+            );
+          }
           this.isLoading = false;
         },
       });
@@ -141,7 +146,9 @@ export class UserListComponent implements OnInit {
           this.loadUsers();
         },
         error: (err) => {
-          showErrorDialog(extractErrorResponse(err, 'Failed to delete user'));
+          if (shouldComponentShowError(err)) {
+            showErrorDialog(extractErrorResponse(err, 'Failed to delete user'));
+          }
         },
       });
   }

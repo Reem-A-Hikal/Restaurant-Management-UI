@@ -17,6 +17,7 @@ import {
 } from '../../models/category.model';
 import { Observable, take } from 'rxjs';
 import { CategoryService } from '../../services/category.service';
+import { extractErrorResponse, shouldComponentShowError } from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-category-modal',
@@ -103,8 +104,13 @@ export class ManageCategoryComponent implements OnInit {
         this.modalRef.close('success');
         this.isSubmitting = false;
       },
-      error: () => {
-        this.toastr.error('Failed to save category', 'Error');
+      error: (err) => {
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to save category'),
+            'Error',
+          );
+        }
         this.isSubmitting = false;
       },
     });

@@ -9,7 +9,10 @@ import { OrderAction } from '../../helpers/order-actions.helper';
 import { OrderStatus, OrderStatusLabels } from '../../models/order-enums';
 import { OrderDto } from '../../models/order.model';
 import { getActionForRole } from '../../helpers/order-role-actions.helper';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FilterOption } from '../../../../shared/models/filter-options.model';
@@ -71,10 +74,12 @@ export class OrderComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to load orders'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load orders'),
+            'Error',
+          );
+        }
         this.isLoading = false;
       },
     });
@@ -92,10 +97,12 @@ export class OrderComponent implements OnInit {
         this.loadOrders();
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to confirm order'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to confirm order'),
+            'Error',
+          );
+        }
       },
     });
   }
@@ -107,10 +114,12 @@ export class OrderComponent implements OnInit {
         this.loadOrders();
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to update order'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to update order'),
+            'Error',
+          );
+        }
       },
     });
   }
@@ -121,10 +130,12 @@ export class OrderComponent implements OnInit {
         this.loadOrders();
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to update order'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to update order'),
+            'Error',
+          );
+        }
       },
     });
   }
@@ -156,10 +167,12 @@ export class OrderComponent implements OnInit {
             this.loadOrders();
           },
           error: (err: HttpErrorResponse) => {
-            this.toastr.error(
-              extractErrorResponse(err, 'Failed to cancel order'),
-              'Error',
-            );
+            if (shouldComponentShowError(err)) {
+              this.toastr.error(
+                extractErrorResponse(err, 'Failed to cancel order'),
+                'Error',
+              );
+            }
           },
         });
     }

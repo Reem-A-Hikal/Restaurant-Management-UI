@@ -15,7 +15,10 @@ import { DishesService } from '../../services/dishes.service';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { Category } from '../../../categories/models/category.model';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 import {
   MdbModalModule,
   MdbModalRef,
@@ -104,10 +107,12 @@ export class DishesComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err: HttpErrorResponse) => {
-          this.toastr.error(
-            extractErrorResponse(err, 'Failed to load dishes'),
-            'Error',
-          );
+          if (shouldComponentShowError(err)) {
+            this.toastr.error(
+              extractErrorResponse(err, 'Failed to load dishes'),
+              'Error',
+            );
+          }
           this.isLoading = false;
         },
       });
@@ -177,9 +182,11 @@ export class DishesComponent implements OnInit {
           this.refreshCurrentView();
         },
         error: (err: HttpErrorResponse) => {
-          showErrorDialog(
-            extractErrorResponse(err, 'Failed to deactivate this dish'),
-          );
+          if (shouldComponentShowError(err)) {
+            showErrorDialog(
+              extractErrorResponse(err, 'Failed to deactivate this dish'),
+            );
+          }
         },
       });
   }

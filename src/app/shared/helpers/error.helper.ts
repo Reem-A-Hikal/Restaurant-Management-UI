@@ -6,3 +6,10 @@ export function extractErrorResponse(
 ): string {
   return err.error?.message || err.error?.errors?.[0] || fallback;
 }
+
+
+const INTERCEPTOR_HANDLED_STATUSES = new Set([403, 0, 500, 502, 503]);
+
+export function shouldComponentShowError(err: HttpErrorResponse): boolean {
+  return !INTERCEPTOR_HANDLED_STATUSES.has(err.status);
+}

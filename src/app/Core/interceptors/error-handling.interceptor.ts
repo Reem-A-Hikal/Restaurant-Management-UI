@@ -11,6 +11,7 @@ import { BehaviorSubject, Observable, throwError, EMPTY } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { extractErrorResponse } from '../../shared/helpers/error.helper';
+import { SKIP_ERROR_TOAST } from '../../shared/tokens/skip-error-toast.token';
 
 // let isHandlingUnauthorized = false;
 let isRefreshing = false;
@@ -102,26 +103,18 @@ function handleHttpError(
   authService: AuthService,
 ): Observable<HttpEvent<unknown>> {
   const serverErrorCodes = [500, 502, 503];
-  const componentHandledCodes = [400, 404];
 
   if (error.status === 401) {
     if (isAuthEndpoint(req.url)) {
       if (isRefreshTokenEndpoint(req.url)) {
         forceLogout(router, authService, toastr);
       }
-      // If we forced logout due to refresh failure, complete the stream to avoid duplicate error handling in components
-      if (isRefreshTokenEndpoint(req.url)) return EMPTY;
       return throwError(() => error);
     }
-
     return handleUnauthorized(req, next, router, authService, toastr);
   }
 
   if (isAuthEndpoint(req.url)) {
-    return throwError(() => error);
-  }
-
-  if (componentHandledCodes.includes(error.status)) {
     return throwError(() => error);
   }
 
@@ -131,24 +124,36 @@ function handleHttpError(
       'Access Denied',
     );
     router.navigate(['/access-denied']);
-  } else if (error.status === 0) {
+    return throwError(() => error);
+  }
+
+  if (error.status === 0) {
     toastr.error(
       'Unable to connect to the server. Please check your internet connection.',
       'Network Error',
     );
-  } else if (serverErrorCodes.includes(error.status)) {
+    return throwError(() => error);
+  }
+
+  if (serverErrorCodes.includes(error.status)) {
     toastr.error(
       extractErrorResponse(error) ||
         'An unexpected server error occurred. Please try again later.',
       'Server Error',
     );
-  } else {
-    toastr.error(
-      extractErrorResponse(error) ||
-        'An unexpected error occurred. Please try again later.',
-      'Error',
-    );
+    return throwError(() => error);
   }
+
+  if (req.context.get(SKIP_ERROR_TOAST)) {
+    return throwError(() => error);
+  }
+
+  toastr.error(
+    extractErrorResponse(error) ||
+      'An unexpected error occurred. Please try again later.',
+    'Error',
+  );
+
   return throwError(() => error);
 }
 

@@ -7,13 +7,15 @@ import {
   CategoryUpdateDto,
 } from '../models/category.model';
 import { PaginatedResponse } from '../../../shared/models/pagination.model';
-import { HttpParams } from '@angular/common/http';
+import { HttpContext, HttpParams } from '@angular/common/http';
+import { SKIP_ERROR_TOAST } from '../../../shared/tokens/skip-error-toast.token';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
   private readonly basePath = '/category';
+  private readonly skip = new HttpContext().set(SKIP_ERROR_TOAST, true);
 
   constructor(private readonly api: ApiService) {}
 
@@ -38,6 +40,7 @@ export class CategoryService {
     return this.api.get<PaginatedResponse<Category>>(
       `${this.basePath}/GetAllPaginated`,
       params,
+      this.skip,
     );
   }
 
@@ -46,14 +49,14 @@ export class CategoryService {
   }
 
   create(dto: CategoryCreateDto): Observable<Category> {
-    return this.api.post<Category>(`${this.basePath}/add`, dto);
+    return this.api.post<Category>(`${this.basePath}/add`, dto, this.skip);
   }
 
   update(id: number, dto: CategoryUpdateDto): Observable<null> {
-    return this.api.put<null>(`${this.basePath}/update/${id}`, dto);
+    return this.api.put<null>(`${this.basePath}/update/${id}`, dto, this.skip);
   }
 
   archive(id: number): Observable<null> {
-    return this.api.delete<null>(`${this.basePath}/${id}`);
+    return this.api.delete<null>(`${this.basePath}/${id}`, this.skip);
   }
 }

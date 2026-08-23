@@ -24,6 +24,11 @@ import {
   readFileAsDataUrl,
   validateImageFile,
 } from '../../../../shared/helpers/file-validation.helper';
+import { HttpErrorResponse } from '@angular/common/http';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-manage-dish',
@@ -176,13 +181,15 @@ export class ManageDishModalComponent implements OnInit {
   ): void {
     const formValue = this.dishForm.value;
 
-    const handleError = (message: string) => {
+    const handleError = (err: HttpErrorResponse, fallback: string) => {
       if (uploadedImageUrl) {
-        this.imageUploadService.delete(uploadedImageUrl).subscribe({
-          error: () => {},
-        });
+        this.imageUploadService
+          .delete(uploadedImageUrl)
+          .subscribe({ error: () => {} });
       }
-      this.toastr.error(message, 'Error');
+      if (shouldComponentShowError(err)) {
+        this.toastr.error(extractErrorResponse(err, fallback), 'Error');
+      }
     };
 
     if (this.editMode && this.dishToEdit) {
@@ -209,7 +216,7 @@ export class ManageDishModalComponent implements OnInit {
             this.modalRef.close('success');
           },
           error: (err) =>
-            handleError(err.error?.message || 'Failed to update dish'),
+            handleError(err, err.error?.message || 'Failed to update dish'),
         });
     } else {
       const dto: CreateDishRequest = {
@@ -234,7 +241,7 @@ export class ManageDishModalComponent implements OnInit {
             this.modalRef.close('success');
           },
           error: (err) =>
-            handleError(err.error?.message || 'Failed to create dish'),
+            handleError(err, err.error?.message || 'Failed to create dish'),
         });
     }
   }

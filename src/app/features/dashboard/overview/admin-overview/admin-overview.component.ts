@@ -10,7 +10,10 @@ import {
 } from '../../models/dashboard-stats.model';
 import { ChartCardComponent } from '../../../../shared/components/chart-card/chart-card.component';
 import { OrderStatusLabels } from '../../../orders/models/order-enums';
-import { extractErrorResponse } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 import { TopDishesCardComponent } from '../../components/top-dishes-card/top-dishes-card.component';
 import { RecentOrdersCardComponent } from '../../components/recent-orders-card/recent-orders-card.component';
 
@@ -127,10 +130,12 @@ export class AdminOverviewComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.toastr.error(
-          extractErrorResponse(err, 'Failed to load dashboard stats'),
-          'Error',
-        );
+        if (shouldComponentShowError(err)) {
+          this.toastr.error(
+            extractErrorResponse(err, 'Failed to load dashboard stats'),
+            'Error',
+          );
+        }
         this.isLoading = false;
       },
     });
