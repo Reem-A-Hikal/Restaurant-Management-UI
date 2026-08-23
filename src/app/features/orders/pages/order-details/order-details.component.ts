@@ -22,6 +22,7 @@ import { PaymentsService } from '../../../payments/services/payments.service';
 import {
   canViewDeliveryLogistics,
   canViewPayments,
+  canViewReviews,
 } from '../../helpers/order-permissions.helper';
 import { Observable } from 'rxjs';
 import { OrderSummaryPanelComponent } from '../../components/order-summary-panel/order-summary-panel.component';
@@ -29,6 +30,10 @@ import { OrderLogisticsPanelComponent } from '../../components/order-logistics-p
 import { OrderCustomerPanelComponent } from '../../components/order-customer-panel/order-customer-panel.component';
 import { OrderPaymentPanelComponent } from '../../components/order-payment-panel/order-payment-panel.component';
 import { OrderActionsPanelComponent } from '../../components/order-actions-panel/order-actions-panel.component';
+import { ReviewDto } from '../../../reviews/models/review.model';
+import { ReviewsService } from '../../../reviews/services/reviews.service';
+import { OrderStatus } from '../../models/order-enums';
+import { OrderReviewPanelComponent } from '../../components/order-review-panel/order-review-panel.component';
 
 @Component({
   selector: 'app-order-details',
@@ -40,6 +45,7 @@ import { OrderActionsPanelComponent } from '../../components/order-actions-panel
     OrderCustomerPanelComponent,
     OrderPaymentPanelComponent,
     OrderActionsPanelComponent,
+    OrderReviewPanelComponent,
   ],
   templateUrl: './order-details.component.html',
   styleUrls: ['./order-details.component.css'],
@@ -63,6 +69,11 @@ export class OrderDetailsComponent implements OnInit {
 
   orderId!: number;
 
+  review: ReviewDto | null = null;
+  isLoadingReview = false;
+  isDeletingReview = false;
+  canSeeReviews = false;
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -71,6 +82,7 @@ export class OrderDetailsComponent implements OnInit {
     private readonly paymentsService: PaymentsService,
     private readonly authService: AuthService,
     private readonly toastr: ToastrService,
+    private readonly reviewsService: ReviewsService,
   ) {}
 
   ngOnInit(): void {
@@ -90,6 +102,7 @@ export class OrderDetailsComponent implements OnInit {
     const role = this.authService.getRole();
     this.canSeeDeliveryLogistics = canViewDeliveryLogistics(role);
     this.canSeePayments = canViewPayments(role);
+    this.canSeeReviews = canViewReviews(role);
   }
 
   private loadPermittedData(): void {
@@ -100,11 +113,18 @@ export class OrderDetailsComponent implements OnInit {
     if (this.canSeePayments) {
       this.loadPayments();
     }
+    if (this.canSeeReviews) {
+      this.loadReview();
+    }
   }
 
   get visibleActions(): OrderAction[] {
     if (!this.order) return [];
     return getVisibleActions(this.order.status, this.authService.getRole());
+  }
+
+  get isOrderDelivered(): boolean {
+    return this.order?.status === OrderStatus.Delivered;
   }
 
   loadOrder(): void {
@@ -308,6 +328,54 @@ export class OrderDetailsComponent implements OnInit {
     if (this.order?.customerId) {
       this.router.navigate(['/Dashboard/Orders'], {
         queryParams: { customerId: this.order.customerId },
+      });
+    }
+  }
+
+  loadReview(): void {
+    this.isLoadingReview = true;
+    this.reviewsService.getByOrder(this.orderId).subscribe({
+      next: (review) => {
+        this.review = review;
+        this.isLoadingReview = false;
+      },
+      error: () => {
+        this.review = null;
+        this.isLoadingReview = false;
+      },
+    });
+  }
+
+  async onDeleteReview(): Promise<void> {
+    if (!this.review) return;
+
+    const Swal = await import('sweetalert2');
+    const result = await Swal.default.fire({
+      title: 'Delete this review?',
+      text: 'This will permanently remove the customer review.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it',
+      confirmButtonColor: '#d33',
+    });
+
+    if (result.isConfirmed) {
+      this.isDeletingReview = true;
+      this.reviewsService.delete(this.review.reviewId).subscribe({
+        next: () => {
+          this.toastr.success('Review deleted successfully', 'Success');
+          this.review = null;
+          this.isDeletingReview = false;
+        },
+        error: (err: HttpErrorResponse) => {
+          if (shouldComponentShowError(err)) {
+            this.toastr.error(
+              extractErrorResponse(err, 'Failed to delete review'),
+              'Error',
+            );
+          }
+          this.isDeletingReview = false;
+        },
       });
     }
   }

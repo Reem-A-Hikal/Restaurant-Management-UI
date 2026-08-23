@@ -67,6 +67,15 @@
         (refund)="onRefund()"
       ></app-order-payment-panel>
 
+      <app-order-review-panel
+        *ngIf="canSeeReviews"
+        [review]="review"
+        [isLoading]="isLoadingReview"
+        [isDeleting]="isDeletingReview"
+        [orderDelivered]="isOrderDelivered"
+        (deleteReview)="onDeleteReview()"
+      ></app-order-review-panel>
+
       <app-order-actions-panel
         *ngIf="visibleActions.length > 0"
         [visibleActions]="visibleActions"

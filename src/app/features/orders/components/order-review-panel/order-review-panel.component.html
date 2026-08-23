@@ -1,0 +1,63 @@
+<div class="panel mt-4">
+  <div class="panel__header">
+    <span class="panel__title">Customer Review</span>
+    <button
+      *ngIf="review"
+      class="delete-review-pill"
+      type="button"
+      [disabled]="isDeleting"
+      (click)="deleteReview.emit()"
+    >
+      {{ isDeleting ? "Deleting..." : "Delete" }}
+    </button>
+  </div>
+
+  <ng-container *ngIf="!isLoading; else reviewLoadingTpl">
+    <ng-container *ngIf="review; else noReviewTpl">
+      <div class="review-rating">
+        <i
+          *ngFor="let s of stars"
+          class="bi"
+          [ngClass]="s <= review.rating ? 'bi-star-fill' : 'bi-star'"
+        ></i>
+        <span class="review-rating__value">{{ review.rating }}/5</span>
+      </div>
+
+      <p class="review-comment" *ngIf="review.comment">
+        "{{ review.comment }}"
+      </p>
+
+      <div
+        class="review-sub-ratings"
+        *ngIf="review.foodRating || review.deliveryRating"
+      >
+        <span class="review-sub-ratings__item" *ngIf="review.foodRating">
+          <i class="bi bi-egg-fried"></i> Food: {{ review.foodRating }}/5
+        </span>
+        <span class="review-sub-ratings__item" *ngIf="review.deliveryRating">
+          <i class="bi bi-truck"></i> Delivery: {{ review.deliveryRating }}/5
+        </span>
+      </div>
+
+      <p class="review-meta">
+        By {{ review.reviewerName }} ·
+        {{ review.reviewDate | date: "MMM d, y" }}
+      </p>
+    </ng-container>
+
+    <ng-template #noReviewTpl>
+      <p class="text-muted small mb-0 text-center" *ngIf="orderDelivered">
+        No review submitted for this order yet.
+      </p>
+      <p class="text-muted small mb-0 text-center" *ngIf="!orderDelivered">
+        Reviews can only be submitted after delivery.
+      </p>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #reviewLoadingTpl>
+    <div class="text-center py-2">
+      <div class="spinner-border spinner-border-sm text-success"></div>
+    </div>
+  </ng-template>
+</div>
