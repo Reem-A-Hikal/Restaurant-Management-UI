@@ -1,4 +1,5 @@
 import { DeliveryDto } from '../../deliveries/models/delivery.model';
+import { parseUtcDate } from '../../../shared/helpers/date.helper';
 
 export interface TimelineStep {
   label: string;
@@ -14,7 +15,8 @@ interface RawStep extends TimelineStep {
 }
 
 function isValidDate(value: string | null | undefined): value is string {
-  return !!value && new Date(value).getFullYear() > 1970;
+  const parsed = parseUtcDate(value);
+  return !!parsed && parsed.getFullYear() > 1970;
 }
 
 function buildStepsForDelivery(
@@ -44,7 +46,7 @@ function buildStepsForDelivery(
     steps.push({
       label: 'Picked Up by Courier',
       sub: courier,
-      time: delivery.deliveryStartTime,
+      time: delivery.deliveryStartTime!,
       done: true,
       icon: 'fa-box',
       priority: 2,
@@ -55,7 +57,7 @@ function buildStepsForDelivery(
     steps.push({
       label: 'Delivered Successfully',
       sub: courier,
-      time: delivery.deliveryEndTime,
+      time: delivery.deliveryEndTime!,
       done: true,
       icon: 'fa-check',
       priority: 3,
@@ -66,7 +68,7 @@ function buildStepsForDelivery(
     steps.push({
       label: 'Delivery Cancelled',
       sub: delivery.notes ?? courier,
-      time: delivery.cancelledAt,
+      time: delivery.cancelledAt!,
       done: false,
       icon: 'fa-xmark',
       priority: 0,
@@ -78,17 +80,13 @@ function buildStepsForDelivery(
 }
 
 function sortSteps(a: RawStep, b: RawStep): number {
-  const timeA = new Date(a.time).getTime();
-  const timeB = new Date(b.time).getTime();
+  const timeA = parseUtcDate(a.time)?.getTime() ?? 0;
+  const timeB = parseUtcDate(b.time)?.getTime() ?? 0;
   if (timeA !== timeB) return timeB - timeA;
   if (a.priority !== b.priority) return b.priority - a.priority;
   return b.attemptNumber - a.attemptNumber;
 }
 
-/**
- * Builds the delivery timeline (assigned → picked up → delivered/cancelled)
- * across all delivery attempts for an order, sorted newest first.
- */
 export function buildDeliveryTimeline(
   activeDelivery: DeliveryDto | null,
   history: DeliveryDto[],
@@ -113,9 +111,10 @@ export function buildDeliveryTimeline(
     .sort(sortSteps)
     .map((s) => ({
       ...s,
-      time: new Date(s.time).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+      time:
+        parseUtcDate(s.time)?.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }) ?? '',
     }));
 }

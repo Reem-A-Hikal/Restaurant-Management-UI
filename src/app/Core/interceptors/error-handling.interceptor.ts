@@ -46,10 +46,6 @@ function handleUnauthorized(
   authService: AuthService,
   toastr: ToastrService,
 ): Observable<HttpEvent<unknown>> {
-  console.log(
-    'handleUnauthorized called. Refresh token:',
-    authService.getRefreshToken(),
-  );
   if (!authService.getRefreshToken()) {
     forceLogout(router, authService, toastr);
     return EMPTY;
