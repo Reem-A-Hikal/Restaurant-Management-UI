@@ -15,6 +15,8 @@ export interface DeliveryDto {
   cancelledAt: string | null;
   notes: string | null;
   customerAddress: string;
+  customerName: string | null;
+  customerPhone: string | null;
 }
 
 export interface AvailableDeliveryPersonDto {

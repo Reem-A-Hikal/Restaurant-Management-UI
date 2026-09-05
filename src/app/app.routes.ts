@@ -20,6 +20,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'Courier',
+        loadChildren: () =>
+          import('./features/courier/courier.routes').then(
+            (m) => m.courierRoutes,
+          ),
+      },
+      {
         path: 'main',
         loadComponent: () =>
           import('./layouts/main/main.component').then((m) => m.MainComponent),

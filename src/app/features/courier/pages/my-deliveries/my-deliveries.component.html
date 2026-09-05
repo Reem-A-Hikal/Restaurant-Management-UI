@@ -1,0 +1,30 @@
+<div class="page">
+  <div class="page__header">
+    <h5 class="page__title">Today's route</h5>
+    <p class="page__subtitle" *ngIf="!isLoading && !isEmpty">
+      {{ deliveries.length }} active
+      {{ deliveries.length === 1 ? "delivery" : "deliveries" }}
+    </p>
+  </div>
+
+  <div class="page__loading" *ngIf="isLoading">
+    <div class="skeleton-docket" *ngFor="let s of [1, 2]"></div>
+  </div>
+
+  <div class="page__empty" *ngIf="!isLoading && isEmpty">
+    <i class="bi bi-signpost-split"></i>
+    <p>You're all caught up</p>
+    <span>New pickups will show up here the moment they're assigned.</span>
+  </div>
+
+  <div *ngIf="!isLoading && !isEmpty">
+    <app-delivery-task-card
+      *ngFor="let delivery of deliveries; trackBy: trackByDeliveryId"
+      [delivery]="delivery"
+      [isProcessing]="processingId === delivery.deliveryId"
+      (markPickedUp)="onMarkPickedUp($event)"
+      (markDelivered)="onMarkDelivered($event)"
+      (cancelDelivery)="onCancelDelivery($event)"
+    ></app-delivery-task-card>
+  </div>
+</div>

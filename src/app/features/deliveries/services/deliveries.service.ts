@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../../Core/services/api.service';
-import { AssignDeliveryDto } from '../models/delivery-requests.model';
+import {
+  AssignDeliveryDto,
+  CancelDeliveryDto,
+  UpdateLocationDto,
+} from '../models/delivery-requests.model';
 import { Observable } from 'rxjs';
 import {
   AvailableDeliveryPersonDto,
@@ -51,6 +55,44 @@ export class DeliveriesService {
       `${this.basePath}/available-persons`,
       undefined,
       this.skip,
+    );
+  }
+
+  getMyDeliveries(): Observable<DeliveryDto[]> {
+    return this.api.get<DeliveryDto[]>(`${this.basePath}/my-deliveries`);
+  }
+
+  markPickedUp(deliveryId: number): Observable<DeliveryDto> {
+    return this.api.put<DeliveryDto>(
+      `${this.basePath}/${deliveryId}/pickup`,
+      {},
+    );
+  }
+
+  markDelivered(deliveryId: number): Observable<DeliveryDto> {
+    return this.api.put<DeliveryDto>(
+      `${this.basePath}/${deliveryId}/delivered`,
+      {},
+    );
+  }
+
+  cancelDelivery(
+    deliveryId: number,
+    dto: CancelDeliveryDto,
+  ): Observable<DeliveryDto> {
+    return this.api.put<DeliveryDto>(
+      `${this.basePath}/${deliveryId}/cancel`,
+      dto,
+    );
+  }
+
+  updateLocation(
+    deliveryId: number,
+    dto: UpdateLocationDto,
+  ): Observable<DeliveryDto> {
+    return this.api.put<DeliveryDto>(
+      `${this.basePath}/${deliveryId}/location`,
+      dto,
     );
   }
 }

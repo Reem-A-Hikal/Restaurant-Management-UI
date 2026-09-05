@@ -63,6 +63,8 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           if (this.authService.isAdmin() || this.authService.isChef()) {
             this.router.navigate(['/Dashboard']);
+          } else if (this.authService.isDeliveryPerson()) {
+            this.router.navigate(['/Courier']);
           } else {
             this.router.navigate(['/main']);
           }

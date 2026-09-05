@@ -1,0 +1,213 @@
+@keyframes courierDocketEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.docket {
+  margin-bottom: 16px;
+  animation: courierDocketEnter 0.28s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docket {
+    animation: none;
+  }
+}
+
+/* ── Perforated ticket edge ── */
+.docket__perforation {
+  height: 10px;
+  background-image: radial-gradient(
+    circle 5px at 12px 0,
+    var(--color-background) 99%,
+    transparent 100%
+  );
+  background-size: 24px 10px;
+  background-repeat: repeat-x;
+  background-color: var(--color-surface);
+  border-radius: 14px 14px 0 0;
+  border: 1.5px solid var(--color-outline);
+  border-bottom: none;
+}
+
+.docket__body {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-outline);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Top row ── */
+.docket__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.docket__code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text-primary);
+}
+
+.docket__status {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.docket__status--transit {
+  background: #fff3e0;
+  color: #b23c00;
+}
+
+/* ── Route rail ── */
+.rail {
+  display: flex;
+  align-items: flex-start;
+}
+
+.rail__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 64px;
+}
+
+.rail__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-outline);
+  border: 2px solid var(--color-outline);
+  flex-shrink: 0;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.rail__dot--filled {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.rail__label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.rail__line {
+  flex: 1;
+  height: 2px;
+  margin-top: 5px;
+  background: var(--color-outline);
+  transition: background 0.25s ease;
+}
+
+.rail__line--filled {
+  background: var(--color-primary);
+}
+
+/* ── Details ── */
+.docket__details {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.docket__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.docket__row i {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Call button ── */
+.docket__call {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.docket__call:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ── Actions ── */
+.docket__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.docket__primary {
+  height: 50px;
+  border: none;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  transition: transform 0.1s ease;
+}
+.docket__primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.docket__primary:disabled {
+  opacity: 0.6;
+}
+.docket__primary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.docket__cancel {
+  height: 38px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.docket__cancel:disabled {
+  opacity: 0.5;
+}

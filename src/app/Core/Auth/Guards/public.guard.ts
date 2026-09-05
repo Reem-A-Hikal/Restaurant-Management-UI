@@ -12,6 +12,8 @@ export const publicGuard: CanActivateFn = (route, state) => {
   if (hasSession) {
     if (authService.isAdmin() || authService.isChef()) {
       router.navigate(['/Dashboard']);
+    } else if (authService.isDeliveryPerson()) {
+      router.navigate(['/Courier']);
     } else {
       router.navigate(['/main'], {
         queryParams: { error: 'unauthorized' },

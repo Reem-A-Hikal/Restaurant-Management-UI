@@ -1,0 +1,90 @@
+<article class="docket">
+  <div class="docket__perforation" aria-hidden="true"></div>
+
+  <div class="docket__body">
+    <div class="docket__top">
+      <span class="docket__code">#{{ delivery.orderNumber }}</span>
+      <span
+        class="docket__status"
+        [class.docket__status--transit]="
+          delivery.status === DeliveryStatus.PickedUp
+        "
+      >
+        {{ delivery.statusDisplay }}
+      </span>
+    </div>
+
+    <!-- Route rail: a real 3-step sequence, not decoration -->
+    <div
+      class="rail"
+      [attr.aria-label]="'Delivery progress: ' + delivery.statusDisplay"
+    >
+      <div class="rail__step">
+        <span class="rail__dot rail__dot--filled"></span>
+        <span class="rail__label">Assigned</span>
+      </div>
+      <span
+        class="rail__line"
+        [class.rail__line--filled]="railStep >= 1"
+      ></span>
+      <div class="rail__step">
+        <span
+          class="rail__dot"
+          [class.rail__dot--filled]="railStep >= 1"
+        ></span>
+        <span class="rail__label">Picked up</span>
+      </div>
+      <span
+        class="rail__line"
+        [class.rail__line--filled]="railStep >= 2"
+      ></span>
+      <div class="rail__step">
+        <span
+          class="rail__dot"
+          [class.rail__dot--filled]="railStep >= 2"
+        ></span>
+        <span class="rail__label">Delivered</span>
+      </div>
+    </div>
+
+    <div class="docket__details">
+      <div class="docket__row" *ngIf="delivery.customerName">
+        <i class="bi bi-person-fill"></i>
+        <span>{{ delivery.customerName }}</span>
+      </div>
+      <div class="docket__row">
+        <i class="bi bi-geo-alt-fill"></i>
+        <span>{{ delivery.customerAddress }}</span>
+      </div>
+    </div>
+
+    <button
+      class="docket__call"
+      type="button"
+      *ngIf="delivery.customerPhone"
+      (click)="callCustomer()"
+    >
+      <i class="bi bi-telephone-fill"></i>
+      Call customer
+    </button>
+
+    <div class="docket__actions">
+      <button
+        class="docket__primary"
+        type="button"
+        [disabled]="isProcessing"
+        (click)="onPrimaryAction()"
+      >
+        {{ isProcessing ? "Updating…" : primaryActionLabel }}
+      </button>
+      <button
+        class="docket__cancel"
+        type="button"
+        [disabled]="isProcessing"
+        (click)="onCancelDelivery()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</article>

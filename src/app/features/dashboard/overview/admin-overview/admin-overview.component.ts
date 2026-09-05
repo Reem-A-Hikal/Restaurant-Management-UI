@@ -77,8 +77,6 @@ export class AdminOverviewComponent implements OnInit {
     this.isLoading = true;
     this.dashboardService.getStats(7).subscribe({
       next: (stats) => {
-        console.log(stats);
-
         this.stats = stats;
         this.buildKpis(stats);
 
