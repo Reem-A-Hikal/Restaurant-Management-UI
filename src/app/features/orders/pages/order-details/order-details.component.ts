@@ -180,13 +180,13 @@ export class OrderDetailsComponent implements OnInit {
   onMarkPreparing(): void {
     this.runOrderAction(
       this.ordersService.markAsPreparing(this.orderId),
-      'Order is now being prepared',
+      'Order is now being ready',
     );
   }
 
-  onMarkPrepared(): void {
+  onMarkReady(): void {
     this.runOrderAction(
-      this.ordersService.markAsPrepared(this.orderId),
+      this.ordersService.markAsReady(this.orderId),
       'Order is ready',
     );
   }

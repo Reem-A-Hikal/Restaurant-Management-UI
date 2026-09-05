@@ -18,13 +18,13 @@ export class OrderCardComponent {
   @Input() allowedRoleActions: OrderAction[] = [
     'confirm',
     'preparing',
-    'prepared',
+    'ready',
     'cancel',
   ];
 
   @Output() confirm = new EventEmitter<number>();
   @Output() markPreparing = new EventEmitter<number>();
-  @Output() markPrepared = new EventEmitter<number>();
+  @Output() markReady = new EventEmitter<number>();
   @Output() cancelOrder = new EventEmitter<number>();
   @Output() viewDetails = new EventEmitter<number>();
 
@@ -42,8 +42,8 @@ export class OrderCardComponent {
     this.markPreparing.emit(this.order.orderId);
   }
 
-  onMarkPrepared(): void {
-    this.markPrepared.emit(this.order.orderId);
+  onMarkReady(): void {
+    this.markReady.emit(this.order.orderId);
   }
 
   onCancelOrder(): void {

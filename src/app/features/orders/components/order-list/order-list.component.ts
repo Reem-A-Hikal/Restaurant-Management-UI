@@ -18,7 +18,7 @@ export class OrderListComponent {
 
   @Output() confirm = new EventEmitter<number>();
   @Output() markPreparing = new EventEmitter<number>();
-  @Output() markPrepared = new EventEmitter<number>();
+  @Output() markReady = new EventEmitter<number>();
   @Output() cancelOrder = new EventEmitter<number>();
   @Output() viewDetails = new EventEmitter<number>();
 

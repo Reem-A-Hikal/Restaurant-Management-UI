@@ -110,7 +110,7 @@ export class OrderComponent implements OnInit {
   onMarkPreparing(orderId: number): void {
     this.ordersService.markAsPreparing(orderId).subscribe({
       next: () => {
-        this.toastr.success('Order is now being prepared', 'Success');
+        this.toastr.success('Order is now being ready', 'Success');
         this.loadOrders();
       },
       error: (err: HttpErrorResponse) => {
@@ -123,8 +123,8 @@ export class OrderComponent implements OnInit {
       },
     });
   }
-  onMarkPrepared(orderId: number): void {
-    this.ordersService.markAsPrepared(orderId).subscribe({
+  onMarkReady(orderId: number): void {
+    this.ordersService.markAsReady(orderId).subscribe({
       next: () => {
         this.toastr.success('Order is ready', 'Success');
         this.loadOrders();
@@ -179,7 +179,6 @@ export class OrderComponent implements OnInit {
   }
 
   onViewDetails(orderId: number): void {
-    console.log(`View details for order ID: ${orderId}`);
     this.router.navigate(['/Dashboard/Orders', orderId]);
   }
 }

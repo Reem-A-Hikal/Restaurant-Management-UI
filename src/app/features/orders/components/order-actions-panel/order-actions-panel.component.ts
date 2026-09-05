@@ -15,6 +15,6 @@ export class OrderActionsPanelComponent {
 
   @Output() confirm = new EventEmitter<void>();
   @Output() markPreparing = new EventEmitter<void>();
-  @Output() markPrepared = new EventEmitter<void>();
+  @Output() markReady = new EventEmitter<void>();
   @Output() cancelOrder = new EventEmitter<void>();
 }

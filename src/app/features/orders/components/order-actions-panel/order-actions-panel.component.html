@@ -20,10 +20,10 @@
       Start Preparing
     </button>
     <button
-      *ngIf="visibleActions.includes('prepared')"
+      *ngIf="visibleActions.includes('ready')"
       class="btn btn-info"
       [disabled]="isProcessing"
-      (click)="markPrepared.emit()"
+      (click)="markReady.emit()"
     >
       Mark Ready
     </button>

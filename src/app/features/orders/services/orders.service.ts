@@ -109,9 +109,9 @@ export class OrdersService {
     );
   }
 
-  markAsPrepared(id: number): Observable<OrderDto> {
+  markAsReady(id: number): Observable<OrderDto> {
     return this.api.patch<OrderDto>(
-      `${this.basePath}/${id}/prepared`,
+      `${this.basePath}/${id}/ready`,
       {},
       this.skip,
     );
