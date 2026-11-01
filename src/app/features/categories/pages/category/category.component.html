@@ -2,7 +2,7 @@
   <app-top-page
     pageTitle="Menu Categories"
     pageSubtitle="Manage your restaurant menu sections and visibility."
-    [searchPlaceholder]="'Search for categories...'"
+    [searchPlaceholder]="'Search by name (English or Arabic)...'"
     [addButtonLabel]="'Add Category'"
     [filterOptions]="filterOptions"
     (searchEvent)="searchCategories($event)"
@@ -13,6 +13,7 @@
   <app-category-list
     [categories]="categories ?? []"
     [isLoading]="isLoading"
+    [currentPage]="pagination.pageIndex"
     (editCategory)="openModal($event)"
     (deleteCategory)="archiveCategory($event.categoryId)"
     (addCategory)="openModal()"

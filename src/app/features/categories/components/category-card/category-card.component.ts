@@ -44,6 +44,10 @@ export class CategoryCardComponent {
     return this.iconMap[name] ?? this.iconMap['default'];
   }
 
+  get isArabicMissing(): boolean {
+    return !this.category?.nameAr?.trim();
+  }
+
   private readonly iconMap: Record<string, string> = {
     appetizers: 'bi bi-egg-fried',
     'main-course': 'bi bi-fork-knife',

@@ -140,6 +140,12 @@ export class DishesComponent implements OnInit {
     return dish?.productId ? dish.productId : index;
   }
 
+  isArabicMissing(dish: DishWithId): boolean {
+    const noName = !dish.nameAr?.trim();
+    const noDesc = !!dish.description?.trim() && !dish.descriptionAr?.trim();
+    return noName || noDesc;
+  }
+
   openDishModal(dish?: DishWithId): void {
     this.modalRef = this.modalService.open(ManageDishModalComponent, {
       modalClass: 'modal-dialog-centered',

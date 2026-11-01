@@ -84,6 +84,7 @@ export class ManageDishModalComponent implements OnInit {
             Validators.maxLength(100),
           ],
         ],
+        nameAr: [this.dishToEdit?.nameAr ?? '', Validators.maxLength(100)],
         categoryId: [this.dishToEdit?.categoryId ?? '', Validators.required],
         price: [
           this.dishToEdit?.price ?? null,
@@ -91,6 +92,10 @@ export class ManageDishModalComponent implements OnInit {
         ],
         description: [
           this.dishToEdit?.description || '',
+          Validators.maxLength(1000),
+        ],
+        descriptionAr: [
+          this.dishToEdit?.descriptionAr ?? '',
           Validators.maxLength(1000),
         ],
         preparationTime: [
@@ -114,6 +119,19 @@ export class ManageDishModalComponent implements OnInit {
       },
       { validators: discountRangeValidator },
     );
+  }
+
+  private textForUpdate(
+    control: 'nameAr' | 'descriptionAr' | 'description',
+  ): string | undefined {
+    const ctrl = this.f[control];
+    return ctrl.dirty ? (ctrl.value ?? '').trim() : undefined;
+  }
+
+  private arabicForCreate(
+    control: 'nameAr' | 'descriptionAr',
+  ): string | undefined {
+    return (this.f[control].value ?? '').trim() || undefined;
   }
 
   onAvailabilityToggle(event: Event): void {
@@ -195,9 +213,11 @@ export class ManageDishModalComponent implements OnInit {
     if (this.editMode && this.dishToEdit) {
       const dto: UpdateDishRequest = {
         name: formValue.name,
+        nameAr: this.textForUpdate('nameAr'),
         categoryId: Number(formValue.categoryId),
         price: Number(formValue.price),
-        description: formValue.description || undefined,
+        description: this.textForUpdate('description'),
+        descriptionAr: this.textForUpdate('descriptionAr'),
         preparationTime: Number(formValue.preparationTime),
         calories: formValue.calories ?? undefined,
         isPromoted: formValue.isPromoted,
@@ -221,9 +241,11 @@ export class ManageDishModalComponent implements OnInit {
     } else {
       const dto: CreateDishRequest = {
         name: formValue.name,
+        nameAr: this.arabicForCreate('nameAr'),
         categoryId: Number(formValue.categoryId),
         price: Number(formValue.price),
         description: formValue.description || undefined,
+        descriptionAr: this.arabicForCreate('descriptionAr'),
         preparationTime: Number(formValue.preparationTime),
         calories: formValue.calories ?? undefined,
         isPromoted: formValue.isPromoted,

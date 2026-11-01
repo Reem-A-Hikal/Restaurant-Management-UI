@@ -11,9 +11,25 @@
   </div>
 
   <!-- Info -->
+  <!-- Info -->
   <div class="category-card__info">
     <h3 class="category-card__name">{{ category.name }}</h3>
+    <p
+      class="category-card__name-ar"
+      *ngIf="category.nameAr"
+      dir="rtl"
+      lang="ar"
+    >
+      {{ category.nameAr }}
+    </p>
     <p class="category-card__count">{{ category.totalItems }} Items</p>
+    <span
+      class="badge badge--missing-ar"
+      *ngIf="isArabicMissing"
+      title="Arabic name is missing. Use Edit to add it."
+    >
+      <i class="bi bi-translate"></i> Arabic missing
+    </span>
   </div>
 
   <!-- Actions -->

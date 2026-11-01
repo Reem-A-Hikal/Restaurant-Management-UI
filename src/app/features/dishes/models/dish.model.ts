@@ -15,9 +15,11 @@ export const ProductStatusLabels: Record<ProductStatus, string> = {
 export interface DishWithId {
   productId: number;
   name: string;
+  nameAr?: string | null;
   price: number;
   discountedPrice: number;
   description?: string;
+  descriptionAr?: string | null;
   imageUrl?: string;
   preparationTime: number;
   calories?: number;
@@ -30,8 +32,10 @@ export interface DishWithId {
 
 export interface CreateDishRequest {
   name: string;
+  nameAr?: string;
   price: number;
   description?: string;
+  descriptionAr?: string;
   imageUrl?: string;
   preparationTime: number;
   calories?: number;
@@ -43,8 +47,10 @@ export interface CreateDishRequest {
 
 export interface UpdateDishRequest {
   name?: string;
+  nameAr?: string;
   price?: number;
   description?: string;
+  descriptionAr?: string;
   imageUrl?: string;
   preparationTime?: number;
   calories?: number;
@@ -62,6 +68,7 @@ export interface DishesListApiResponse extends Pagination {
 export interface SimpleDish {
   productId: number;
   name: string;
+  nameAr?: string | null;
   price: number;
   isAvailable: boolean;
 }

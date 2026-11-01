@@ -44,6 +44,9 @@
 
   /* ── Tertiary (Chef red) ── */
   --color-tertiary: #933a3c;
+
+  --color-warning-bg: #fff4d6;
+  --color-warning-text: #8a5a00;
 }
 
 ::selection {

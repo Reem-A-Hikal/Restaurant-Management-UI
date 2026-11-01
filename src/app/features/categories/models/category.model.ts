@@ -16,6 +16,7 @@ export const CategoryStatusLabels: Record<CategoryStatus, string> = {
 export interface Category {
   categoryId: number;
   name: string;
+  nameAr?: string | null;
   status: CategoryStatus;
   displayOrder: number;
   totalItems: number;
@@ -24,6 +25,7 @@ export interface Category {
 
 export interface CategoryCreateDto {
   name: string;
+  nameAr?: string;
   status: CategoryStatus;
   displayOrder: number;
 }
@@ -31,6 +33,7 @@ export interface CategoryCreateDto {
 export interface CategoryUpdateDto {
   categoryId?: number;
   name?: string;
+  nameAr?: string;
   status?: CategoryStatus;
   displayOrder?: number;
 }

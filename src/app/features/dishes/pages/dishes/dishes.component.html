@@ -2,7 +2,7 @@
   <app-top-page
     pageTitle="Menu Dishes"
     pageSubtitle="Search by product name, filter by category, or add a new dish"
-    [searchPlaceholder]="'Search with Product Name...'"
+    [searchPlaceholder]="'Search by name (English or Arabic)...'"
     [addButtonLabel]="'Add New Product'"
     [filterOptions]="filterOptions"
     (searchEvent)="applySearch($event)"
@@ -65,6 +65,13 @@
           <span class="badge badge--discount" *ngIf="dish.discountPercent > 0">
             -{{ dish.discountPercent }}%
           </span>
+          <span
+            class="badge badge--missing-ar"
+            *ngIf="isArabicMissing(dish)"
+            title="Arabic name or description is missing. Use Edit to add it."
+          >
+            <i class="bi bi-translate"></i> Arabic missing
+          </span>
         </div>
 
         <!-- Image -->
@@ -98,6 +105,14 @@
         <!-- Info -->
         <div class="product-card__info">
           <h3 class="product-card__name">{{ dish.name }}</h3>
+          <p
+            class="product-card__name-ar"
+            *ngIf="dish.nameAr"
+            dir="rtl"
+            lang="ar"
+          >
+            {{ dish.nameAr }}
+          </p>
           <p class="product-card__desc" *ngIf="dish.description">
             {{ dish.description }}
           </p>

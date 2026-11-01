@@ -17,7 +17,10 @@ import {
 } from '../../models/category.model';
 import { Observable, take } from 'rxjs';
 import { CategoryService } from '../../services/category.service';
-import { extractErrorResponse, shouldComponentShowError } from '../../../../shared/helpers/error.helper';
+import {
+  extractErrorResponse,
+  shouldComponentShowError,
+} from '../../../../shared/helpers/error.helper';
 
 @Component({
   selector: 'app-category-modal',
@@ -64,6 +67,8 @@ export class ManageCategoryComponent implements OnInit {
         ],
       ],
 
+      nameAr: [this.categoryToEdit?.nameAr ?? '', Validators.maxLength(50)],
+
       status: [
         this.categoryToEdit?.status ?? CategoryStatus.Active,
         Validators.required,
@@ -81,10 +86,12 @@ export class ManageCategoryComponent implements OnInit {
     this.isSubmitting = true;
 
     const formValue = this.categoryForm.value;
+    const nameArCtrl = this.categoryForm.controls['nameAr'];
     if (this.editMode && this.categoryToEdit) {
       const dto: CategoryUpdateDto = {
-        ...this.categoryToEdit,
+        categoryId: this.categoryToEdit.categoryId,
         name: formValue.name,
+        nameAr: nameArCtrl.dirty ? (nameArCtrl.value ?? '').trim() : undefined,
         status: Number(formValue.status),
         displayOrder: Number(formValue.displayOrder),
       };
@@ -92,7 +99,12 @@ export class ManageCategoryComponent implements OnInit {
         this.catServ.update(this.categoryToEdit.categoryId, dto),
       );
     } else {
-      const dto: CategoryCreateDto = this.categoryForm.value;
+      const dto: CategoryCreateDto = {
+        name: formValue.name,
+        nameAr: (nameArCtrl.value ?? '').trim() || undefined,
+        status: Number(formValue.status),
+        displayOrder: Number(formValue.displayOrder),
+      };
       this.saveCategory(this.catServ.create(dto));
     }
   }
