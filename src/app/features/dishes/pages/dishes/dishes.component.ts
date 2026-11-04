@@ -14,7 +14,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DishesService } from '../../services/dishes.service';
 import { AddCardComponent } from '../../../../shared/components/add-card/add-card.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
-import { Category } from '../../../categories/models/category.model';
+import {
+  Category,
+  CategoryStatus,
+} from '../../../categories/models/category.model';
 import {
   extractErrorResponse,
   shouldComponentShowError,
@@ -57,6 +60,7 @@ export class DishesComponent implements OnInit {
   selectedCategoryId: any = null;
   readonly ProductStatus = ProductStatus;
   toAssetUrl = toAssetUrl;
+  private hiddenCategoryIds = new Set<number>();
 
   modalRef: MdbModalRef<ManageDishModalComponent> | null = null;
 
@@ -122,6 +126,11 @@ export class DishesComponent implements OnInit {
     this.categoryService.getAllCats().subscribe({
       next: (res) => {
         this.categories = res;
+        this.hiddenCategoryIds = new Set(
+          res
+            .filter((cat) => cat.status !== CategoryStatus.Active)
+            .map((cat) => cat.categoryId),
+        );
       },
     });
   }
@@ -144,6 +153,13 @@ export class DishesComponent implements OnInit {
     const noName = !dish.nameAr?.trim();
     const noDesc = !!dish.description?.trim() && !dish.descriptionAr?.trim();
     return noName || noDesc;
+  }
+
+  isHiddenByCategory(dish: DishWithId): boolean {
+    return (
+      dish.status === ProductStatus.Available &&
+      this.hiddenCategoryIds.has(dish.categoryId)
+    );
   }
 
   openDishModal(dish?: DishWithId): void {
@@ -184,12 +200,12 @@ export class DishesComponent implements OnInit {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: () => {
-          showSuccessDialog('Deleted!', 'Dish deactivated successfully');
+          void showSuccessDialog('Deleted!', 'Dish deactivated successfully');
           this.refreshCurrentView();
         },
         error: (err: HttpErrorResponse) => {
           if (shouldComponentShowError(err)) {
-            showErrorDialog(
+            void showErrorDialog(
               extractErrorResponse(err, 'Failed to deactivate this dish'),
             );
           }

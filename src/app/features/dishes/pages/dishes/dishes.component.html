@@ -72,6 +72,13 @@
           >
             <i class="bi bi-translate"></i> Arabic missing
           </span>
+          <span
+            class="badge badge--hidden-category"
+            *ngIf="isHiddenByCategory(dish)"
+            title="This dish is hidden from customers because its category is inactive."
+          >
+            <i class="bi bi-eye-slash"></i> Category hidden
+          </span>
         </div>
 
         <!-- Image -->

@@ -1,4 +1,4 @@
-# 🍽️ Restro — Restaurant Management System (Frontend)
+# 🍽️ Rest — Restaurant Management System (Frontend)
 
 > The Angular admin dashboard for the Rest restaurant management platform. Gives
 > Admins and Chefs a real-time, role-aware interface for managing staff, the menu,
